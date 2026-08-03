@@ -23,3 +23,11 @@ test('includes an accessible beta waitlist form', () => {
   assert.match(html, /<input[^>]+id="waitlist-email"[^>]+type="email"/);
   assert.match(html, /aria-live="polite"/);
 });
+
+test('uses a team voice and builds anticipation for the beta', () => {
+  assert.match(html, /Be one of the first to experience Veylo/);
+  assert.match(html, /Veylo is currently in development\./);
+  assert.match(html, /Our team is building a new way for university students/);
+  assert.match(html, /help shape Veylo before launch/);
+  assert.doesNotMatch(html, /I’m building the first Veylo beta now\./);
+});
