@@ -40,7 +40,7 @@ export default async function handler(request, response) {
 
     if (insertResponse.ok) {
       return sendJson(response, 201, {
-        message: 'You’re on the list. I’ll contact you when beta testing opens.',
+        message: 'You’re on the list. We’ll contact you when beta testing opens.',
       });
     }
 
