@@ -191,7 +191,50 @@ test('returns a safe failure when Resend rejects the request', async () => {
 
 - [ ] **Step 6: Implement the Resend transport**
 
-Add `sendWaitlistConfirmation` to `lib/waitlist-confirmation.mjs`. It must POST JSON to `https://api.resend.com/emails`, use `Authorization: Bearer <key>`, return `{ ok: true, id }` for a successful response, and return `{ ok: false }` after logging only `status` and Resend `name` for failures. Missing configuration must also return `{ ok: false }` without throwing.
+Add `sendWaitlistConfirmation` to `lib/waitlist-confirmation.mjs`. Append this exact transport:
+
+```js
+export async function sendWaitlistConfirmation({
+  apiKey,
+  to,
+  from,
+  siteUrl = DEFAULT_SITE_URL,
+  fetchImpl = fetch,
+  logger = console,
+}) {
+  if (!apiKey || !from) {
+    logger.error('[waitlist-email] Resend configuration is missing.');
+    return { ok: false };
+  }
+
+  try {
+    const response = await fetchImpl('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${apiKey}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(buildWaitlistConfirmation({ to, from, siteUrl })),
+    });
+    const body = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      logger.error('[waitlist-email] Resend rejected the request.', {
+        status: response.status,
+        name: body.name,
+      });
+      return { ok: false };
+    }
+
+    return { ok: true, id: body.id };
+  } catch (error) {
+    logger.error('[waitlist-email] Resend request failed.', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+    return { ok: false };
+  }
+}
+```
 
 - [ ] **Step 7: Run the focused email tests**
 
@@ -223,24 +266,78 @@ git commit -m "feat: add waitlist confirmation email"
 Create tests with queued mock responses. Cover these exact outcomes:
 
 ```js
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import { registerWaitlistEmail } from '../lib/waitlist-service.mjs';
+
+const config = {
+  email: 'student@example.com',
+  supabaseUrl: 'https://waitlist.supabase.co',
+  serviceRoleKey: 'service-key',
+  resendApiKey: 're_test_key',
+  fromEmail: 'Veylo <hello@veylo.app>',
+  siteUrl: 'https://veylo-site-preview.vercel.app',
+  logger: { error() {} },
+};
+
 test('stores a new email and sends exactly one confirmation', async () => {
-  // Supabase returns 201, then the injected confirmation sender returns { ok: true }.
-  // Assert result is status 201 and sender received the normalized recipient once.
+  const sent = [];
+  const result = await registerWaitlistEmail({
+    ...config,
+    fetchImpl: async () => new Response(null, { status: 201 }),
+    sendConfirmation: async options => {
+      sent.push(options);
+      return { ok: true, id: 'email_123' };
+    },
+  });
+  assert.equal(result.status, 201);
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].to, 'student@example.com');
 });
 
 test('does not send a confirmation for a duplicate email', async () => {
-  // Supabase returns 409 with { code: '23505' }.
-  // Assert result is status 200 with “already” copy and sender call count is zero.
+  const sent = [];
+  const result = await registerWaitlistEmail({
+    ...config,
+    fetchImpl: async () => new Response(JSON.stringify({ code: '23505' }), {
+      status: 409,
+      headers: { 'content-type': 'application/json' },
+    }),
+    sendConfirmation: async options => {
+      sent.push(options);
+      return { ok: true };
+    },
+  });
+  assert.equal(result.status, 200);
+  assert.match(result.message, /already/i);
+  assert.equal(sent.length, 0);
 });
 
 test('does not send when Supabase fails', async () => {
-  // Supabase returns 500.
-  // Assert result is status 500 and sender call count is zero.
+  const sent = [];
+  const result = await registerWaitlistEmail({
+    ...config,
+    fetchImpl: async () => new Response(JSON.stringify({ code: 'XX000' }), {
+      status: 500,
+      headers: { 'content-type': 'application/json' },
+    }),
+    sendConfirmation: async options => {
+      sent.push(options);
+      return { ok: true };
+    },
+  });
+  assert.equal(result.status, 500);
+  assert.equal(sent.length, 0);
 });
 
 test('keeps signup successful when confirmation delivery fails', async () => {
-  // Supabase returns 201 and sender returns { ok: false }.
-  // Assert result remains status 201 with the normal signup message.
+  const result = await registerWaitlistEmail({
+    ...config,
+    fetchImpl: async () => new Response(null, { status: 201 }),
+    sendConfirmation: async () => ({ ok: false }),
+  });
+  assert.equal(result.status, 201);
+  assert.match(result.message, /on the list/i);
 });
 ```
 
@@ -254,14 +351,67 @@ Expected: FAIL because `registerWaitlistEmail` does not exist.
 
 - [ ] **Step 3: Implement `registerWaitlistEmail`**
 
-The function must:
+Create `lib/waitlist-service.mjs` with the exact database-first flow:
 
-1. POST `{ email }` to `${supabaseUrl}/rest/v1/waitlist` with the existing service-role headers.
-2. On `response.ok`, await `sendConfirmation` once with `apiKey`, `to`, `from`, `siteUrl`, `fetchImpl`, and `logger`.
-3. Return status 201 and `You’re on the list. We’ll contact you when beta testing opens.` regardless of the confirmation sender’s `ok` value.
-4. On 409 or Postgres code `23505`, return status 200 and `You’re already on the waitlist.` without calling the sender.
-5. On other Supabase errors, log only status/code and return status 500 with `Something went wrong. Try again.`.
-6. On unexpected network exceptions, log the exception message and return the same generic status 500 response.
+```js
+import { sendWaitlistConfirmation } from './waitlist-confirmation.mjs';
+
+export async function registerWaitlistEmail({
+  email,
+  supabaseUrl,
+  serviceRoleKey,
+  resendApiKey,
+  fromEmail,
+  siteUrl,
+  fetchImpl = fetch,
+  sendConfirmation = sendWaitlistConfirmation,
+  logger = console,
+}) {
+  try {
+    const response = await fetchImpl(`${supabaseUrl.replace(/\\\/$/, '')}/rest/v1/waitlist`, {
+      method: 'POST',
+      headers: {
+        apikey: serviceRoleKey,
+        authorization: `Bearer ${serviceRoleKey}`,
+        'content-type': 'application/json',
+        prefer: 'return=minimal',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (response.ok) {
+      await sendConfirmation({
+        apiKey: resendApiKey,
+        to: email,
+        from: fromEmail,
+        siteUrl,
+        fetchImpl,
+        logger,
+      });
+      return {
+        status: 201,
+        message: 'You’re on the list. We’ll contact you when beta testing opens.',
+      };
+    }
+
+    const body = await response.json().catch(() => ({}));
+    if (response.status === 409 || body.code === '23505') {
+      return { status: 200, message: 'You’re already on the waitlist.' };
+    }
+
+    logger.error('[waitlist] Supabase insert failed.', {
+      status: response.status,
+      code: body.code,
+    });
+    return { status: 500, message: 'Something went wrong. Try again.' };
+  } catch (error) {
+    logger.error('[waitlist] Unexpected insert failure.', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+    return { status: 500, message: 'Something went wrong. Try again.' };
+  }
+}
+```
 
 - [ ] **Step 4: Run the service tests**
 
@@ -315,16 +465,45 @@ Update `api/waitlist.js` to:
 import { validateWaitlistSubmission } from '../lib/waitlist.mjs';
 import { registerWaitlistEmail } from '../lib/waitlist-service.mjs';
 
+function sendJson(response, status, body) {
+  response.status(status).setHeader('content-type', 'application/json; charset=utf-8');
+  response.setHeader('cache-control', 'no-store');
+  response.end(JSON.stringify(body));
+}
+
 export function createWaitlistHandler({
   register = registerWaitlistEmail,
   env = process.env,
   logger = console,
 } = {}) {
   return async function handler(request, response) {
-    // Preserve method and validation handling.
-    // Require WAITLIST_SUPABASE_URL and WAITLIST_SUPABASE_SERVICE_ROLE_KEY.
-    // Pass RESEND_API_KEY and WAITLIST_FROM_EMAIL to register.
-    // Send the service result through sendJson.
+    if (request.method !== 'POST') {
+      response.setHeader('allow', 'POST');
+      return sendJson(response, 405, { message: 'Method not allowed.' });
+    }
+
+    const validation = validateWaitlistSubmission(request.body);
+    if (!validation.ok) {
+      return sendJson(response, validation.status, { message: validation.message });
+    }
+
+    if (!env.WAITLIST_SUPABASE_URL || !env.WAITLIST_SUPABASE_SERVICE_ROLE_KEY) {
+      logger.error('[waitlist] Separate waitlist database environment variables are not configured.');
+      return sendJson(response, 503, {
+        message: 'The waitlist is not ready yet. Try again soon.',
+      });
+    }
+
+    const result = await register({
+      email: validation.email,
+      supabaseUrl: env.WAITLIST_SUPABASE_URL,
+      serviceRoleKey: env.WAITLIST_SUPABASE_SERVICE_ROLE_KEY,
+      resendApiKey: env.RESEND_API_KEY,
+      fromEmail: env.WAITLIST_FROM_EMAIL,
+      siteUrl: 'https://veylo-site-preview.vercel.app',
+      logger,
+    });
+    return sendJson(response, result.status, { message: result.message });
   };
 }
 
@@ -370,7 +549,7 @@ Append:
 ```text
 # Server-only Resend credentials for one-time waitlist confirmations.
 RESEND_API_KEY=
-WAITLIST_FROM_EMAIL=Veylo <hello@verified-veylo-domain>
+WAITLIST_FROM_EMAIL=Veylo <hello@example.com>
 ```
 
 Do not place a real key or private credential in the repository.
@@ -436,10 +615,12 @@ Deploy `feature/marketing-waitlist` and confirm the resulting deployment is READ
 Check:
 
 ```bash
-curl -I https://<preview-hostname>
-curl -i -X POST https://<preview-hostname>/api/waitlist \
+PREVIEW_URL="$(vercel deploy)"
+read -r WAITLIST_TEST_EMAIL
+curl -I "$PREVIEW_URL"
+curl -i -X POST "$PREVIEW_URL/api/waitlist" \
   -H 'content-type: application/json' \
-  -d '{"email":"a-real-disposable-inbox-address","company":""}'
+  -d "{\"email\":\"${WAITLIST_TEST_EMAIL}\",\"company\":\"\"}"
 ```
 
 Expected: page returns 200; first valid submission returns 201.
@@ -459,7 +640,8 @@ Query only project `yohiumlrpfdhphsnnxxw`:
 ```sql
 select email, created_at
 from public.waitlist
-where email = lower(trim('<the-disposable-inbox-address>'));
+order by created_at desc
+limit 1;
 ```
 
 Expected: exactly one row.
