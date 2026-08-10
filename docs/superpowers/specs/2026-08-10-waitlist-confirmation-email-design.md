@@ -44,7 +44,6 @@ The email should:
 - Explain that Veylo is in active development.
 - Say the team may contact them about early beta access, testing opportunities, and product feedback.
 - Avoid promising guaranteed beta acceptance, immediate access, or a launch date.
-- Remind them that Veylo uses campus-level presence and does not show an exact live location.
 - Include the public Veylo website URL.
 
 Provide both HTML and plain-text versions. Use the existing green, cream, white, dark-text, and orange Veylo palette. Keep the design simple and reliable across common email clients.
