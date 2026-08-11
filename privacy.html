@@ -13,10 +13,11 @@
         <a href="./index.html">Home</a>
         <a href="./terms.html">Terms</a>
         <a href="./support.html">Support</a>
+        <a href="./delete-account.html">Delete account</a>
       </nav>
 
       <header>
-        <span class="eyebrow">Last updated 26 May 2026</span>
+        <span class="eyebrow">Last updated 10 August 2026</span>
         <h1>Privacy Policy</h1>
         <p>
           This Privacy Policy explains how Veylo collects, uses, stores, and protects information
@@ -29,20 +30,24 @@
         <p>Veylo may collect the following information when you use the app:</p>
         <ul>
           <li>Account information, including email address and authentication identifiers.</li>
-          <li>Profile information, including name or public display name, university, campus, degree or course, year level, and student email verification status.</li>
-          <li>Campus status information, including general campus, zone, availability, status text, status notes, and status update times.</li>
-          <li>Social information, including friend requests, accepted friend connections, messages, feed posts, and related timestamps.</li>
-          <li>Device and technical information needed to operate, secure, debug, and improve the app.</li>
+          <li>Profile information, including first name, last name, display name, username, university, campus, degree or course, year level, and student email verification status.</li>
+          <li>Campus status information, including general campus, zone label, visibility choice, status text, and status update times.</li>
+          <li>Social information, including friend requests, accepted friend connections, group membership, messages, feed posts, feed comments, report submissions, block lists, and related timestamps.</li>
+          <li>Profile photo information, including pending profile photo submissions and approved public avatar URLs.</li>
+          <li>Notification-related information, including Expo push tokens and notification preference settings.</li>
+          <li>Optional support or beta feedback information, including your message, app version, platform, and operating system version when you send feedback through the app.</li>
         </ul>
       </section>
 
       <section class="panel">
         <h2>Location And Campus Presence</h2>
         <p>
-          Veylo is designed around campus-level presence. The app should show general campus zones or
-          user-selected campus status rather than exact GPS coordinates to other users. If precise
-          device location is used in future features such as geofencing, it will be used to determine
-          general campus presence and not to publicly display exact coordinates.
+          Veylo is designed around campus-level presence. If you manually update your campus status
+          with location or enable automatic campus status updates, the app checks whether your device
+          is on or near a supported campus and then stores only the derived campus presence result,
+          such as on-campus or off-campus plus a campus or zone label. Exact GPS coordinates are not
+          shown to other users and are not stored by Veylo's backend as part of the normal campus
+          status flow.
         </p>
       </section>
 
@@ -53,8 +58,10 @@
           <li>Creating and managing accounts.</li>
           <li>Helping users choose university, campus, and degree details.</li>
           <li>Showing campus status to accepted friends according to app privacy controls.</li>
-          <li>Supporting friend discovery, friend requests, messages, and campus feed posts.</li>
-          <li>Maintaining security, preventing abuse, debugging issues, and improving reliability.</li>
+          <li>Supporting friend discovery, friend requests, messages, group chats, and campus feed posts.</li>
+          <li>Reviewing profile photo submissions before they become public profile pictures.</li>
+          <li>Sending optional push notifications for friend requests, messages, reactions, and campus status alerts when you allow them.</li>
+          <li>Maintaining security, preventing abuse, responding to reports, debugging issues, and improving reliability.</li>
         </ul>
       </section>
 
@@ -62,8 +69,10 @@
         <h2>Storage And Service Providers</h2>
         <p>
           Veylo uses Supabase for authentication, database storage, and related backend services.
-          Supabase stores account, profile, social, status, feed, and message records needed for the
-          app to function. We do not sell personal information.
+          Supabase stores the account, profile, privacy, safety, campus status, feed, and messaging
+          records needed for the app to function. Expo, Apple, Google or Firebase, and the operating
+          system may handle push-notification delivery and native platform services. We do not sell
+          personal information and we do not use third-party advertising SDKs.
         </p>
       </section>
 
@@ -71,27 +80,39 @@
         <h2>Sharing</h2>
         <p>
           Veylo shares app content with other users only as needed for the social features you use,
-          such as friend connections, feed posts, messages, and campus status visibility. We may also
-          disclose information if required by law, to protect users, or to investigate abuse.
+          such as friend connections, profile views, group membership, feed posts, messages, and
+          campus status visibility. We may also disclose information if required by law, to protect
+          users, or to investigate abuse and safety issues.
         </p>
       </section>
 
       <section class="panel">
-        <h2>Analytics And Crash Reporting</h2>
+        <h2>Profile Photos, Reports, And Moderation</h2>
         <p>
-          Veylo does not currently include a separate third-party analytics or advertising SDK. Apple,
-          Expo, Supabase, and operating system services may provide technical logs or diagnostics
-          needed to operate, distribute, secure, or debug the app.
+          Newly submitted profile photos are stored as private pending review items until they are
+          manually approved. Reports are routed for manual review, and blocks are used to restrict
+          contact and visibility between the people involved.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Notifications And Technical Data</h2>
+        <p>
+          Veylo stores push-notification tokens and notification settings only to deliver the alerts
+          you enable. If you send beta feedback in the app, Veylo may also store platform,
+          operating-system version, app version, and execution-environment details to help debug the
+          issue you reported.
         </p>
       </section>
 
       <section class="panel">
         <h2>Account And Data Deletion</h2>
         <p>
-          You can request account or data deletion by contacting support at
-          <a href="mailto:John.tawadros@icloud.com">John.tawadros@icloud.com</a>. Include the email
-          address associated with your Veylo account. We may need to retain limited records where
-          required for security, abuse prevention, legal compliance, or backup integrity.
+          You can delete your account directly in the app from Profile &gt; Delete account. This
+          removes your profile and associated in-app data, including your statuses, friend
+          connections, feed posts, feed comments, messages, notification tokens, and pending profile
+          photo submissions. Veylo does not claim a separate report-retention period in this beta;
+          any future retention policy will be published before it takes effect.
         </p>
       </section>
 
@@ -99,8 +120,8 @@
         <h2>Age Restrictions</h2>
         <p>
           Veylo is intended for university students and is not directed to children under 13. Users
-          must meet the minimum age required by applicable law and by Apple App Store rules in their
-          region.
+          must meet the minimum age required by applicable law and by the applicable app-store rules
+          in their region.
         </p>
       </section>
 
@@ -108,12 +129,12 @@
         <h2>Contact</h2>
         <p>
           For privacy questions or data requests, contact
-          <a href="mailto:John.tawadros@icloud.com">John.tawadros@icloud.com</a>.
+          <a href="mailto:support@veylo.app">support@veylo.app</a>.
         </p>
       </section>
 
       <footer>
-        <p class="muted">Veylo Privacy Policy. Last updated 26 May 2026.</p>
+        <p class="muted">Veylo Privacy Policy. Last updated 10 August 2026.</p>
       </footer>
     </main>
   </body>
