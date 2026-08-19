@@ -17,13 +17,22 @@
       </nav>
 
       <header>
-        <span class="eyebrow">Last updated 10 August 2026</span>
+        <span class="eyebrow">Last updated 18 August 2026</span>
         <h1>Privacy Policy</h1>
         <p>
-          This Privacy Policy explains how Veylo collects, uses, stores, and protects information
-          when students use the Veylo campus social app.
+          This Privacy Policy explains how Veylo collects, uses, stores, shares, and protects
+          information when students use the Veylo campus social app and related support pages.
         </p>
       </header>
+
+      <section class="panel">
+        <h2>Who Operates Veylo</h2>
+        <p>
+          Veylo is operated by John Tawadros, an individual based in Queensland, Australia. In this
+          Privacy Policy, “Veylo”, “we”, “us”, and “our” refer to John Tawadros as the operator of
+          the Veylo service.
+        </p>
+      </section>
 
       <section class="panel">
         <h2>Information We Collect</h2>
@@ -34,20 +43,37 @@
           <li>Campus status information, including general campus, zone label, visibility choice, status text, and status update times.</li>
           <li>Social information, including friend requests, accepted friend connections, group membership, messages, feed posts, feed comments, report submissions, block lists, and related timestamps.</li>
           <li>Profile photo information, including pending profile photo submissions and approved public avatar URLs.</li>
-          <li>Notification-related information, including Expo push tokens and notification preference settings.</li>
-          <li>Optional support or beta feedback information, including your message, app version, platform, and operating system version when you send feedback through the app.</li>
+          <li>Notification information, including Expo push tokens, device type, token status, last-seen times, notification preferences, and in-app notification records.</li>
+          <li>Optional support or beta feedback information, including your message, the screen you identify, severity, app version, platform, operating system version, app ownership, and execution-environment details when you send feedback through the app.</li>
         </ul>
       </section>
 
       <section class="panel">
         <h2>Location And Campus Presence</h2>
         <p>
-          Veylo is designed around campus-level presence. If you manually update your campus status
-          with location or enable automatic campus status updates, the app checks whether your device
-          is on or near a supported campus and then stores only the derived campus presence result,
-          such as on-campus or off-campus plus a campus or zone label. Exact GPS coordinates are not
-          shown to other users and are not stored by Veylo's backend as part of the normal campus
-          status flow.
+          Veylo uses device location only when you choose a location-based campus status feature.
+          A manual campus check uses foreground location permission. If you enable automatic campus
+          tracking, Veylo also requests background location permission and registers campus
+          geofences so the operating system may notify the app when your device enters or leaves a
+          supported campus area while the app is in the background. Background behaviour depends on
+          your device, operating system, permission settings, and platform limitations.
+        </p>
+        <p>
+          To determine campus presence, the app obtains coordinates from the device and compares
+          them on the device with configured campus zones. If a fresh position is unavailable, the
+          app may use a recent last-known location that is no more than approximately five minutes
+          old. In the normal campus-status flow, Veylo sends its backend only the derived result,
+          such as on-campus or off-campus, a campus or zone label, and related status times. Veylo
+          does not intentionally send or store exact GPS coordinates in its backend as part of that
+          normal flow. Your device operating system and Apple or Google location services may process
+          exact location information to provide the location result under their own terms and
+          privacy practices.
+        </p>
+        <p>
+          You can turn off automatic campus tracking in Veylo and can revoke location permission in
+          your device settings. Turning it off stops future automatic checks, but it does not by
+          itself erase a campus status already stored in Veylo. You can update or hide that status
+          using Veylo’s privacy controls or delete your account.
         </p>
       </section>
 
@@ -68,11 +94,65 @@
       <section class="panel">
         <h2>Storage And Service Providers</h2>
         <p>
-          Veylo uses Supabase for authentication, database storage, and related backend services.
-          Supabase stores the account, profile, privacy, safety, campus status, feed, and messaging
-          records needed for the app to function. Expo, Apple, Google or Firebase, and the operating
-          system may handle push-notification delivery and native platform services. We do not sell
-          personal information and we do not use third-party advertising SDKs.
+          Veylo uses Supabase for authentication, database storage, file storage, and related backend
+          services. Supabase stores the account, profile, privacy, safety, campus status, feed,
+          notification, and messaging records needed for the app to function. Expo processes push
+          notification tokens and payloads for delivery. Apple Push Notification service and
+          Google’s Firebase Cloud Messaging may then deliver those notifications to devices. Apple,
+          Google, and the operating system may also provide native platform and location services.
+          Veylo’s public legal and support pages are hosted using GitHub Pages.
+        </p>
+        <p>
+          We do not sell personal information and we do not use third-party advertising SDKs in the
+          current app.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Push Notifications And Notification Content</h2>
+        <p>
+          If you enable notifications, Veylo stores the information needed to address and manage
+          them, including an Expo push token, device type, whether the token is enabled, its
+          last-seen time, and your notification preferences. Veylo may also store an in-app
+          notification record containing the recipient, actor, title, body, routing information,
+          read time, and related timestamps.
+        </p>
+        <p>
+          Depending on the alert, a push notification may include a sender or actor name, a group
+          name, a campus-status event, or a preview of a message of up to approximately 80
+          characters. It may also include identifiers or links needed to open the relevant screen.
+          Veylo sends this payload through the Expo Push Service, which forwards it to Apple Push
+          Notification service or Google’s Firebase Cloud Messaging. Those providers process the
+          token and notification content for delivery. Expo may temporarily hold notification
+          content in memory or delivery queues, and authorised personnel may be able to access it
+          while diagnosing a delivery problem.
+        </p>
+        <p>
+          Depending on the recipient’s device settings, notification content may appear on a lock
+          screen and may be visible to anyone who can view that device. You can disable notification
+          categories in Veylo or disable all Veylo notifications in your device settings. Disabling
+          notifications stops future push attempts but does not retract a notification already
+          delivered or remove information already stored on another user’s device or in their Veylo
+          notification history.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Overseas Storage And Processing</h2>
+        <p>
+          Veylo is operated from Australia, but some service providers process or store information
+          overseas. Veylo’s current core Supabase backend is hosted in Singapore. Push notification
+          information may be disclosed to or processed by Expo, Apple, Google, and their service
+          providers in the United States and other countries in which they operate. GitHub may also
+          process standard website request information, such as an IP address and browser or device
+          information, when you visit Veylo’s public legal or support pages.
+        </p>
+        <p>
+          Privacy and data-access laws in those countries may differ from Australian law. We limit
+          information sent to each provider to what is reasonably required for the relevant service
+          and use the access controls and security features available to us. Provider infrastructure,
+          subprocessors, and processing locations can change. You can contact us for current
+          information about the providers and overseas locations known to Veylo.
         </p>
       </section>
 
@@ -81,8 +161,10 @@
         <p>
           Veylo shares app content with other users only as needed for the social features you use,
           such as friend connections, profile views, group membership, feed posts, messages, and
-          campus status visibility. We may also disclose information if required by law, to protect
-          users, or to investigate abuse and safety issues.
+          campus status visibility. We also share limited information with the service providers
+          described above so they can host the service, process location results supplied by the
+          device, and deliver notifications. We may disclose information if required by law, to
+          protect users, or to investigate abuse and safety issues.
         </p>
       </section>
 
@@ -92,16 +174,6 @@
           Newly submitted profile photos are stored as private pending review items until they are
           manually approved. Reports are routed for manual review, and blocks are used to restrict
           contact and visibility between the people involved.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Notifications And Technical Data</h2>
-        <p>
-          Veylo stores push-notification tokens and notification settings only to deliver the alerts
-          you enable. If you send beta feedback in the app, Veylo may also store platform,
-          operating-system version, app version, and execution-environment details to help debug the
-          issue you reported.
         </p>
       </section>
 
@@ -128,13 +200,14 @@
       <section class="panel">
         <h2>Contact</h2>
         <p>
-          For privacy questions or data requests, contact
+          Veylo is operated by John Tawadros in Queensland, Australia. For privacy questions, data
+          requests, or questions about overseas processing, contact
           <a href="mailto:support@veylo.app">support@veylo.app</a>.
         </p>
       </section>
 
       <footer>
-        <p class="muted">Veylo Privacy Policy. Last updated 10 August 2026.</p>
+        <p class="muted">Veylo Privacy Policy. Last updated 18 August 2026.</p>
       </footer>
     </main>
   </body>
