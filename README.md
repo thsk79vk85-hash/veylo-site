@@ -32,11 +32,19 @@ Add these environment variables to the separate Vercel site project:
 ```text
 WAITLIST_SUPABASE_URL
 WAITLIST_SUPABASE_SERVICE_ROLE_KEY
+RESEND_API_KEY
+WAITLIST_FROM_EMAIL
 ```
 
 Use values from the waitlist-only Supabase project. Do not copy credentials from the Veylo app.
 
+`RESEND_API_KEY` and `WAITLIST_FROM_EMAIL` are sensitive, server-only Vercel variables. The sender must use the already verified Veylo domain (for example, `Veylo <hello@veylo.app>`); do not use the placeholder sender in production. After changing environment variables, redeploy production for the changes to take effect.
+
 Deploy after adding the variables. Vercel will serve the static pages and deploy `api/waitlist.js` as a serverless function.
+
+## Confirmation email
+
+The confirmation email sends only after a new waitlist row is inserted successfully. Duplicate submissions and honeypot submissions do not send an email. If delivery fails, the stored signup remains in the waitlist and the endpoint still treats the signup as successful.
 
 ## Test the endpoint
 
