@@ -73,3 +73,21 @@ test('returns a safe failure when Resend rejects the request', async () => {
   assert.doesNotMatch(JSON.stringify(logged), /student@example\.com/);
   assert.doesNotMatch(JSON.stringify(logged), /re_test_key/);
 });
+
+test('does not log sensitive details when the Resend request throws', async () => {
+  const logged = [];
+  const result = await sendWaitlistConfirmation({
+    apiKey: 're_test_key',
+    to: 'student@example.com',
+    from: 'Veylo <hello@veylo.app>',
+    fetchImpl: async () => {
+      throw new Error('request failed for student@example.com using re_test_key');
+    },
+    logger: { error: (...args) => logged.push(args) },
+  });
+
+  assert.deepEqual(result, { ok: false });
+  assert.equal(logged.length, 1);
+  assert.doesNotMatch(JSON.stringify(logged), /student@example\.com/);
+  assert.doesNotMatch(JSON.stringify(logged), /re_test_key/);
+});
