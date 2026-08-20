@@ -71,3 +71,33 @@ test('keeps signup successful when confirmation delivery fails', async () => {
   assert.equal(result.status, 201);
   assert.match(result.message, /on the list/i);
 });
+
+test('keeps signup successful when confirmation sender throws', async () => {
+  const logged = [];
+  const result = await registerWaitlistEmail({
+    ...config,
+    fetchImpl: async () => new Response(null, { status: 201 }),
+    sendConfirmation: async () => {
+      throw new Error('Resend unavailable');
+    },
+    logger: { error: (...args) => logged.push(args) },
+  });
+  assert.equal(result.status, 201);
+  assert.match(result.message, /on the list/i);
+  assert.equal(logged.length, 1);
+});
+
+test('does not log secrets when database insert throws', async () => {
+  const logged = [];
+  const result = await registerWaitlistEmail({
+    ...config,
+    fetchImpl: async () => {
+      throw new Error('request failed for student@example.com using service-key');
+    },
+    logger: { error: (...args) => logged.push(args) },
+  });
+  assert.equal(result.status, 500);
+  assert.equal(logged.length, 1);
+  assert.doesNotMatch(JSON.stringify(logged), /student@example\.com/);
+  assert.doesNotMatch(JSON.stringify(logged), /service-key/);
+});
