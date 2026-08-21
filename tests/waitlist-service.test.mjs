@@ -72,6 +72,36 @@ test('keeps signup successful when confirmation delivery fails', async () => {
   assert.match(result.message, /on the list/i);
 });
 
+test('returns 201 within the configured deadline when the real Resend sender stalls', async () => {
+  let resendSignal;
+  const startedAt = Date.now();
+  const result = await settlesWithin(
+    registerWaitlistEmail({
+      ...config,
+      resendRequestTimeoutMs: 20,
+      fetchImpl: async (url, options) => {
+        if (url === 'https://waitlist.supabase.co/rest/v1/waitlist') {
+          return new Response(null, { status: 201 });
+        }
+        if (url === 'https://api.resend.com/emails') {
+          resendSignal = options.signal;
+          return new Promise((_, reject) => {
+            if (!resendSignal) return;
+            resendSignal.addEventListener('abort', () => reject(resendSignal.reason), { once: true });
+          });
+        }
+        throw new Error(`Unexpected URL: ${url}`);
+      },
+    }),
+    250,
+  );
+
+  assert.equal(result.status, 201);
+  assert.match(result.message, /on the list/i);
+  assert.equal(resendSignal.aborted, true);
+  assert.ok(Date.now() - startedAt < 250);
+});
+
 test('keeps signup successful when confirmation sender throws', async () => {
   const logged = [];
   const result = await registerWaitlistEmail({
@@ -101,3 +131,19 @@ test('does not log secrets when database insert throws', async () => {
   assert.doesNotMatch(JSON.stringify(logged), /student@example\.com/);
   assert.doesNotMatch(JSON.stringify(logged), /service-key/);
 });
+
+async function settlesWithin(promise, timeoutMs) {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, reject) => {
+        timer = setTimeout(() => {
+          reject(new Error(`operation did not settle within ${timeoutMs}ms`));
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
