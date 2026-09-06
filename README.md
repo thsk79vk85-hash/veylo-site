@@ -72,3 +72,5 @@ The canonical policy and terms are published from the `main` branch of this repo
 - https://thsk79vk85-hash.github.io/veylo-site/terms.html
 
 Marketing and support links point directly to those URLs. Vercel redirects the old `/privacy.html` and `/terms.html` URLs to the canonical pages; the HTML files provide a redirect and clickable fallback when served outside Vercel. Update the canonical documents on `main` instead of creating another policy copy on the marketing branch. Both live documents were checked against GitHub on 6 September 2026 and show 18 August 2026 as their effective update date.
+
+The Vercel marketing branch and GitHub Pages `main` have different roles. Do not merge the marketing branch's redirect-only `privacy.html` and `terms.html` onto `main`: those files must remain the actual legal documents on GitHub Pages.
