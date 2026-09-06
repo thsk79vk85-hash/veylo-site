@@ -2,6 +2,8 @@
 
 ## 2026-09-06 — Refresh the campus showcase
 
+- Deployment completed: source `f2255242b218212396b093e652957aa6eba49092`, Vercel deployment `dpl_3cJWM41mTWYA75wRM5rzKDEk1wdU`, promoted unchanged to `https://veylo-site-preview.vercel.app/`. Candidate homepage/CSS/preview script matched source exactly and waitlist GET returned 405 without writes; public homepage/CSS/both scripts also matched exactly. Both legacy legal URLs retain HTTP 307 redirects to the canonical current documents. The public page was reopened in the browser and the refreshed structure verified. This follow-up record commit does not change the deployed implementation.
+
 - Reworked `index.html` and `styles.css` with warm off-white, deep green, coral and soft coloured feature sections; editorial typography, a compact wordmark, responsive layouts, simpler feature copy and a prominent beta signup. Uses system fonts and CSS artwork, with no new tracking, remote fonts, native dependencies or personal screenshots.
 - Added `showcase.js` for four selectable illustrative Campus/Feed/Friends/Chats panels. Sample content is explicitly labelled; sample action labels are non-interactive, and only the screen-selection controls operate. Replaced the old five-tab illustration with four tabs.
 - Added accessible native privacy disclosures based on the current policy, preserving direct canonical policy/terms links and existing Vercel redirects. Copy distinguishes general presence, optional device/background location, existing stored status and service data; no promise that operators cannot access stored data.
