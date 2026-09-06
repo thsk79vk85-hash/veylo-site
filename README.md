@@ -63,3 +63,12 @@ Open the waitlist-only Supabase project, select Table Editor → `waitlist`, and
 ## Optional custom domain
 
 The project works with its free `.vercel.app` address. A domain can be added later in Vercel Project Settings → Domains without changing the application code.
+
+## Current policy and terms
+
+The canonical policy and terms are published from the `main` branch of this repository through GitHub Pages:
+
+- https://thsk79vk85-hash.github.io/veylo-site/privacy.html
+- https://thsk79vk85-hash.github.io/veylo-site/terms.html
+
+Marketing and support links point directly to those URLs. Vercel redirects the old `/privacy.html` and `/terms.html` URLs to the canonical pages; the HTML files provide a redirect and clickable fallback when served outside Vercel. Update the canonical documents on `main` instead of creating another policy copy on the marketing branch. Both live documents were checked against GitHub on 6 September 2026 and show 18 August 2026 as their effective update date.

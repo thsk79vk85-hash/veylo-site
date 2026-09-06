@@ -1,0 +1,12 @@
+# Changelog
+
+## 2026-09-06 — Link the showcase to the current policy and terms
+
+- Updated `index.html` and `support.html` to link directly to the canonical GitHub Pages policy and terms. Replaced stale local legal text in `privacy.html` and `terms.html` with redirect/link fallbacks; added temporary server redirects in `vercel.json`. Documented the source in `README.md` and excluded local Vercel configuration/environment files through `.gitignore`.
+- Verified that both published documents exactly match the latest GitHub `main` files, dated 18 August 2026. Main commit at verification: `7caebb6b257cbed8469dfbd9ec8a7c6071a31dcb`. No policy/terms wording changed.
+- Source baseline: currently deployed website commit `f4ba6f12ad4dce9ec50a23d21c862eb9a731e5e0`, production deployment `dpl_2Q4Yjt4HJP1agzn5fZh4Enz2yiuh`. Local page/style/waitlist/API/library/package SHA-1 values match Vercel's uploaded source manifest. Existing local confirmation-email commits were already deployed but are ahead of GitHub's old marketing branch; keep them in the cumulative site source.
+- User impact: policy and terms links use the maintained documents; old Vercel legal URLs forward to those documents rather than serving May copies.
+- iOS and Android: no client or native changes; existing app legal URLs already use these canonical URLs. Backend compatibility: unchanged; waitlist/API/email source and database contracts preserved.
+- Deployment: Vercel website deployment required. EAS Update possible: no app delivery needed; new EAS Build required: no; Supabase migration, Edge Function deploy, secret change, admin deployment and App Store Connect metadata/privacy-label change: no. Manual QA only: no, website deployment is required. Candidate command: `vercel deploy --prod --skip-domain --yes`; after redirect/page validation, promote that exact candidate. No domain/DNS change required.
+- Validation before deployment: `npm run check` passes 27/27 tests; `git diff --check` passes. No typecheck/lint scripts exist in this static website package; no TypeScript or native app changes. Candidate/public route checks are pending at this commit; final results are recorded in the Veylo app task records.
+- Rollback: restore the previous Vercel deployment if unrelated website behavior regresses; that also restores the stale legal copies, so reapply the link correction promptly. PR: none created for this change.

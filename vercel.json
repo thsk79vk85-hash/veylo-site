@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/privacy.html",
+      "destination": "https://thsk79vk85-hash.github.io/veylo-site/privacy.html",
+      "permanent": false
+    },
+    {
+      "source": "/terms.html",
+      "destination": "https://thsk79vk85-hash.github.io/veylo-site/terms.html",
+      "permanent": false
+    }
+  ]
+}
