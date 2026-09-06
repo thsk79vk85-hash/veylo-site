@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-06 — Bring the sample profiles to life
+
+- Added four compressed, locally hosted Pexels portraits to the fictional Mia/Jordan/Sam/Lina profiles across all four previews and the Campus feature card; a small portrait stack accompanies the coffee card. `assets/portraits/README.md` records sources, photographers and license. Visible caption labels stock portraits and sample content; models are not represented as actual users.
+- Changed `index.html`, `styles.css`, portrait assets and records. Adjusted sample spacing to keep all four panels above navigation on small screens; moved the floating note below profile content. No waitlist, legal, JavaScript or backend changes.
+- Validation: `npm run check` 27/27 and `git diff --check` pass; all 14 image instances loaded, four tabs operated, desktop/mobile screenshots reviewed, no horizontal overflow at 320/390/768/1024/1280px. At 320px all four panel heights fit their content area. No TypeScript/lint scripts in this static package. Physical iOS/Android and screen-reader checks remain; successful live signup is still a separate pending check.
+- iOS/Android: website presentation only, all installed app client versions unchanged. Backend compatibility unchanged. EAS Update possible: no app delivery needed; new EAS Build: no. Supabase migration/Edge Function/secret, admin deploy and App Store Connect metadata/privacy labels: no. Vercel website deploy required; no DNS changes. Command: `vercel deploy --prod --skip-domain --yes`, verify candidate, then `vercel promote <candidate> --yes`.
+- Branch: `codex/showcase-refresh`; PR none. Deployment result to be recorded after verification. Rollback: promote prior deployment `dpl_hN2fuGs4BUT9Lh3ifEdYRcJZ14CR`.
+
 ## 2026-09-06 — Refresh the campus showcase
 
 - Final visual follow-up: source `8d467c4`, deployment `dpl_hN2fuGs4BUT9Lh3ifEdYRcJZ14CR`, promoted after exact candidate CSS verification. Public CSS also matches source. Hid a decorative overlapping label and moved the illustrative-preview caption below the phone stage at narrow widths; no functional change.

@@ -22,3 +22,26 @@ body:not(.marketing-page) main{width:min(850px,calc(100% - 40px));margin:36px au
 
 /* Keep the illustrative-preview caption clear of the rotated phone at every width. */
 .stage-label{display:none}.hero-stage>.demo-caption{bottom:-29px;color:var(--muted)}
+
+/* Consistent stock faces make fictional sample profiles easier to follow. */
+img.avatar{display:block;object-fit:cover;box-shadow:0 0 0 2px #fff,0 2px 5px #183d3714}
+.portrait-stack{display:flex;flex-shrink:0;padding-left:0}
+.portrait-stack img{display:block;width:32px;height:32px;object-fit:cover;border:2px solid #fff;border-radius:50%;background:#dae6d5}
+.portrait-stack img+img{margin-left:-12px}
+.hero-stage>.demo-caption{bottom:-37px;line-height:1.55}
+.demo-caption>span{font-size:.9em}
+@media(max-width:480px){.portrait-stack img{width:27px;height:27px}.portrait-stack img+img{margin-left:-11px}}
+/* Keep the sample content above the phone navigation, including the fuller friends list. */
+.demo-panel .app-subtitle{margin-bottom:14px}
+#demo-friends .sample-search{padding-block:6px}
+#demo-friends .app-section-title{margin:10px 0 6px}
+#demo-friends .request-example{padding:6px 0;margin-top:0}
+#demo-friends .friend-card{padding:7px 9px;margin-bottom:6px}
+#demo-campus .my-status{margin-top:16px}
+#demo-campus .app-footnote{margin-top:10px}
+#demo-friends .friend-card{padding-block:5px}
+.hero-stage>.floating-note{bottom:12px}
+@media(max-width:480px){.hero-stage>.floating-note{bottom:0}}
+#demo-campus .friend-card{padding-block:9px}
+#demo-feed .sample-post p{margin-block:10px}
+#demo-chats .chat-bubble{margin-bottom:10px}
