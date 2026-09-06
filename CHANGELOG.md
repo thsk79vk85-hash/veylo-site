@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-09-06 — Refresh the campus showcase
+
+- Reworked `index.html` and `styles.css` with warm off-white, deep green, coral and soft coloured feature sections; editorial typography, a compact wordmark, responsive layouts, simpler feature copy and a prominent beta signup. Uses system fonts and CSS artwork, with no new tracking, remote fonts, native dependencies or personal screenshots.
+- Added `showcase.js` for four selectable illustrative Campus/Feed/Friends/Chats panels. Sample content is explicitly labelled; sample action labels are non-interactive, and only the screen-selection controls operate. Replaced the old five-tab illustration with four tabs.
+- Added accessible native privacy disclosures based on the current policy, preserving direct canonical policy/terms links and existing Vercel redirects. Copy distinguishes general presence, optional device/background location, existing stored status and service data; no promise that operators cannot access stored data.
+- Preserved waitlist submission/API/email behavior. `waitlist.js` only adds invalid-field accessibility state and clears that state on input; styles retain base/focus/error outlines, visible keyboard focus, loading/disabled treatment and reserved validation-message space. Updated existing copy assertions in `tests/site.test.mjs` to match the refreshed page.
+- Validation before deployment: 27/27 website tests passed; JS syntax and whitespace checks passed. Browser verified four sample panels, privacy disclosure expansion, mobile default/focused/error input and invalid-email handling without a network submission. Layouts checked at desktop 1280 and 390px mobile; no horizontal overflow at 320/390/768/1024px. Reduced-motion behavior is implemented with a media query but not physically toggled; no physical iOS/Android or screen-reader test is claimed. Successful live signup/email delivery remains untested.
+- iOS/Android impact: shared mobile website presentation changes, no Expo app/runtime changes. Backend compatibility: unchanged; API/library files and legal redirect config verified unchanged. No native or OS appearance behavior is altered; standalone site retains its fixed light palette with an inverse privacy section.
+- Deployment: Vercel website deploy required; EAS Update possible: no app delivery needed; new EAS Build: no; Supabase migration/Edge Function/secret change, admin deploy, App Store Connect metadata/privacy-label change: no. Suggested sequence: `vercel deploy --prod --skip-domain --yes`, verify candidate and promote that exact deployment. Deployment result is recorded in the follow-up entry/app records.
+- Rollback: promote preceding tested legal-link deployment `dpl_2ZvW7XaMbK5cfB7ntS2cwN1JVeAS`. No database/client rollback needed. Source branch: `codex/showcase-refresh`. PR: none.
+
 ## 2026-09-06 — Link the showcase to the current policy and terms
 
 - Updated `index.html` and `support.html` to link directly to the canonical GitHub Pages policy and terms. Replaced stale local legal text in `privacy.html` and `terms.html` with redirect/link fallbacks; added temporary server redirects in `vercel.json`. Documented the source in `README.md` and excluded local Vercel configuration/environment files through `.gitignore`.

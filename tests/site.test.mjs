@@ -4,8 +4,9 @@ import test from 'node:test';
 
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 
-test('uses the approved Veylo hero headline', () => {
-  assert.match(html, /Veylo turns [“\"]where are you\?[”\"] into actually meeting up\./);
+test('explains the social outcome in the hero', () => {
+  assert.match(html, /where are you\?/);
+  assert.match(html, /see you there/);
 });
 
 test('describes real app features without precise proximity claims', () => {
@@ -13,7 +14,8 @@ test('describes real app features without precise proximity claims', () => {
   assert.match(html, /Feed/);
   assert.match(html, /Friends/);
   assert.match(html, /Chats/);
-  assert.match(html, /exact location is never shown/i);
+  assert.match(html, /rather than a live GPS pin/i);
+  assert.match(html, /Illustrative preview, sample content/);
   assert.doesNotMatch(html, /\b\d+\s*(min|minutes?) away\b/i);
 });
 
@@ -24,10 +26,8 @@ test('includes an accessible beta waitlist form', () => {
   assert.match(html, /aria-live="polite"/);
 });
 
-test('uses a team voice and builds anticipation for the beta', () => {
-  assert.match(html, /Be one of the first to experience Veylo/);
-  assert.match(html, /Veylo is currently in development\./);
-  assert.match(html, /Our team is building a new way for university students/);
-  assert.match(html, /help shape Veylo before launch/);
-  assert.doesNotMatch(html, /I’m building the first Veylo beta now\./);
+test('explains beta availability without promising immediate access', () => {
+  assert.match(html, /Veylo is in beta\./);
+  assert.match(html, /help shape what comes next/);
+  assert.match(html, /doesn’t create an app account or guarantee immediate access/);
 });

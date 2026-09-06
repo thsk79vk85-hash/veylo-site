@@ -3,6 +3,8 @@ const emailInput = document.querySelector('#waitlist-email');
 const message = document.querySelector('#waitlist-message');
 
 if (form && emailInput && message) {
+  emailInput.addEventListener('input', () => emailInput.removeAttribute('aria-invalid'));
+
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
 
@@ -12,8 +14,10 @@ if (form && emailInput && message) {
 
     message.textContent = '';
     message.dataset.state = '';
+    emailInput.removeAttribute('aria-invalid');
 
     if (!emailInput.validity.valid || !email) {
+      emailInput.setAttribute('aria-invalid', 'true');
       message.textContent = 'Enter a valid email address.';
       message.dataset.state = 'error';
       emailInput.focus();
