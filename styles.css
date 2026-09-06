@@ -19,3 +19,6 @@ body:not(.marketing-page) main{width:min(850px,calc(100% - 40px));margin:36px au
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}.button-primary:hover{transform:none}}
 
 @media(max-width:480px){.stage-label,.stage-sticker{display:none}}
+
+/* Keep the illustrative-preview caption clear of the rotated phone at every width. */
+.stage-label{display:none}.hero-stage>.demo-caption{bottom:-29px;color:var(--muted)}
