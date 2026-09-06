@@ -2,6 +2,9 @@
 
 ## 2026-09-06 — Refresh the campus showcase
 
+- Final visual follow-up: source `8d467c4`, deployment `dpl_hN2fuGs4BUT9Lh3ifEdYRcJZ14CR`, promoted after exact candidate CSS verification. Public CSS also matches source. Hid a decorative overlapping label and moved the illustrative-preview caption below the phone stage at narrow widths; no functional change.
+
+
 - Deployment completed: source `f2255242b218212396b093e652957aa6eba49092`, Vercel deployment `dpl_3cJWM41mTWYA75wRM5rzKDEk1wdU`, promoted unchanged to `https://veylo-site-preview.vercel.app/`. Candidate homepage/CSS/preview script matched source exactly and waitlist GET returned 405 without writes; public homepage/CSS/both scripts also matched exactly. Both legacy legal URLs retain HTTP 307 redirects to the canonical current documents. The public page was reopened in the browser and the refreshed structure verified. This follow-up record commit does not change the deployed implementation.
 
 - Reworked `index.html` and `styles.css` with warm off-white, deep green, coral and soft coloured feature sections; editorial typography, a compact wordmark, responsive layouts, simpler feature copy and a prominent beta signup. Uses system fonts and CSS artwork, with no new tracking, remote fonts, native dependencies or personal screenshots.
