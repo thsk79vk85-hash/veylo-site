@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-09-09 — Connect Joinveylo.com to the launch waitlist
+
+- Changed only GoDaddy apex website A record from WebsiteBuilder Site to 216.198.79.1 and www CNAME from joinveylo.com to f5a5067f330ba589.vercel-dns-017.com; TTL remains one hour. Nameservers, auth CNAME, MX and TXT records preserved. Both domains verified as correctly configured by Vercel. www redirects to https://joinveylo.com/ with 308.
+- Updated homepage/support canonical URLs, Open Graph URL/image and confirmation-email destination to Joinveylo.com. Files: index.html, support.html, api/waitlist.js, lib/waitlist-confirmation.mjs, two existing tests, CHANGELOG.md and TODO.md. API shape and database operations unchanged. All released iOS/Android clients remain compatible; auth subdomain unchanged and HTTPS returns 200. This is not an end-to-end native sign-in test.
+- Validation: npm run check 27/27 passed; git diff --check passed. Browser loaded the actual waitlist on HTTPS Joinveylo.com. HTTP checks: apex 200, www 308 to apex, auth 200. Initial TLS provisioning was briefly incomplete and subsequently succeeded. Physical devices, actual registration/email receipt and full native auth flows remain manual QA.
+- Domain-link candidate dpl_58iFYyHWQzUFgnQWZygSmQucRr8j built and promoted after candidate byte comparison. Public homepage/support/share image return HTTPS 200 and match source; www support redirects to the same path on apex; invalid-email POST returns 400 without a signup. Deployment impact: Vercel website only; EAS Update required no/possible not applicable; new EAS Build no; Supabase migration, Edge Function deploy, secret change, admin deploy and App Store Connect metadata/privacy-label change no. Suggested app command none.
+- Branch codex/launch-waitlist-polish, no PR; marketing source must not be merged over canonical legal main. App records branch codex/unified-beta-release. Rollback site by promoting dpl_Cyar3NyNSmmvSVrMoYt7xvNPHvet; DNS rollback only if necessary restores the previous website A destinations 76.223.105.230/13.248.243.5 and www CNAME joinveylo.com. Do not alter auth/mail records.
+
 ## 2026-09-09 — Polish the launch waitlist and support page
 
 - Preserved the showcase design and working four-tab preview. Simplified hero/privacy copy, added a relatable between-classes section and launch FAQ, standardised waitlist CTAs, added planned QUT/UQ/Griffith and iPhone/Android scope, made the mobile header sticky, and added a 1200×630 branded share image. Redesigned support with support@veylo.app and both platforms. Updated confirmation-email and success-message copy to launch wording.

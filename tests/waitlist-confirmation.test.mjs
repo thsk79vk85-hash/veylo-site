@@ -9,7 +9,7 @@ test('builds the approved branded confirmation email', () => {
   const email = buildWaitlistConfirmation({
     to: 'student@example.com',
     from: 'Veylo <hello@veylo.app>',
-    siteUrl: 'https://veylo-site-preview.vercel.app',
+    siteUrl: 'https://joinveylo.com',
   });
 
   assert.equal(email.to, 'student@example.com');
@@ -19,7 +19,7 @@ test('builds the approved branded confirmation email', () => {
   assert.match(email.text, /friends are on campus/i);
   assert.match(email.text, /when Veylo launches/i);
   assert.match(email.text, /iPhone and Android/i);
-  assert.match(email.text, /https:\/\/veylo-site-preview\.vercel\.app/);
+  assert.match(email.text, /https:\/\/joinveylo\.com/);
   assert.match(email.html, /#146C63/i);
   assert.match(email.html, /#D8643C/i);
   assert.doesNotMatch(email.text, /exact live location/i);
@@ -36,7 +36,7 @@ test('sends the email through the Resend Email API', async () => {
     apiKey: 're_test_key',
     to: 'student@example.com',
     from: 'Veylo <hello@veylo.app>',
-    siteUrl: 'https://veylo-site-preview.vercel.app',
+    siteUrl: 'https://joinveylo.com',
     fetchImpl: async (...args) => {
       calls.push(args);
       return new Response(JSON.stringify({ id: 'email_123' }), {

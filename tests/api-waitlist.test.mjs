@@ -108,7 +108,7 @@ test('valid input passes normalized email and all server configuration to regist
     serviceRoleKey: env.WAITLIST_SUPABASE_SERVICE_ROLE_KEY,
     resendApiKey: env.RESEND_API_KEY,
     fromEmail: env.WAITLIST_FROM_EMAIL,
-    siteUrl: 'https://veylo-site-preview.vercel.app',
+    siteUrl: 'https://joinveylo.com',
     logger,
   }]);
   assert.equal(JSON.parse(response.body).message, 'Accepted.');

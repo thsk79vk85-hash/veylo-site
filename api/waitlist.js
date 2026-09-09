@@ -36,7 +36,7 @@ export function createWaitlistHandler({
       serviceRoleKey: env.WAITLIST_SUPABASE_SERVICE_ROLE_KEY,
       resendApiKey: env.RESEND_API_KEY,
       fromEmail: env.WAITLIST_FROM_EMAIL,
-      siteUrl: 'https://veylo-site-preview.vercel.app',
+      siteUrl: 'https://joinveylo.com',
       logger,
     });
     return sendJson(response, result.status, { message: result.message });
