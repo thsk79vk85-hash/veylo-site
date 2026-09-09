@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-09-09 — Polish the launch waitlist and support page
+
+- Preserved the showcase design and working four-tab preview. Simplified hero/privacy copy, added a relatable between-classes section and launch FAQ, standardised waitlist CTAs, added planned QUT/UQ/Griffith and iPhone/Android scope, made the mobile header sticky, and added a 1200×630 branded share image. Redesigned support with support@veylo.app and both platforms. Updated confirmation-email and success-message copy to launch wording.
+- Files: index.html, styles.css, support.html, waitlist.js, lib/waitlist-confirmation.mjs, lib/waitlist-service.mjs, assets/share-card.png, two existing test files, CHANGELOG.md, TODO.md. No database query, schema, auth, RLS or app client contract changes. All released iOS/Android clients unaffected; website response shape remains compatible. Email links deliberately retain the working Vercel URL until custom-domain DNS is live.
+- Validation: npm run check passed 27/27; git diff --check passed; Chrome desktop/390px support and signup screenshots reviewed; 320px homepage has no horizontal overflow and preview tabs work. Empty form focuses email and displays its validation error. Candidate homepage/support match local bytes. Physical iOS/Android, assistive technology, successful registration and actual email receipt remain manual QA. No app typecheck/lint/expo-doctor applicable.
+- Deployment: exact candidate dpl_Cyar3NyNSmmvSVrMoYt7xvNPHvet built and promoted to https://veylo-site-preview.vercel.app/. Vercel website deploy completed. EAS Update required no/possible not applicable; new EAS Build no; Supabase migration/Edge Function deploy/secret change no; admin deploy no; App Store Connect metadata/privacy labels no. Suggested app command: none. Rollback: vercel promote dpl_9FwJFgXJuDq9qvGuwV1wDP1xB6DC --yes.
+- Domains: attached joinveylo.com and www.joinveylo.com to veylo-site-preview. GoDaddy DNS still points to the old website; both available browsers require sign-in. User sign-in requested. No registrar DNS records or nameservers changed, and existing auth.joinveylo.com project mapping preserved. Domain cutover remains incomplete.
+- Branch codex/launch-waitlist-polish; PR not created because main is the canonical legal site, not the marketing deployment source. Do not merge the full marketing branch into legal main.
+
 ## 2026-09-06 — Bring the sample profiles to life
 
 - Added four compressed, locally hosted Pexels portraits to the fictional Mia/Jordan/Sam/Lina profiles across all four previews and the Campus feature card; a small portrait stack accompanies the coffee card. `assets/portraits/README.md` records sources, photographers and license. Visible caption labels stock portraits and sample content; models are not represented as actual users.

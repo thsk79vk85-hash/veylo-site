@@ -41,7 +41,7 @@ if (form && emailInput && message) {
         throw new Error(body.message || 'Something went wrong. Try again.');
       }
 
-      message.textContent = body.message || 'You’re on the list. We’ll contact you when beta testing opens.';
+      message.textContent = body.message || 'You’re on the list! We’ll email you when Veylo launches.';
       message.dataset.state = 'success';
       form.reset();
     } catch (error) {

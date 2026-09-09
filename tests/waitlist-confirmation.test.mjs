@@ -15,10 +15,10 @@ test('builds the approved branded confirmation email', () => {
   assert.equal(email.to, 'student@example.com');
   assert.equal(email.from, 'Veylo <hello@veylo.app>');
   assert.equal(email.subject, 'You’re on the Veylo waitlist');
-  assert.match(email.text, /successfully added/i);
-  assert.match(email.text, /campus social app/i);
-  assert.match(email.text, /active development/i);
-  assert.match(email.text, /early beta access/i);
+  assert.match(email.text, /Thanks for joining us/i);
+  assert.match(email.text, /friends are on campus/i);
+  assert.match(email.text, /when Veylo launches/i);
+  assert.match(email.text, /iPhone and Android/i);
   assert.match(email.text, /https:\/\/veylo-site-preview\.vercel\.app/);
   assert.match(email.html, /#146C63/i);
   assert.match(email.html, /#D8643C/i);
