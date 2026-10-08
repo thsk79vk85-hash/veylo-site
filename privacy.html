@@ -21,7 +21,7 @@
       </nav>
 
       <header>
-        <span class="eyebrow">Last updated 18 August 2026</span>
+        <span class="eyebrow">Last updated 8 October 2026</span>
         <h1>Privacy Policy</h1>
         <p>
           This Privacy Policy explains how Veylo collects, uses, stores, shares, and protects
@@ -42,13 +42,13 @@
         <h2>Information We Collect</h2>
         <p>Veylo may collect the following information when you use the app:</p>
         <ul>
-          <li>Account information, including email address and authentication identifiers.</li>
-          <li>Profile information, including first name, last name, display name, username, university, campus, degree or course, year level, and student email verification status.</li>
-          <li>Campus status information, including general campus, zone label, visibility choice, status text, and status update times.</li>
-          <li>Social information, including friend requests, accepted friend connections, group membership, messages, feed posts, feed comments, report submissions, block lists, and related timestamps.</li>
+          <li>Account information, including email address, password authentication handled by Supabase, authentication and session identifiers, and records of acceptance of our terms and privacy policy.</li>
+          <li>Profile information, including first name, last name, display name, username, university, selected campuses, degree or course, year level, optional student email and verification status, and optional major or specialisation selections or self-reported text.</li>
+          <li>Campus status information, including general campus, zone label, visibility choice, status text, last-confirmed and expiry times, freshness preferences, reminder processing records, and automatic-tracking verification times.</li>
+          <li>Social information, including friend requests, accepted friend connections, group names and membership, messages and read state, feed posts, feed comments, reactions, report submissions, moderation records, block lists, and related timestamps.</li>
           <li>Profile photo information, including pending profile photo submissions and approved public avatar URLs.</li>
           <li>Notification information, including Expo push tokens, device type, token status, last-seen times, notification preferences, and in-app notification records.</li>
-          <li>Optional support or beta feedback information, including your message, the screen you identify, severity, app version, platform, operating system version, app ownership, and execution-environment details when you send feedback through the app.</li>
+          <li>Optional support and feedback information, including your message, the screen you identify, severity, app version, platform, operating system version, app ownership, and execution-environment details when you use the in-app Beta feedback form; course suggestions and account-deletion requests when you submit them.</li>
         </ul>
       </section>
 
@@ -56,7 +56,10 @@
         <h2>Location And Campus Presence</h2>
         <p>
           Veylo uses device location only when you choose a location-based campus status feature.
-          A manual campus check uses foreground location permission. If you enable automatic campus
+          Manual campus checks and the optional check while the app is open use foreground location
+          permission. With the app-open option enabled, Veylo can use a current location result to
+          confirm or clear campus presence when you return to the app. Opening the app alone is not
+          proof that you are still on campus. If you enable always-on automatic campus
           tracking, Veylo also requests background location permission and registers campus
           geofences so the operating system may notify the app when your device enters or leaves a
           supported campus area while the app is in the background. Background behaviour depends on
@@ -64,14 +67,21 @@
         </p>
         <p>
           To determine campus presence, the app obtains coordinates from the device and compares
-          them on the device with configured campus zones. If a fresh position is unavailable, the
-          app may use a recent last-known location that is no more than approximately five minutes
-          old. In the normal campus-status flow, Veylo sends its backend only the derived result,
+          them on the device with configured campus zones. A manual check may use a recent
+          last-known location that is no more than approximately five minutes old when a fresh
+          position is unavailable. A freshness check on returning to the app requires a current
+          location result; an unavailable result does not silently reconfirm presence. In the
+          normal campus-status flow, Veylo sends its backend only the derived result,
           such as on-campus or off-campus, a campus or zone label, and related status times. Veylo
           does not intentionally send or store exact GPS coordinates in its backend as part of that
           normal flow. Your device operating system and Apple or Google location services may process
           exact location information to provide the location result under their own terms and
           privacy practices.
+        </p>
+        <p>
+          A campus or zone label still reveals location information, sometimes within a relatively
+          small area. It is linked to your account. Campus status is an indication of presence, not
+          a live map or a guarantee that someone is still at that location.
         </p>
         <p>
           You can turn off automatic campus tracking in Veylo and can revoke location permission in
@@ -82,12 +92,37 @@
       </section>
 
       <section class="panel">
+        <h2>Campus Status Freshness And Reminders</h2>
+        <p>
+          Campus freshness is enabled by default. For a status that is not maintained by verified
+          always-on tracking, Veylo normally schedules a reminder three hours after the latest
+          confirmation and stops showing that status as current after four hours, or at midnight
+          in Brisbane, whichever comes first. A reminder is not scheduled beyond that expiry.
+          App-open location checks do not turn reminders off while the app is closed. Verified
+          always-on tracking can suppress these reminders; platform or permission failures can
+          prevent automatic checks from occurring.
+        </p>
+        <p>
+          You can confirm that you are still there, say that you have left, or dismiss a reminder.
+          Dismissing it does not extend your status. Turning off freshness reminders removes the
+          normal three-hour reminder and four-hour expiry, but the Brisbane midnight reset still
+          applies. These controls are separate from location permission and automatic tracking.
+        </p>
+        <p>
+          Expiry or leaving removes current campus presence; it does not necessarily erase the
+          last confirmed campus and time. That information may remain visible as past activity to
+          people allowed by your privacy settings. Veylo stores the confirmation, expiry and
+          reminder state needed to keep this distinction and avoid duplicate reminders.
+        </p>
+      </section>
+
+      <section class="panel">
         <h2>How We Use Information</h2>
         <p>We use information to provide app functionality, including:</p>
         <ul>
           <li>Creating and managing accounts.</li>
-          <li>Helping users choose university, campus, and degree details.</li>
-          <li>Showing campus status to accepted friends according to app privacy controls.</li>
+          <li>Helping users choose university, campus, degree, and optional study details.</li>
+          <li>Showing campus status to the audience allowed by your privacy controls.</li>
           <li>Supporting friend discovery, friend requests, messages, group chats, and campus feed posts.</li>
           <li>Reviewing profile photo submissions before they become public profile pictures.</li>
           <li>Sending optional push notifications for friend requests, messages, reactions, and campus status alerts when you allow them.</li>
@@ -104,11 +139,14 @@
           notification tokens and payloads for delivery. Apple Push Notification service and
           Google’s Firebase Cloud Messaging may then deliver those notifications to devices. Apple,
           Google, and the operating system may also provide native platform and location services.
-          Veylo’s public legal and support pages are hosted using GitHub Pages.
+          Veylo’s public legal and support pages are hosted using GitHub Pages. Expo also provides
+          app-update delivery. These services receive the network and technical information needed
+          to serve requests. Email providers process messages you send to support.
         </p>
         <p>
-          We do not sell personal information and we do not use third-party advertising SDKs in the
-          current app.
+          We do not sell personal information or use it for cross-app advertising tracking. The
+          current app does not include third-party advertising SDKs. Connections to Veylo’s backend
+          use encrypted transport. Messages are stored on the backend; they are not end-to-end encrypted.
         </p>
       </section>
 
@@ -117,27 +155,50 @@
         <p>
           If you enable notifications, Veylo stores the information needed to address and manage
           them, including an Expo push token, device type, whether the token is enabled, its
-          last-seen time, and your notification preferences. Veylo may also store an in-app
+          last-seen time, an app-generated installation identifier, cryptographic binding proof,
+          account association, and your notification preferences. Veylo may also store an in-app
           notification record containing the recipient, actor, title, body, routing information,
           read time, and related timestamps.
         </p>
         <p>
           Depending on the alert, a push notification may include a sender or actor name, a group
-          name, a campus-status event, or a preview of a message of up to approximately 80
-          characters. It may also include identifiers or links needed to open the relevant screen.
+          name, a campus-status event or status text, or a preview of a message of up to approximately
+          80 characters. A status alert can describe an activity such as being free or studying, or
+          say that a friend is at your campus when permitted by their privacy settings. It may also
+          include account, message, conversation, or event identifiers and links needed to open the
+          relevant screen.
+          A campus freshness reminder can name the campus you last confirmed and offer actions
+          to confirm your presence or say you have left. This content can also appear on your lock
+          screen, depending on your device settings.
           Veylo sends this payload through the Expo Push Service, which forwards it to Apple Push
           Notification service or Google’s Firebase Cloud Messaging. Those providers process the
-          token and notification content for delivery. Expo may temporarily hold notification
-          content in memory or delivery queues, and authorised personnel may be able to access it
-          while diagnosing a delivery problem.
+          token and notification content for delivery and delivery troubleshooting.
         </p>
         <p>
           Depending on the recipient’s device settings, notification content may appear on a lock
           screen and may be visible to anyone who can view that device. You can disable notification
           categories in Veylo or disable all Veylo notifications in your device settings. Disabling
-          notifications stops future push attempts but does not retract a notification already
+          notifications controls future delivery but does not retract a notification already
           delivered or remove information already stored on another user’s device or in their Veylo
           notification history.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Website Visits And Analytics</h2>
+        <p>
+          Our public website includes Vercel Web Analytics. On pages where the analytics script
+          loads, it measures visits using information such as the page URL, referring page, visit
+          time, approximate region, and browser, operating system, and device type. We use these
+          statistics to understand use of the website. Website hosts also process network request
+          information, including IP addresses, to serve pages.
+        </p>
+        <p>
+          This website measurement is separate from the native Veylo app. Vercel describes its
+          default analytics as using a request-derived visitor hash without third-party cookies.
+          See <a href="https://vercel.com/docs/analytics/privacy-policy">Vercel’s analytics privacy information</a>
+          for its processing practices. Do not include passwords, sign-in codes, or private account
+          information in website URLs.
         </p>
       </section>
 
@@ -145,9 +206,9 @@
         <h2>Overseas Storage And Processing</h2>
         <p>
           Veylo is operated from Australia, but some service providers process or store information
-          overseas. Veylo’s current core Supabase backend is hosted in Singapore. Push notification
+          overseas. Push notification
           information may be disclosed to or processed by Expo, Apple, Google, and their service
-          providers in the United States and other countries in which they operate. GitHub may also
+          providers in the United States and other countries in which they operate. GitHub and Vercel may also
           process standard website request information, such as an IP address and browser or device
           information, when you visit Veylo’s public legal or support pages.
         </p>
@@ -163,11 +224,16 @@
       <section class="panel">
         <h2>Sharing</h2>
         <p>
-          Veylo shares app content with other users only as needed for the social features you use,
-          such as friend connections, profile views, group membership, feed posts, messages, and
-          campus status visibility. We also share limited information with the service providers
-          described above so they can host the service, process location results supplied by the
-          device, and deliver notifications. We may disclose information if required by law, to
+          Profile and campus-feed content can be visible to other users through discovery and feed
+          features. Messages are available to the conversation’s participants. Campus status is
+          shown according to your selected audience and visibility controls, including blocking.
+          Depending on those settings, students beyond your accepted friends may see your status,
+          such as students at the same campus or university. Campus-name and zone visibility are
+          controlled separately from audience access. Your optional
+          major or specialisation is currently available to you in your own account settings, not
+          displayed to other students. Private student-email information is used for verification.
+          We also send information to the service providers described above to operate these
+          features. We may disclose information if required by law, to
           protect users, or to investigate abuse and safety issues.
         </p>
       </section>
@@ -176,19 +242,63 @@
         <h2>Profile Photos, Reports, And Moderation</h2>
         <p>
           Newly submitted profile photos are stored as private pending review items until they are
-          manually approved. Reports are routed for manual review, and blocks are used to restrict
-          contact and visibility between the people involved.
+          manually approved. A pending submission does not replace your public profile picture.
+          Once approved, a photo is published as an avatar with a public image URL; someone who has
+          that URL may access or copy it outside the app. Reports and moderation records are
+          available to authorised reviewers. Blocks restrict contact and visibility in the app,
+          but cannot recall content another person has already received or copied.
         </p>
       </section>
 
       <section class="panel">
-        <h2>Account And Data Deletion</h2>
+        <h2>Retention And Account Deletion</h2>
         <p>
-          You can delete your account directly in the app from Profile &gt; Delete account. This
-          removes your profile and associated in-app data, including your statuses, friend
-          connections, feed posts, feed comments, messages, notification tokens, and pending profile
-          photo submissions. Veylo does not claim a separate report-retention period in this beta;
-          any future retention policy will be published before it takes effect.
+          Account and social records are stored to provide the service while your account exists.
+          Status or feed expiry changes what is shown as current; it does not mean every underlying
+          record or notification has been erased. Signing out or uninstalling Veylo does not delete
+          your account.
+        </p>
+        <p>
+          Open Profile &gt; Settings &gt; Delete account to start deletion. The password flow asks
+          you to type DELETE, enter your current password, and confirm. If your sign-in method has
+          no password, use Request deletion support on that screen. If you cannot access the app,
+          use the <a href="./delete-account.html">public account-deletion page</a>.
+        </p>
+        <p>
+          Successful account deletion removes the sign-in account, profile and saved study details,
+          statuses, friend connections, your feed posts and comments, messages you sent, your chat
+          memberships, notification tokens and preferences, reports you submitted, and photo
+          submissions. It also removes the profile-photo files held in your account’s pending-photo
+          and avatar storage folders. Deletion can fail or stop partway through; an error is not a
+          confirmation that all these steps finished. Contact support if you cannot complete it.
+        </p>
+        <p>
+          Some records are not automatically erased with the account:
+        </p>
+        <ul>
+          <li>Feedback and course suggestions may remain after their account link is removed. Text you entered may still identify you.</li>
+          <li>Reports made by other people and moderation records may retain descriptions or references after account links are removed.</li>
+          <li>Shared conversation records and other participants’ messages remain. Notification records held for recipients may retain names, previews, or references even when no longer shown in their inbox.</li>
+          <li>A push-security record retains an app installation identifier, former account identifier, and a one-way binding proof to prevent delayed notification registration from attaching an installation to the wrong account. It is not erased when the notification token is deleted.</li>
+        </ul>
+        <p>
+          These remaining records have no fixed automatic deletion period. Service-provider logs,
+          backups, support correspondence, and copies already delivered to other people are not
+          all removed by the in-app deletion operation. Contact support to request review of
+          remaining personal information or to ask what can be removed. Information that must be
+          retained to meet a legal obligation may be excluded from deletion.
+        </p>
+      </section>
+
+      <section class="panel">
+        <h2>Your Choices And Requests</h2>
+        <p>
+          You can edit profile and study details, adjust privacy and notification settings, and
+          change location permissions. For access to or correction of your personal information,
+          a deletion request, or a privacy complaint, email
+          <a href="mailto:support@veylo.app">support@veylo.app</a>. Include enough information to
+          identify your account and explain your request. Ownership verification may be needed;
+          do not send your password or sign-in codes.
         </p>
       </section>
 
@@ -211,7 +321,7 @@
       </section>
 
       <footer>
-        <p class="muted">Veylo Privacy Policy. Last updated 18 August 2026.</p>
+        <p class="muted">Veylo Privacy Policy. Last updated 8 October 2026.</p>
       </footer>
     </main>
   </body>
