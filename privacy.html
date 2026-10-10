@@ -48,6 +48,8 @@
           <li>Social information, including friend requests, accepted friend connections, group names and membership, messages and read state, feed posts, feed comments, reactions, report submissions, moderation records, block lists, and related timestamps.</li>
           <li>Profile photo information, including pending profile photo submissions and approved public avatar URLs.</li>
           <li>Notification information, including Expo push tokens, device type, token status, last-seen times, notification preferences, and in-app notification records.</li>
+          <li>Friend-search text sent to the server to find matching profiles, plus search-rate-limit activity used to prevent abuse.</li>
+          <li>App-update request information, including an Expo installation identifier, platform and runtime version, and fatal-error details when the update system reports a previous app failure.</li>
           <li>Optional support and feedback information, including your message, the screen you identify, severity, app version, platform, operating system version, app ownership, and execution-environment details when you use the in-app Beta feedback form; course suggestions and account-deletion requests when you submit them.</li>
         </ul>
       </section>
@@ -140,7 +142,7 @@
           Google’s Firebase Cloud Messaging may then deliver those notifications to devices. Apple,
           Google, and the operating system may also provide native platform and location services.
           Veylo’s public legal and support pages are hosted using GitHub Pages. Expo also provides
-          app-update delivery. These services receive the network and technical information needed
+          app-update delivery, including the update request information described above. These services receive the network and technical information needed
           to serve requests. Email providers process messages you send to support.
         </p>
         <p>
@@ -305,8 +307,8 @@
       <section class="panel">
         <h2>Age Restrictions</h2>
         <p>
-          Veylo is intended for university students in Australia who are at least 16 years old,
-          including eligible students aged 16 or 17. People under 16 are not eligible to create or
+          Veylo is intended for university students in Australia who are at least 18 years old.
+          People under 18 are not eligible to create or
           keep an account. Contact <a href="mailto:support@veylo.app">support@veylo.app</a> with an
           age-related account or privacy concern. Do not email identity documents, passwords, or
           sign-in codes.
