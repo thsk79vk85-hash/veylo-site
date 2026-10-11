@@ -13,3 +13,5 @@
 
 - `[free][qa][needs-verification]` Review codex/interactive-campus-preview on physical iPhone Safari and Android Chrome: swipe versus vertical scrolling, keyboard and screen reader, reduced motion, all four screens and sample campus/status accuracy. HTML remains illustrative rather than pixel-exact native UI.
 - `[free][needs-verification]` Resolve production source choice before promotion: current Vercel production deployment dpl_CmjrjoyBKwySp1rpGGWgH3C7YGZS targets canonical legal main (37216ec), while the approved marketing site lives on codex/launch-waitlist-polish. Preserve canonical legal pages and current eligibility wording; do not overwrite main with marketing redirects.
+
+- `[free][qa][needs-verification]` Review beta-preview.html combined showcase/signup/email flow. Actual beta signup storage and invitation delivery are NOT connected. Confirm TestFlight public URL, Android group join policy and eligible region before live access; follow docs/beta-signup-preview.md for additive intent-aware registration and server-side email design. Preserve launch-only consent and never infer installation from a signup/click.
