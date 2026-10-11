@@ -19,11 +19,11 @@
 
 ## Beta signup deployment follow-ups
 
-- `[release-blocker][qa][needs-verification]` Hosted storage verified for codex/live-beta-signup; verify controlled email receipt before enabling delivery; production website promoted; invitations remain disabled pending delivery verification. Resolve marketing production source without overwriting canonical legal main.
+- `[release-blocker][qa][needs-verification]` Hosted storage verified for codex/live-beta-signup; Gmail receipt verified; confirm iCloud receipt and production-email approval before enabling delivery; production website promoted; invitations remain disabled pending delivery verification. Resolve marketing production source without overwriting canonical legal main.
 - `[qa][needs-verification]` Confirm Android group join policy/eligible region and physical iOS/Android beta flow.
 
 - `[qa][needs-verification]` Phone showcase refreshed from current app source; check physical iPhone/Android layout and compare against released native screens following production promotion.
 
 - `[qa][needs-verification]` Review screenshot-based five-tab green phone showcase on physical phones following public promotion; non-Campus screens remain illustrative.
 
-- `[qa][needs-verification]` Public beta website email delivery remains disabled pending approved test recipient and receipt check; new visitors get beta links on-screen. Production source is marketing branch; preserve canonical legal main.
+- `[qa][needs-verification]` Public beta website email delivery remains disabled pending iCloud receipt and explicit production-email approval (Gmail receipt verified); new visitors get beta links on-screen. Production source is marketing branch; preserve canonical legal main.
