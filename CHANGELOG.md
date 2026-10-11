@@ -68,3 +68,5 @@
 - Files: beta-preview.html/css/js, docs/beta-signup-preview.md, CHANGELOG.md, TODO.md. Branch codex/beta-signup-preview. Existing .gitignore Vercel change preserved separately.
 - Validation: 27 existing tests, JS syntax and diff checks passed; browser exercised Android/iPhone success and email states, independent launch intent, qut-club source, desktop and narrow layout. Physical devices/screen reader and actual delivery not tested. Preview-only deployment; no production release/invitations.
 - iOS/Android app and backend contracts unchanged. EAS Update no; new EAS Build no; Supabase migration no; Edge Function deploy no; secret change no; Vercel preview yes / production no; App Store metadata/privacy-label change no. Rollback: remove the isolated preview files; existing waitlist is unchanged.
+
+- Beta preview follow-up: user supplied https://testflight.apple.com/join/pFa6262T; browser verified Veylo Social invitation and View in TestFlight action. Replaced iPhone placeholder in success/email previews with the real link; correctly label TestFlight clicks as ios, still not installations. No real signup, invitation, acceptance or install performed.

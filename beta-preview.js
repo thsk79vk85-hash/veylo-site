@@ -16,7 +16,7 @@ const androidSteps = `<ol>
 <li>Choose <strong>Become a tester</strong>.</li>
 <li>Follow the <a data-access-link="store" href="https://play.google.com/store/apps/details?id=app.veylo" target="_blank" rel="noopener noreferrer">Play Store link</a> and install Veylo.</li></ol>
 <p class="beta-small">Testing is limited to an eligible country/region. If you can’t join, check your account, group access and Google Play eligibility.</p>`;
-const iosSteps = `<div class="beta-pending"><strong>TestFlight invitation link still needed</strong><br />This is a preview of the iPhone invitation. The real public invitation URL hasn’t been connected.</div><ol><li>Install Apple TestFlight on your iPhone.</li><li>Open Veylo’s enabled public TestFlight invitation when it’s available.</li><li>Accept the invitation and install Veylo in TestFlight.</li></ol><span class="pending-link" aria-disabled="true">Open Veylo in TestFlight — link pending</span>`;
+const iosSteps = `<ol><li>Install Apple TestFlight on your iPhone.</li><li>Open the Veylo invitation below on that phone.</li><li>In TestFlight, tap <strong>Accept</strong>, then <strong>Install</strong>.</li></ol><a class="button button-primary" data-access-link="testflight" href="https://testflight.apple.com/join/pFa6262T" target="_blank" rel="noopener noreferrer">Open Veylo in TestFlight ↗</a><p class="beta-small">This is the real Veylo Social invitation link. This demo does not register you or send an email.</p>`;
 function showTracking() {
   root.querySelector('#proposed-link').textContent = `Proposed campaign link: joinveylo.com/beta?source=${sourceInput.value}`;
   root.querySelector('#tracking-preview').textContent = proposedEvents.length ? JSON.stringify(proposedEvents, null, 2) : 'Try a signup to inspect its proposed fields.';
@@ -29,7 +29,7 @@ function selectPlatform(value) {
   platform = value;
   root.querySelectorAll('[data-platform]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.platform === value)));
   root.querySelector('#beta-email-label').textContent = value === 'android' ? 'Your Google Play email' : 'Email for your beta invitation';
-  root.querySelector('#beta-platform-note').textContent = value === 'android' ? 'Join the tester group with the Google account you use in the Play Store. Approval may be required.' : 'iPhone testing uses TestFlight. The public invitation link still needs connecting before access can be offered.';
+  root.querySelector('#beta-platform-note').textContent = value === 'android' ? 'Join the tester group with the Google account you use in the Play Store. Approval may be required.' : 'iPhone testing uses Apple TestFlight. Your next step will include the Veylo invitation link.';
   root.querySelector('.beta-submit').textContent = `Preview ${value === 'android' ? 'Android' : 'iPhone'} signup →`;
   result.hidden = true;
   emailPreview.hidden = true;
@@ -74,7 +74,7 @@ root.querySelector('#reset-launch').addEventListener('click', () => {
 });
 root.addEventListener('click', event => {
   const link = event.target.closest('[data-access-link]');
-  if (link) record('beta', 'android', 'access_link_click', { destination: link.dataset.accessLink });
+  if (link) record('beta', link.dataset.accessLink === 'testflight' ? 'ios' : 'android', 'access_link_click', { destination: link.dataset.accessLink });
 });
 // Enable forms only after their local handlers are installed. No-JS stays inert.
 root.querySelectorAll('.beta-fields').forEach(fieldset => { fieldset.disabled = false; });

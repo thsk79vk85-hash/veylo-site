@@ -10,7 +10,7 @@ The review inspector demonstrates source (direct, instagram, qut-club, campus-po
 
 Android uses the verified handoff links: https://groups.google.com/g/veylo-android-testers, https://play.google.com/apps/testing/app.veylo and https://play.google.com/store/apps/details?id=app.veylo. The handoff reports Closed testing — Alpha release 1.0.2 and one eligible country/region. The preview does not claim worldwide access. It instructs users to join the group first with the same Play Store Google account, wait for access if approval is required, open testing, choose Become a tester, then install through Google Play. Group join/approval configuration has not been independently verified in this task.
 
-The iPhone public TestFlight URL is unknown. Both success and email states display a non-clickable pending-link placeholder. No live Apple invitation is invented, and no App Store Connect API invitation integration exists.
+The user supplied https://testflight.apple.com/join/pFa6262T. Verified in the browser on 11 October: title “Join the Veylo Social beta - TestFlight - Apple” and a View in TestFlight action. Success and email previews now use this real public link. No acceptance, installation or real email was performed; no App Store Connect API invitation integration exists.
 
 ## Future implementation boundary
 
@@ -18,7 +18,7 @@ Current branch source confirms api/waitlist.js delegates to registerWaitlistEmai
 
 Before enabling a live beta endpoint:
 
-- Verify Android membership configuration and exact eligible region; supply and verify an enabled public TestFlight invitation URL.
+- Verify Android membership configuration and exact eligible region; recheck availability of the supplied TestFlight link before production promotion.
 - Design an additive, backward-compatible signup contract. Preserve existing email-only waitlist clients as launch intent. Do not silently migrate launch signups into beta or marketing.
 - Store source, platform, intent and the applicable consent wording/version; keep beta and launch intent independent even for the same address. Avoid using an email-only deduplication key to collapse distinct intentions.
 - Reuse the server-side Resend delivery boundary for an intent-specific invitation; make sending idempotent, record delivery outcome, and show the verified invitation/access instructions on success even if delivery fails. Do not expose API keys in the page. Public TestFlight links can be shared; they do not identify installed users.
