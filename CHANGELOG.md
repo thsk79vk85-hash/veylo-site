@@ -94,3 +94,5 @@
 - Fixed stale illustrative phone screens in index.html, beta.html and beta-preview.html; styles.css now reflects current app light-mode headers, status rows, Feed and Chats list. Preserved explicit carousel controls and different-campus/status examples. These are sample HTML screens, not native screenshots.
 - Branch codex/live-beta-signup. Validation: 40 Node tests pass; git diff --check passes; all four screens checked in browser at narrow width. Physical iOS/Android checks and exact native visual parity still manual.
 - CHANGELOG/TODO updated. Website-only: EAS Update required no/possible not applicable; new EAS Build no; migration, Edge Function deploy, Supabase secret, App Store metadata changes no. Vercel preview deploy required; production unchanged. Released iOS/Android clients and backend contracts unaffected. Suggested app command none. No PR.
+
+- Phone UI preview deployed READY as dpl_6cc5uvMvZXY9Kco5W45dao3DBHuC. Hosted beta.html contains exact local HTML followed by Vercel-injected content; narrow browser screenshot confirms full status card above navigation. Public site not promoted.
