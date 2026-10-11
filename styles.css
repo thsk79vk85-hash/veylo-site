@@ -125,3 +125,25 @@ img.avatar{display:block;object-fit:cover;box-shadow:0 0 0 2px #fff,0 2px 5px #1
 .hero-stage .current-app-preview #demo-campus .friend-card{min-height:58px;padding-block:8px;margin-bottom:7px}
 .current-app-preview #demo-campus .app-subtitle{margin-bottom:12px}
 .current-app-preview #demo-campus .my-status{margin-top:10px!important;padding:10px}
+/* Screenshot-matched phone proportions, retaining Veylo's green website palette. */
+.hero-stage .current-app-preview{height:650px!important;border-radius:38px;background:#f4f8f7}
+.current-app-preview .phone-status{height:50px;padding:14px 23px;font-size:12px}
+.current-app-preview .demo-panels{height:calc(100% - 139px)!important;padding:16px 14px 0!important}
+.hero-stage .current-app-preview .app-heading h2{font-size:22px;font-weight:850;letter-spacing:-.7px}
+.current-app-preview .app-heading{min-height:32px}
+.preview-app-actions{gap:12px}
+.preview-app-actions svg{width:19px;height:19px}
+.hero-stage .current-app-preview .app-subtitle{font-size:11px;margin:5px 0 25px;line-height:1.5}
+.current-app-preview .app-section-title{color:#146c63;font-weight:800;font-size:12px;margin:18px 0 12px}
+.hero-stage .current-app-preview .friend-card{border-radius:17px}
+.current-app-preview #demo-campus .my-status{margin-top:27px!important;min-height:64px;padding:12px;border-radius:17px}
+.current-app-preview .my-status small{font-size:9px;letter-spacing:0}
+.current-app-preview .my-status strong{font-size:12px;margin:3px 0}
+.current-app-preview .demo-tabs{position:absolute;bottom:20px;left:8px;right:8px;margin:0;padding:8px 6px;border-radius:22px;box-shadow:0 12px 32px #183d3714;min-height:56px}
+.current-app-preview .demo-tabs button{width:38px;min-height:38px;border-radius:50%;padding:7px}
+.current-app-preview .demo-tabs svg{width:24px;height:24px;stroke-width:1.7}
+.current-app-preview .demo-tabs button>span{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.current-app-preview .phone-home{display:none}
+.preview-profile{text-align:center;margin:20px 0}.preview-profile .avatar{width:64px;height:64px;object-fit:cover;margin:auto}.preview-profile h3{font-size:19px;margin:8px 0}.preview-profile p{font-size:11px;color:#536762}
+.preview-controls{gap:0}.preview-controls button{padding-inline:10px;font-size:11px}
+@media(max-width:480px){.hero-stage .current-app-preview .app-heading h2{font-size:21px}.preview-app-actions{gap:9px}.preview-app-actions svg{width:17px;height:17px}.preview-controls button{padding-inline:8px;font-size:10px}}

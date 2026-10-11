@@ -2,7 +2,7 @@ const stage = document.querySelector('.hero-stage');
 const screenButtons = [...document.querySelectorAll('[data-panel]')];
 const screens = [...document.querySelectorAll('.demo-panel')];
 const progress = document.querySelector('.preview-progress');
-const names = ['Campus', 'Feed', 'Friends', 'Chats'];
+const names = ['Campus', 'Feed', 'Friends', 'Chats', 'Profile'];
 let active = 0;
 function selectScreen(index) {
   active = (index + screens.length) % screens.length;

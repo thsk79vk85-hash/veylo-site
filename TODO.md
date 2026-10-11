@@ -23,3 +23,5 @@
 - `[qa][needs-verification]` Confirm Android group join policy/eligible region and physical iOS/Android beta flow.
 
 - `[qa][needs-verification]` Phone showcase refreshed from current app source; check physical iPhone/Android layout and compare against released native screens before production promotion.
+
+- `[qa][needs-verification]` Review screenshot-based five-tab green phone showcase on physical phones before public promotion; non-Campus screens remain illustrative.

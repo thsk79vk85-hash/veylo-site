@@ -96,3 +96,8 @@
 - CHANGELOG/TODO updated. Website-only: EAS Update required no/possible not applicable; new EAS Build no; migration, Edge Function deploy, Supabase secret, App Store metadata changes no. Vercel preview deploy required; production unchanged. Released iOS/Android clients and backend contracts unaffected. Suggested app command none. No PR.
 
 - Phone UI preview deployed READY as dpl_6cc5uvMvZXY9Kco5W45dao3DBHuC. Hosted beta.html contains exact local HTML followed by Vercel-injected content; narrow browser screenshot confirms full status card above navigation. Public site not promoted.
+
+## 2026-10-11 — Match supplied phone screenshot with green palette
+- Website branch codex/live-beta-signup: updated index.html, beta.html, beta-preview.html, styles.css and showcase.js. Taller phone proportions, larger rounded cards, bell/settings icons and five icon-only navigation tabs; sample Profile panel uses known app sections. Green palette retained as requested; illustrative sample profiles retained. Cache-versioned preview assets.
+- Validation: 40 website tests and diff checks passed; narrow browser layout inspected, fifth-tab navigation verified. Physical devices and native parity of non-Campus screens remain manual QA. CHANGELOG.md and TODO.md updated in website/app records. No PR.
+- Website preview deployment only. EAS Update required no/possible N/A; new EAS Build no; Supabase migration/Edge Function/secret change no; App Store metadata change no. iOS/Android app and backend contracts unchanged. Production not promoted. Suggested app command none.
