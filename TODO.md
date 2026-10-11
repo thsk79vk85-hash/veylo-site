@@ -21,3 +21,5 @@
 
 - `[release-blocker][qa][needs-verification]` Hosted storage verified for codex/live-beta-signup; verify controlled email receipt before enabling delivery; no real tester invitations or production promotion yet. Resolve marketing production source without overwriting canonical legal main.
 - `[qa][needs-verification]` Confirm Android group join policy/eligible region and physical iOS/Android beta flow.
+
+- `[qa][needs-verification]` Phone showcase refreshed from current app source; check physical iPhone/Android layout and compare against released native screens before production promotion.

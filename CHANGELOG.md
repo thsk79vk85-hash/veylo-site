@@ -88,3 +88,9 @@
 - EAS Update safe/required: not applicable/no. New EAS Build: no. Supabase migration: yes, applied. Edge Function deploy/secret change: no. Vercel website deploy/env configuration: required; admin deploy: no. App Store Connect metadata/privacy-label change: no. Suggested app command: none. Rollback disables SIGNUPS_ENABLED; preserve collected records. No PR into canonical legal main.
 
 - Follow-up verification: branch-scoped SIGNUPS_ENABLED=true, SIGNUP_EMAIL_MODE=disabled and sensitive SIGNUP_RATE_SECRET configured. Private preview dpl_ABWVNR7HkfThtKxfyTL8pTVLvqjr READY. Hosted iOS, Android and launch requests saved; database confirmed exactly one record per intent/platform after duplicate submission, all email-disabled. Synthetic example.invalid records removed. Existing Vercel credentials work at runtime despite empty downloaded values. Controlled actual email receipt still pending user-provided test recipient. Production unchanged.
+
+## 2026-10-11 — Refresh phone showcase UI
+
+- Fixed stale illustrative phone screens in index.html, beta.html and beta-preview.html; styles.css now reflects current app light-mode headers, status rows, Feed and Chats list. Preserved explicit carousel controls and different-campus/status examples. These are sample HTML screens, not native screenshots.
+- Branch codex/live-beta-signup. Validation: 40 Node tests pass; git diff --check passes; all four screens checked in browser at narrow width. Physical iOS/Android checks and exact native visual parity still manual.
+- CHANGELOG/TODO updated. Website-only: EAS Update required no/possible not applicable; new EAS Build no; migration, Edge Function deploy, Supabase secret, App Store metadata changes no. Vercel preview deploy required; production unchanged. Released iOS/Android clients and backend contracts unaffected. Suggested app command none. No PR.
