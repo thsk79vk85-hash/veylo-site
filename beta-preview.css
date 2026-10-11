@@ -15,3 +15,4 @@
 [hidden]{display:none!important}
 @media(max-width:820px){.beta-section,.invitation-section,.launch-choice{grid-template-columns:1fr;gap:28px;padding-block:45px}.beta-intro>p:not(.eyebrow){max-width:none}.beta-section h2,.invitation-section h2,.launch-choice h2{font-size:44px}}
 @media(max-width:480px){.beta-card,.launch-card{padding:22px 18px}.beta-section h2,.invitation-section h2,.launch-choice h2{font-size:37px}.email-body{padding:22px 18px}.platform-choices button{font-size:16px}.platform-choices button span{font-size:10px}.review-inspector{padding:16px}}
+.beta-result a.button-primary,.email-body a.button-primary{color:var(--paper);text-decoration:none}
