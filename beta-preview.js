@@ -15,7 +15,7 @@ const androidSteps = `<ol>
 <li>Open <a data-access-link="testing" href="https://play.google.com/apps/testing/app.veylo" target="_blank" rel="noopener noreferrer">Veylo’s Google Play testing page</a> with that account.</li>
 <li>Choose <strong>Become a tester</strong>.</li>
 <li>Follow the <a data-access-link="store" href="https://play.google.com/store/apps/details?id=app.veylo" target="_blank" rel="noopener noreferrer">Play Store link</a> and install Veylo.</li></ol>
-<p class="beta-small">Testing is limited to an eligible country/region. If you can’t join, check your account, group access and Google Play eligibility.</p>`;
+<p class="beta-small">Testing is limited to an eligible country/region. If you can’t join, check your account, group access and Google Play eligibility.</p><p>Please try the app, send us your feedback, and stay opted in for at least <strong>14 days</strong>.</p>`;
 const iosSteps = `<ol><li>Install Apple TestFlight on your iPhone.</li><li>Open the Veylo invitation below on that phone.</li><li>In TestFlight, tap <strong>Accept</strong>, then <strong>Install</strong>.</li></ol><a class="button button-primary" data-access-link="testflight" href="https://testflight.apple.com/join/pFa6262T" target="_blank" rel="noopener noreferrer">Open Veylo in TestFlight ↗</a><p class="beta-small">This is the real Veylo Social invitation link. This demo does not register you or send an email.</p>`;
 function showTracking() {
   root.querySelector('#proposed-link').textContent = `Proposed campaign link: joinveylo.com/beta?source=${sourceInput.value}`;

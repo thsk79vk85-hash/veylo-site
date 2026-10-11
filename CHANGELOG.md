@@ -70,3 +70,5 @@
 - iOS/Android app and backend contracts unchanged. EAS Update no; new EAS Build no; Supabase migration no; Edge Function deploy no; secret change no; Vercel preview yes / production no; App Store metadata/privacy-label change no. Rollback: remove the isolated preview files; existing waitlist is unchanged.
 
 - Beta preview follow-up: user supplied https://testflight.apple.com/join/pFa6262T; browser verified Veylo Social invitation and View in TestFlight action. Replaced iPhone placeholder in success/email previews with the real link; correctly label TestFlight clicks as ios, still not installations. No real signup, invitation, acceptance or install performed.
+
+- Android copy follow-up: added the user-requested feedback and at-least-14-days opt-in request to both shared success/email instructions. This is an invitation request, not a claim that a signup satisfies Play testing requirements. No invitations sent.
