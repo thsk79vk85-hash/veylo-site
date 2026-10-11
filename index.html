@@ -15,14 +15,12 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Veylo. Less where are you? More see you there. Join the waitlist." />
   <meta name="twitter:card" content="summary_large_image" />
-  <title>Veylo — Less checking in. More hanging out.</title>
+  <title>Veylo — Join the beta</title>
   <link rel="stylesheet" href="./styles.css?v=5tabs" />
   <script src="./showcase.js?v=5tabs" defer></script>
-  <script src="./waitlist.js" defer></script>
-  <script>
-    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-  </script>
-  <script defer src="/_vercel/insights/script.js"></script>
+  <script src="./signup.js" defer></script>
+  <script src="./signup-motion.js" defer></script>
+  <link rel="stylesheet" href="./beta-preview.css" />
 </head>
 <body class="marketing-page">
   <a class="skip-link" href="#main">Skip to content</a>
@@ -31,7 +29,7 @@
     <nav class="site-nav" aria-label="Main navigation">
       <a href="#how-it-works">How it works</a>
       <a href="#privacy">Your privacy</a>
-      <a class="nav-cta" href="#waitlist">Join the waitlist <span aria-hidden="true">↗</span></a>
+      <a class="nav-cta" href="#beta">Explore the beta <span aria-hidden="true">↗</span></a>
     </nav>
   </header>
   <main id="main">
@@ -41,10 +39,10 @@
         <h1 id="hero-title">Less <span class="quoted">“where are you?”</span><br /> More <em>“see you there.”</em></h1>
         <p class="hero-lead">See which friends are on campus, find out who’s free, and make plans between classes.</p>
         <div class="hero-actions">
-          <a class="button button-primary" href="#waitlist">Join the waitlist <span aria-hidden="true">↗</span></a>
+          <a class="button button-primary" href="#beta">Explore the beta <span aria-hidden="true">↗</span></a>
           <a class="text-link" href="#how-it-works">Take a look <span aria-hidden="true">↓</span></a>
         </div>
-        <p class="hero-note">Free to join · Coming to iPhone and Android</p>
+        <p class="hero-note">Beta access · iPhone and Android</p>
       </div>
       <div class="hero-stage" role="region" aria-label="Explore Veylo app previews" aria-roledescription="carousel">
         <div class="preview-controls" aria-label="Choose a preview screen">
@@ -103,15 +101,34 @@
     <section class="launch-faq section-shell" aria-labelledby="launch-questions">
       <div><p class="eyebrow">GOOD TO KNOW</p><h2 id="launch-questions">A few quick things.</h2></div>
       <div class="launch-answers">
-        <details><summary>Is Veylo out yet?<span aria-hidden="true">+</span></summary><p>Not just yet. We’re getting it ready for launch. Join the waitlist and we’ll email you when it’s available.</p></details>
+        <details><summary>Is Veylo out yet?<span aria-hidden="true">+</span></summary><p>Veylo is being tested before its full release. Explore the beta signup below, or choose a launch notification if you’d rather wait.</p></details>
         <details><summary>Is it coming to my uni?<span aria-hidden="true">+</span></summary><p>We’re starting with QUT, UQ and Griffith, with plans to bring Veylo to more unis later.</p></details>
         <details><summary>Will it work on my phone?<span aria-hidden="true">+</span></summary><p>Veylo is coming to both iPhone and Android.</p></details>
       </div>
     </section>
-    <section id="waitlist" class="waitlist-section section-shell" aria-labelledby="waitlist-title">
-      <div class="waitlist-heading"><p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> SOMETHING TO LOOK FORWARD TO</p><h2 id="waitlist-title">Your next<br /> <em>“see you there”</em><br /> starts here.</h2></div>
-      <div class="waitlist-content"><h3>Make your next gap a good one.</h3><p>Join the waitlist and we’ll email you when Veylo launches.</p><p class="launch-detail">Starting with <strong>QUT, UQ and Griffith.</strong><br />Coming to iPhone and Android.</p><form id="waitlist-form" class="waitlist-form" novalidate><label for="waitlist-email">Your email address</label><div class="input-row"><input id="waitlist-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required aria-describedby="waitlist-message waitlist-note" /><button class="button button-primary" type="submit">Join the waitlist</button></div><div class="honeypot" aria-hidden="true"><label for="company">Company</label><input id="company" name="company" type="text" tabindex="-1" autocomplete="off" /></div><p id="waitlist-message" class="form-message" aria-live="polite"></p><p id="waitlist-note" class="form-note">Just your email. We’ll let you know when it’s time.</p></form></div>
+    <section id="beta" class="beta-section section-shell" aria-labelledby="beta-title">
+      <div class="beta-intro"><p class="eyebrow">YOUR NEXT “SEE YOU THERE” STARTS HERE</p><h2 id="beta-title">A little early.<br /><em>A lot to discover.</em></h2><p>Try Veylo with your mates. Find out who’s around, make a plan, and help us make campus life a little more social.</p><p class="beta-scope">For university students aged 18+ in Australia. Starting with QUT, UQ and Griffith.</p></div>
+      <div class="beta-card">
+        <p class="eyebrow">EARLY ACCESS</p><h3>Which phone do you use?</h3>
+        <form id="beta-form">
+          <fieldset class="beta-fields" disabled>
+            <legend class="visually-hidden">Beta signup</legend>
+            <div class="platform-choices" role="group" aria-label="Choose your beta platform"><button type="button" data-platform="ios" aria-pressed="false">iPhone<span>TestFlight</span></button><button type="button" data-platform="android" aria-pressed="true">Android<span>Google Play testing</span></button></div>
+            <p id="beta-platform-note" class="beta-small">Join the tester group with the Google account you use in the Play Store. Approval may be required.</p>
+            <label id="beta-email-label" for="beta-email">Your Google Play email</label><input id="beta-email" name="email" type="email" autocomplete="off" placeholder="you@example.com" required aria-describedby="beta-use-note" />
+            <p id="beta-use-note" class="beta-small">For beta access and testing support only. This doesn’t join the launch list or general marketing.</p>
+            <button class="button button-primary beta-submit" type="submit">Get Android beta access <span aria-hidden="true">→</span></button>
+          <div class="honeypot" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off" /></label></div></fieldset><p class="form-message" role="alert"></p>
+        </form>
+        <noscript><p>Enable JavaScript to sign up.</p></noscript>
+        <section id="beta-result" class="beta-result" hidden aria-labelledby="beta-result-title"><p class="eyebrow">YOU’RE ON THE LIST</p><h3 id="beta-result-title">Your next step</h3><p class="beta-result-message" role="status"></p><div id="beta-next-steps"></div><div class="beta-result-actions"><button type="button" id="reset-beta" class="beta-text-button">Try another signup</button></div></section>
+      </div>
     </section>
+    <section id="waitlist" class="launch-choice section-shell" aria-labelledby="waitlist-title">
+      <div><p class="eyebrow">NO RUSH</p><h2 id="waitlist-title">Prefer to wait for<br /><em>the full release?</em></h2><p>Leave your email and we’ll email you when Veylo launches.</p><p class="beta-small">Launch notification only. You won’t be added to beta testing or general marketing.</p></div>
+      <div class="launch-card"><form id="launch-preview-form"><fieldset class="beta-fields" disabled><legend class="visually-hidden">Launch notification</legend><label for="launch-email">Email for your launch notification</label><input id="launch-email" type="email" name="email" autocomplete="off" placeholder="you@example.com" required /><label for="launch-platform">Your phone <span class="optional">(optional)</span></label><select id="launch-platform"><option value="unspecified">Prefer not to say</option><option value="ios">iPhone</option><option value="android">Android</option></select><button class="button button-primary" type="submit">Notify me at launch <span aria-hidden="true">→</span></button><div class="honeypot" aria-hidden="true"><label>Company<input name="company" tabindex="-1" autocomplete="off" /></label></div></fieldset><p class="form-message" role="alert"></p></form><div id="launch-result" hidden><p class="eyebrow">YOU’RE ON THE LIST</p><h3>Something to look forward to.</h3><p role="status"></p><button type="button" id="reset-launch" class="beta-text-button">Try another signup</button></div></div>
+    </section>
+
   </main>
   <footer class="site-footer section-shell"><div class="footer-top"><a class="brand" href="#top" aria-label="Veylo home">veylo<span class="brand-dot" aria-hidden="true"></span></a><p>A little more connection between classes.</p><a class="back-top" href="#top" aria-label="Back to top">↑</a></div><div class="footer-bottom"><span>© 2026 Veylo · Built for university life · Preview portraits: Pexels</span><nav aria-label="Legal and support"><a href="https://thsk79vk85-hash.github.io/veylo-site/privacy.html">Privacy Policy</a><a href="https://thsk79vk85-hash.github.io/veylo-site/terms.html">Terms of Service</a><a href="./support.html">Support</a></nav></div></footer>
 </body>

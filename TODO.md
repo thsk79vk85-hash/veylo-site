@@ -25,3 +25,5 @@
 - `[qa][needs-verification]` Phone showcase refreshed from current app source; check physical iPhone/Android layout and compare against released native screens before production promotion.
 
 - `[qa][needs-verification]` Review screenshot-based five-tab green phone showcase on physical phones before public promotion; non-Campus screens remain illustrative.
+
+- `[qa][needs-verification]` Public beta website email delivery remains disabled pending approved test recipient and receipt check; new visitors get beta links on-screen. Production source is marketing branch; preserve canonical legal main.

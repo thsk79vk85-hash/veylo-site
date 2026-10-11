@@ -9,6 +9,11 @@
       "source": "/terms.html",
       "destination": "https://thsk79vk85-hash.github.io/veylo-site/terms.html",
       "permanent": false
+    },
+    {
+      "source": "/delete-account.html",
+      "destination": "https://thsk79vk85-hash.github.io/veylo-site/delete-account.html",
+      "permanent": false
     }
   ]
 }

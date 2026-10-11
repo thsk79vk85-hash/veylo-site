@@ -20,15 +20,17 @@ test('describes real app features without precise proximity claims', () => {
 });
 
 test('includes an accessible launch waitlist form', () => {
-  assert.match(html, /<form[^>]+id="waitlist-form"/);
-  assert.match(html, /<label[^>]+for="waitlist-email"/);
-  assert.match(html, /<input[^>]+id="waitlist-email"[^>]+type="email"/);
+  assert.match(html, /<form[^>]+id="launch-preview-form"/);
+  assert.match(html, /<label[^>]+for="launch-email"/);
+  assert.match(html, /<input[^>]+id="launch-email"[^>]+type="email"/);
   assert.match(html, /aria-live="polite"/);
 });
 
 test('explains planned launch scope without promising immediate access', () => {
   assert.match(html, /email you when Veylo launches/);
   assert.match(html, /QUT, UQ and Griffith/);
-  assert.match(html, /Coming to iPhone and Android/);
-  assert.doesNotMatch(html, /Join the beta|BE PART OF THE BETA/);
+  assert.match(html, /iPhone and Android/);
+  assert.match(html, /id="beta-form"/);
+  assert.match(html, /aged 18\+ in Australia/);
+  assert.doesNotMatch(html, /noindex,nofollow/);
 });
