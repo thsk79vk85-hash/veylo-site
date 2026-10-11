@@ -78,3 +78,11 @@
 - Added one-shot scroll reveals, short success/email transitions, animated platform/button states, subtle card depth and success checkmarks. Preserves readable content without JavaScript; reduced-motion disables transitions and cancels active reveal animations if the preference changes. No autoplay, looping motion, signup or email behavior changes.
 - Files: beta-preview.css/js, CHANGELOG.md, TODO.md. Branch codex/beta-signup-preview. Validation: 27 existing tests, JavaScript syntax and diff checks passed; browser demo submission/success checked. Physical devices and OS reduced-motion runtime remain manual QA.
 - Deployment: Vercel preview only; no production. iOS/Android native app and backend contracts unchanged. No EAS Update/build, Supabase migration/function/secret or App Store metadata changes. Rollback: revert motion-only CSS/JS additions.
+
+## 2026-10-11 — Intent-aware beta signup setup
+
+- Website branch: codex/live-beta-signup. Added beta.html, signup.js, signup-motion.js, api/signup.js, lib/signup.mjs, signup tests and migration 20261011050938_add_signup_intents.sql. Separate beta/launch consent, platform/source tracking, transactional duplicate protection, hashed-IP rate limits and Resend idempotency. Existing launch waitlist remains compatible.
+- Migration applied and table/RPC existence verified in Veylo Waitlist project yohiumlrpfdhphsnnxxw. RLS enabled; only service_role can access new tables/RPCs. Main app backend and all released iOS/Android clients unaffected.
+- Deployment order: additive migration (done), branch-scoped preview configuration, preview verification, controlled email receipt, then separately approved production source selection/promotion. Email defaults disabled; production unchanged.
+- Validation: 40 Node tests passed; syntax and diff checks passed. Hosted signup/email receipt and physical iOS/Android QA still need verification. No app typecheck/lint/expo-doctor applicable.
+- EAS Update safe/required: not applicable/no. New EAS Build: no. Supabase migration: yes, applied. Edge Function deploy/secret change: no. Vercel website deploy/env configuration: required; admin deploy: no. App Store Connect metadata/privacy-label change: no. Suggested app command: none. Rollback disables SIGNUPS_ENABLED; preserve collected records. No PR into canonical legal main.
