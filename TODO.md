@@ -10,3 +10,6 @@
 ## App Store readiness
 
 - `[app-store][qa]` Keep future legal amendments on the canonical GitHub Pages `main` documents and verify the marketing/app links after publishing. Do not reinstate separate legal-text copies on the marketing branch.
+
+- `[free][qa][needs-verification]` Review codex/interactive-campus-preview on physical iPhone Safari and Android Chrome: swipe versus vertical scrolling, keyboard and screen reader, reduced motion, all four screens and sample campus/status accuracy. HTML remains illustrative rather than pixel-exact native UI.
+- `[free][needs-verification]` Resolve production source choice before promotion: current Vercel production deployment dpl_CmjrjoyBKwySp1rpGGWgH3C7YGZS targets canonical legal main (37216ec), while the approved marketing site lives on codex/launch-waitlist-polish. Preserve canonical legal pages and current eligibility wording; do not overwrite main with marketing redirects.
