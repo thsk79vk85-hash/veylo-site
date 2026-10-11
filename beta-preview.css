@@ -16,3 +16,16 @@
 @media(max-width:820px){.beta-section,.invitation-section,.launch-choice{grid-template-columns:1fr;gap:28px;padding-block:45px}.beta-intro>p:not(.eyebrow){max-width:none}.beta-section h2,.invitation-section h2,.launch-choice h2{font-size:44px}}
 @media(max-width:480px){.beta-card,.launch-card{padding:22px 18px}.beta-section h2,.invitation-section h2,.launch-choice h2{font-size:37px}.email-body{padding:22px 18px}.platform-choices button{font-size:16px}.platform-choices button span{font-size:10px}.review-inspector{padding:16px}}
 .beta-result a.button-primary,.email-body a.button-primary{color:var(--paper);text-decoration:none}
+
+/* Motion polish: all content remains visible without JavaScript or animation. */
+.beta-card{background:linear-gradient(135deg,#e4edde,#d7e5d9);box-shadow:0 18px 50px #183d370b;border:1px solid #cbdac9}
+.email-preview{box-shadow:0 20px 55px #183d3710}
+.platform-choices button,.beta-card .button,.launch-card .button,.email-body .button,.preview-controls button,.preview-arrow{transition:transform .22s ease,background-color .25s ease,box-shadow .25s ease,color .25s ease}
+.platform-choices button[aria-pressed=true]{box-shadow:0 6px 16px #183d3725}
+.beta-card input,.launch-card input,.launch-card select{transition:box-shadow .2s ease,border-color .2s ease}
+.beta-card input:focus,.launch-card input:focus{box-shadow:0 0 0 5px #183d370a}
+.beta-result:before,#launch-result:before{content:'✓';display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:var(--ink);color:var(--paper);font-size:22px;margin-bottom:18px}
+@media(hover:hover) and (pointer:fine){.platform-choices button:hover,.beta-card .button:hover,.launch-card .button:hover,.email-body .button:hover{transform:translateY(-3px);box-shadow:0 9px 22px #183d371c}.preview-arrow:hover{transform:translateY(-2px)}}
+.platform-choices button:active,.beta-card .button:active,.launch-card .button:active,.preview-arrow:active{transform:scale(.98)}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*:before,*:after{animation:none!important;transition:none!important}.platform-choices button:hover,.beta-card .button:hover,.launch-card .button:hover,.email-body .button:hover,.preview-arrow:hover,.platform-choices button:active,.beta-card .button:active,.launch-card .button:active,.preview-arrow:active{transform:none}}
+.beta-card:has(#beta-result:not([hidden]))>h3,.beta-card:has(#beta-result:not([hidden]))>.eyebrow{display:none}

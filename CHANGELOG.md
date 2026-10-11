@@ -72,3 +72,9 @@
 - Beta preview follow-up: user supplied https://testflight.apple.com/join/pFa6262T; browser verified Veylo Social invitation and View in TestFlight action. Replaced iPhone placeholder in success/email previews with the real link; correctly label TestFlight clicks as ios, still not installations. No real signup, invitation, acceptance or install performed.
 
 - Android copy follow-up: added the user-requested feedback and at-least-14-days opt-in request to both shared success/email instructions. This is an invitation request, not a claim that a signup satisfies Play testing requirements. No invitations sent.
+
+## 2026-10-11 — Add motion to combined beta preview
+
+- Added one-shot scroll reveals, short success/email transitions, animated platform/button states, subtle card depth and success checkmarks. Preserves readable content without JavaScript; reduced-motion disables transitions and cancels active reveal animations if the preference changes. No autoplay, looping motion, signup or email behavior changes.
+- Files: beta-preview.css/js, CHANGELOG.md, TODO.md. Branch codex/beta-signup-preview. Validation: 27 existing tests, JavaScript syntax and diff checks passed; browser demo submission/success checked. Physical devices and OS reduced-motion runtime remain manual QA.
+- Deployment: Vercel preview only; no production. iOS/Android native app and backend contracts unchanged. No EAS Update/build, Supabase migration/function/secret or App Store metadata changes. Rollback: revert motion-only CSS/JS additions.
