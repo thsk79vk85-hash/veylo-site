@@ -20,7 +20,7 @@
 
 ## EAS/deployment follow-ups
 
-- `[qa][needs-verification]` 17 October 2026 — Complete and record exact-source production-target staging, non-mutating hosted checks and tested-build promotion for the isolated contact correction on codex/public-support-contact, never the unfinished launch-list consolidation branch. Use docs/2026-10-17-contact-release.md for current release state; preserve production signup/email/config bytes and all existing flags. No EAS Update/build, Supabase migration/function/secret/admin/store change applies. Physical mailto/app-to-site acceptance remains required after web release.
+- `[qa][needs-verification]` 17 October 2026 — Preserve the newly verified contact-only production source0baab74/builddpl_81afMJgSr7sdpJFTAgvSaH9SBwuL in future website releases; merge its exact contact correction into any cumulative candidate without activating unfinished D2 migration paths. Staging/promotion/public checks are complete, detailed in docs/2026-10-17-contact-release.md. Remaining work is physical mailto/app-to-site QA and broader legal/operational publication, not repeating this deploy. No EAS Update/build, Supabase migration/function/secret/admin/store change applies to the contact fix.
 
 ## Beta signup deployment follow-ups
 

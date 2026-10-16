@@ -11,7 +11,7 @@ version or native update is authorized or performed by this contact-only slice.
 
 Vercel authenticated17October production list: team
 team_7JJ5glFkwoswn9JPoljpQvol, projectprj_8w6OsKo0Z7A7YuIc4DyNEWq0M5e4,
-nameveylo-site-preview, current productionREADYdpl_EgjCKrxUah9umPcCkmuftUBxBiSY,
+nameveylo-site-preview, pre-release productionREADYdpl_EgjCKrxUah9umPcCkmuftUBxBiSY,
 source708b176e098f3d4873676aa8ae9b09b90d5e9000, branchcodex/live-beta-signup.
 Latest preview is a different deployment and was not mistaken for production.
 
@@ -32,21 +32,71 @@ legal documents are deliberately not misrepresented as comprehensively updated.
 ## Verification and rollout
 
 - Production-source baseline `npm run check`:40/40pass,0fail/skip/cancel.
-- Ported-source full/focused tests, whitespace and exact-byte/source-scope checks:
-  pending at preparation. No TypeScript/lint scripts or native/Expo change.
+- Ported source `npm run check`:44/44pass,0fail/skip/cancel; includes4reviewed
+  contact tests. Whitespace/exact5-path scope checks pass. Page and test blob IDs
+  match347389f; all other production source bytes unchanged. No TypeScript/lint
+  scripts or native/Expo change.
 - Existing Vercel CLI54.21.1 authenticated as the intended account; no credential
   read/export/login change. Help output exit2 is usage behavior, not a deployment.
   An advertised newer CLI was not installed.
-- Stage using existing project/team and production environment, **skip domain
-  assignment**. Inspect actual candidate project/target/commit and readiness.
-- Before promotion, verify candidate support contacts/subject, homepage/API/
-  library/config/static bytes and legal redirect destinations without submitting
-  signup/support mail or changing any flag. Stop if production moved meanwhile.
-- Promote only the exact staged/tested build, not a rebuilt preview. Independently
-  verify actual public route and production alias/deployment afterward.
+- Staged production-target READYdpl_81afMJgSr7sdpJFTAgvSaH9SBwuL with
+  `--prod --skip-domain`, exact source0baab74af58b72072ac14c95287487fde47c6c26.
+  Raw read-only deployment metadata confirms project/team/target/source/base/
+  reviewed-contact refs. GitSource is null for this local CLI upload, not a
+  claimed GitHub push. All46actual uploaded source paths/SHA1content hashes match
+  the committed artifact; manifest SHA256:
+  49f9b185586c43b4f48588835a2baf3943cef7c76f40efcc648ff59d27860784.
+- Staging assigned the generic project Vercel alias only; joinveylo.com/www and
+  the shorter project alias remained on the old build until promotion. Fresh
+  filtered alias readback confirmed that immediately before promotion. Clean
+  exact source was still a descendant of708b176; no intervening change ignored.
+- Authenticated candidate GETs: support, homepage, CSS and signup.js exactly
+  match source; both API GETs405; privacy/terms/deletion307locations unchanged.
+  No signup, mailto activation, POST or email sent. Existing production variables
+  reused; no environment flag, secret or provider setting was changed.
+- Promoted that exact staged build, without rebuild. Public9route checks passed:
+  same4source bodies,2method guards and3canonical legal redirects. Filtered alias
+  readback puts joinveylo.com/www/shortproject alias on the tested deployment.
+  Public browser confirms both corrected display/mailto contacts and subject.
+  These observations were complete by2026-10-16T15:45:21Z (17OctoberBrisbane).
+- Public support SHA256:
+  6b1bc63cc9d4459dd5996b35a985f69fdf296f66986d3f6c053f1011f09cdf5f.
+  Full-page desktop JPEG saved outside the repo as
+  /private/tmp/veylo-support-release.dcSNRf/public-support-contact-2026-10-17.jpg,
+  SHA25664d54bff8cd80ee7704a43189fbc1a1838d12a9bf778a8216b1450b00c749ddb.
+- Exact-deployment production error/fatal aggregation for the20minute lookback
+  returned no groups. This is a bounded observation, not proof of permanent
+  error-free operation. Drains were not rechecked; broader monitoring/retention
+  and human operations remain gaps, not silently configured by this release.
 
-Candidate/deployment/promotion/public proof: **not yet performed at preparation**.
-Do not count this file or local tests as a public-release result.
+**Contact-only public release verified.** This follow-up changes records only;
+the deployed source remains0baab74 and needs no second deployment.
+
+### Diagnostic qualifications
+
+- Initial dry scanner over-rejected the unchanged tracked `.env.example`.
+  The orchestration wrongly continued staging after that nonzero guard; do not
+  hide this ordering error. Before promotion, exact-template inspection proved
+  all values are placeholders/empty, and the full46file hash/source check passed.
+  No actual credentials/private files were uploaded. Future dependent external
+  actions explicitly check the preceding result; promotion did so.
+- MCP's simplified deployment metadata omitted custom refs and its source listing
+  omitted4doc filenames. Raw read-only APIs resolved both, all46hashes matched.
+  No omitted filename or empty simplified metadata was accepted as full proof.
+- Unauthenticated curl followed protection to a Vercel Login200, not app content.
+  A Buffer equality assertion tried an oversized diff and exited137; no content
+  equality was claimed from that failure. Subsequent string/hash/length checks
+  avoid dumping the body. Initial sandbox DNS failure was an access limitation.
+- Existing authenticated `vercel curl` initially needed local linkage. Only
+  ignored non-secret project IDs were saved; no `.env` was pulled. Its optional
+  scope flag was forwarded to native curl; omitting that redundant flag resolved
+  the CLI parsing failure. The successful requests used pinned deployment/project
+  identity. No protection setting was disabled or share-link tool requested;
+  CLI authentication internals were not independently audited.
+- Cloud build used Vercel CLI64.0.2 and emitted an npm cache-dir warning; local
+  CLI54.21.1 was not upgraded. Tests passed, but cloud output was not pristine.
+  An alias response unexpectedly included an old expired bypass field in tool
+  output; it is omitted from all records and subsequent alias output is filtered.
 
 ## Compatibility, remaining QA and rollback
 
@@ -59,7 +109,7 @@ deletion-completion acceptance. No message is sent by this release.
 
 EAS Update possible/required:no; new EAS Build:no. Supabase migration, Edge
 Function, secret change, admin and App Store metadata/privacy-label change:none.
-Vercel website release:required to publish. Physical iPhone Safari and Android
+Vercel website release:completed for this contact correction. Physical iPhone Safari and Android
 Chrome/default mail client/app-to-site navigation remain untested. No assumed
 new retention period, all-copy erasure, age assurance or legal certification.
 

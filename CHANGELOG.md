@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-10-17 — Publish and verify the isolated support contact
+
+- Deployed source0baab74af58b72072ac14c95287487fde47c6c26 as production-target
+  READYdpl_81afMJgSr7sdpJFTAgvSaH9SBwuL, verified candidate, then promoted the
+  exact build. Actual public support now displays/links support@joinveylo.com
+  twice. Signup/API/library/config/legal/artwork source remains previous
+  production708b176; dormant D2 migrations/code were not included or activated.
+- 44/44local tests,46actual uploaded source-path/hash comparisons, candidate and
+  public9route/source/405guard/307redirect checks passed. Public browser and saved
+  desktop screenshot verify contacts/subject. Pinned20minute error/fatal scan
+  returned no groups; ongoing monitoring/drains/retention not certified.
+- Only CHANGELOG/TODO/release receipt change in this follow-up; no redeploy is
+  needed for records. Full source identity, diagnostic/guard-order error and
+  recovery, cloud npm warning and manual QA are retained in the receipt. No
+  secret/private file upload, signup, new email, data mutation or setting change.
+- EAS Update possible/required no; new EAS Build no; migration/Edge Function/
+  secret/admin/store metadata change no. Vercel website release completed only.
+  iOS/Android native and backend contracts unchanged; physical mailto/app-to-site
+  QA remains. No PR/push/merge; rollback inspects newer changes first and never
+  overwrites unrelated signup work. Full legal/app release is still gated.
+
 ## 2026-10-17 — Isolate reviewed support contact for release
 
 - Ported only the independently reviewed contact correction from347389f onto freshly verified production708b176, branch codex/public-support-contact. Both support.html mailto/display contacts now use support@joinveylo.com and preserve the existing subject. The runtime page and focused test blobs match the reviewed source exactly; all existing signup/API/library/config/legal/artwork files stay at production bytes. No launch-list consolidation files, migration, consent changes or new email behavior are included.
