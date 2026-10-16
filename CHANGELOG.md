@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-10-17 — Isolate reviewed support contact for release
+
+- Ported only the independently reviewed contact correction from347389f onto freshly verified production708b176, branch codex/public-support-contact. Both support.html mailto/display contacts now use support@joinveylo.com and preserve the existing subject. The runtime page and focused test blobs match the reviewed source exactly; all existing signup/API/library/config/legal/artwork files stay at production bytes. No launch-list consolidation files, migration, consent changes or new email behavior are included.
+- Files: support.html, tests/support-contact.test.mjs, CHANGELOG.md, TODO.md and docs/2026-10-17-contact-release.md. The existing consolidation checkout remains unchanged. A normal no-commit cherry-pick conflicted only on accumulated CHANGELOG context; resolution keeps production history and this scoped entry, not unrelated D2 records. No private address/body/credential is copied.
+- Approval: John's17October delegated instruction authorizes input-free release preparation/actions; this contact was already specifically approved. Support mailbox send/receive/human acknowledgment was independently verified17October in10m26s, not full response/backup/deletion acceptance. No new email send.
+- Validation: production baseline40/40 passed. Ported-source full checks and exact-byte/source-scope checks are recorded in the receipt. No TypeScript/lint/Expo/native change; physical iPhone Safari/Android Chrome mailto/app navigation remains manual QA.
+- Compatibility: all native iOS/Android and backend contracts unchanged, including previously recorded iOS1.0.2/build1.0.20, Android1.0.2/code4 and retained1.0.1. The public website contact change needs no client adoption or backend migration, and does not certify installed-client inventory.
+- Deployment: EAS Update possible/required no, new EAS Build no; Supabase migration/Edge Function/secret/admin/store metadata change no; Vercel website release required. Stage exact production-target candidate without domain assignment, verify unchanged application files and corrected contacts, then promote only that tested build after a fresh production-identity check. No release claimed until the dated receipt confirms it. Rollback must preserve newer website work; no user data erased.
+
 ## 2026-09-09 — Connect Joinveylo.com to the launch waitlist
 
 - Changed only GoDaddy apex website A record from WebsiteBuilder Site to 216.198.79.1 and www CNAME from joinveylo.com to f5a5067f330ba589.vercel-dns-017.com; TTL remains one hour. Nameservers, auth CNAME, MX and TXT records preserved. Both domains verified as correctly configured by Vercel. www redirects to https://joinveylo.com/ with 308.

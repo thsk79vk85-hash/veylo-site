@@ -9,6 +9,7 @@
 
 ## App Store readiness
 
+- `[app-store][qa][needs-verification]` 17 October 2026 — Verify both hosted `support.html` contacts and `Veylo Support` mailto subject on physical iPhone Safari and Android Chrome/default mail clients, including app-to-site navigation, after the isolated contact release. The separate single support mailbox receive/human reply test is verified10m26s; ongoing under48h response/backup/urgent/deletion operations are still open. Full canonical D3/D5 publication and independent D1 facts remain open.
 - `[app-store][qa]` Keep future legal amendments on the canonical GitHub Pages `main` documents and verify the marketing/app links after publishing. Do not reinstate separate legal-text copies on the marketing branch.
 
 - `[free][qa][needs-verification]` Review codex/interactive-campus-preview on physical iPhone Safari and Android Chrome: swipe versus vertical scrolling, keyboard and screen reader, reduced motion, all four screens and sample campus/status accuracy. HTML remains illustrative rather than pixel-exact native UI.
@@ -16,6 +17,10 @@
 
 - `[free][qa][needs-verification]` Review beta-preview.html combined showcase/signup/email flow. beta-preview.html remains a mock; beta.html now has a real server integration with additive migration applied. Hosted signup and email delivery still need verification. TestFlight public URL supplied and browser-verified; confirm Android group join policy and eligible region before live access; follow docs/beta-signup-preview.md for additive intent-aware registration and server-side email design. Preserve launch-only consent and never infer installation from a signup/click.
 - `[free][qa]` Review combined beta preview motion on physical iOS/Android, including OS Reduce Motion switched during a reveal, keyboard focus, and signup/email transitions. No production promotion or live delivery authorized.
+
+## EAS/deployment follow-ups
+
+- `[qa][needs-verification]` 17 October 2026 — Complete and record exact-source production-target staging, non-mutating hosted checks and tested-build promotion for the isolated contact correction on codex/public-support-contact, never the unfinished launch-list consolidation branch. Use docs/2026-10-17-contact-release.md for current release state; preserve production signup/email/config bytes and all existing flags. No EAS Update/build, Supabase migration/function/secret/admin/store change applies. Physical mailto/app-to-site acceptance remains required after web release.
 
 ## Beta signup deployment follow-ups
 
