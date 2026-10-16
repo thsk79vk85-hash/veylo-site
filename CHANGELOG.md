@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-10-17 — Recover and verify contact-release source history
+
+- Recovered13missing historical trees from the confirmed public live-beta-signup
+  ancestry using a non-negotiated fetch; no ancestor rewriting, checkout reset,
+  push or runtime change. Published source remains0baab74/builddpl_81afMJgSr7sdpJFTAgvSaH9SBwuL.
+- Complete235477-byte backup through record commit82da1e8 verified, then restored
+  into an independent bare repository with matching source commit/tree and no
+  missing/corrupt object. Shared repository's pre-existing unrelated main-worktree
+  HEAD error remains explicitly qualified in docs/2026-10-17-contact-release.md.
+- Files: release receipt, CHANGELOG.md and TODO.md only. No user-visible/backend
+  behavior change; no PR. Existing44/44contact-source checks are unchanged, not
+  rerun for prose. New validation: zero reachable missing objects, bundle verify,
+  independent restore/connectivity/hash checks and whitespace. Physical QA open.
+- EAS Update safe/required no; new EAS Build no; Supabase migration/Edge Function/
+  secret, Vercel/admin deploy and App Store metadata/privacy-label change no.
+  No deployment/rollback required; keep verified source backups before cleanup.
+
 ## 2026-10-17 — Publish and verify the isolated support contact
 
 - Deployed source0baab74af58b72072ac14c95287487fde47c6c26 as production-target

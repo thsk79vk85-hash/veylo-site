@@ -100,6 +100,39 @@ the deployed source remains0baab74 and needs no second deployment.
 
 ## Compatibility, remaining QA and rollback
 
+### Later source-history recovery — 17 October
+
+The first complete-history backup failed on a missing older tree; the exact
+47-file82da1e8 source archive was preserved as a fallback, not claimed as full
+history. Subsequent read-only GitHub metadata confirmed the public website repo
+and its actual branches. Ordinary main/all-branch fetches left13missing trees:
+their commits were already locally known, so normal fetch negotiation omitted
+the incomplete trees. Each was mapped to the published live-beta-signup ancestry.
+One supported `git fetch --refetch` of that exact branch recovered them without
+rewriting commits, resetting checkouts, pushing or deploying. New recovery refs
+are isolated under refs/remotes/website-recovery-20261017.
+
+The release branch's reachable missing-object count is now0. A235477-byte bundle
+records complete history through82da1e8f5e4fd2070ce3c8c92febe8128db440c9;
+`git bundle verify` passed. SHA256:
+18cd138f4602c283da1e746260b682ca708674c651e7a8bbbf731ff209b60476.
+An independent bare restore from that bundle passed object/connectivity checks
+and matched the exact commit and treeb9a660e336b9761452d0738da41234382d57941c.
+Its default HEAD is an unborn main, reported as a notice, not a missing object.
+The original shared repository's broader fsck still exits8 solely for its
+pre-existing main-worktree detached HEAD pointing at nothing; that unrelated
+checkout was not reset or silently repaired. A process-list diagnostic was
+unavailable in the sandbox; successful object, bundle and restore checks provide
+the recovery evidence instead. An initial wildcard-only fetch had an invalid
+refspec and made no network change; no failed check is called a pass.
+
+The bundle and original verified source archive are retained in the app's
+private publication-plan workspace; preserve/export them before eventual cleanup.
+The contact branch remains otherwise unchanged, and the separate D2 checkout
+remains clean at5e67219. No runtime file, deployment, subscriber, provider setting,
+email or release gate changed. This records a recoverable release source, not
+repository-wide health, GitHub integration or full legal publication.
+
 Website HTML contact only. iOS/Android native clients, all shared RPC/auth/session/
 database/Storage and signup API/email contracts are unchanged. Previously known
 iOS1.0.2/build1.0.20, Android1.0.2/code4 and retained1.0.1 still need broader

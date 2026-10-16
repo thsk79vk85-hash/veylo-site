@@ -20,6 +20,14 @@
 
 ## EAS/deployment follow-ups
 
+- `[qa][needs-verification]` 17 October2026 — Preserve/export the verified complete
+  contact-release history bundle through82da1e8 before publication-plan workspace
+  cleanup. Its independent restore and commit/tree hashes passed; see the release
+  receipt for SHA256. Separately reconcile the pre-existing original shared
+  repository main-worktree HEAD error without resetting another chat's checkout.
+  The13missing historical trees are recovered; repeating contact deployment or
+  source-only tests is not the remaining task.
+
 - `[qa][needs-verification]` 17 October 2026 — Preserve the newly verified contact-only production source0baab74/builddpl_81afMJgSr7sdpJFTAgvSaH9SBwuL in future website releases; merge its exact contact correction into any cumulative candidate without activating unfinished D2 migration paths. Staging/promotion/public checks are complete, detailed in docs/2026-10-17-contact-release.md. Remaining work is physical mailto/app-to-site QA and broader legal/operational publication, not repeating this deploy. No EAS Update/build, Supabase migration/function/secret/admin/store change applies to the contact fix.
 
 ## Beta signup deployment follow-ups
