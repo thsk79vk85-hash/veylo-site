@@ -24,6 +24,11 @@
   uncaptured/transcribed evidence limits; no warning suppression or upgrades.
 - Areas: new selection SQL; processing/race/restore/HTTP tests and test-only cleanup
   utility; runbook and website CHANGELOG/TODO. Focused covering run54/54 passes;
+  the first frozen default full run495/497 exposed a remaining beta host-observer
+  window. Beta now prestarts its own connection and uses fresh server Lock
+  observations before/after original claim/finish, retaining900ms/600ms caller
+  limits and the1500ms server interval. The failed first freeze is preserved;
+  a new combined source freeze requires fresh default/full DB/HTTP validation.
   unique RED/failed-GREEN captures retained. Required frozen-source default full,
   explicit DB, full HTTP and source/package checks are recorded in the wave report
   after execution. One fresh scoped rereview remains; no self-acceptance or PR.

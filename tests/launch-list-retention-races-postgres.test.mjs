@@ -159,16 +159,35 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
         const holder=race.start(`set application_name='raw-tuple-holder';begin;
           select id from public.signup_requests where id='${r.id}' for update;${race.wait}commit`);
         await observe('raw-tuple-holder');
+        // Start the beta connection before cleanup. The server observes the
+        // actual contender Lock and immediately exercises both original RPCs;
+        // Docker/host observer scheduling cannot consume the one-second window.
+        const betaRunning=race.start(`set application_name='beta-overlap-worker';set statement_timeout='25s';
+          do $overlap$ begin loop
+            perform pg_stat_clear_snapshot();
+            exit when exists(select 1 from pg_stat_activity where application_name='raw-cleanup-wait' and wait_event_type='Lock');
+            perform pg_sleep(0.02);end loop;end $overlap$;
+          set statement_timeout='900ms';set lock_timeout='600ms';
+          select clock_timestamp() as beta_started \\gset
+          select exists(select 1 from pg_stat_activity where application_name='raw-cleanup-wait' and wait_event_type='Lock');
+          set role service_role;
+          select public.claim_signup_v1('${r.email}','beta','android','direct','${'e'.repeat(64)}') as beta \\gset
+          reset role;select exists(select 1 from pg_stat_activity where application_name='raw-cleanup-wait' and wait_event_type='Lock');
+          set role service_role;
+          select public.finish_signup_delivery_v1((:'beta'::jsonb->>'id')::uuid,(:'beta'::jsonb->>'token')::uuid,'sent','beta-race-provider');
+          reset role;select exists(select 1 from pg_stat_activity where application_name='raw-cleanup-wait' and wait_event_type='Lock');
+          select extract(epoch from (clock_timestamp()-:'beta_started'::timestamptz))*1000;
+          select :'beta';`);
+        await observe('beta-overlap-worker');
         const cleanup=race.start(`set application_name='raw-cleanup-wait';set role service_role;${disposal(r)}`);
-        await observe('raw-cleanup-wait',"wait_event_type='Lock'");
-        const began=Date.now();
-        const beta=JSON.parse(await db.asyncSql(`set statement_timeout='900ms';set lock_timeout='600ms';set role service_role;
-          select public.claim_signup_v1('${r.email}','beta','android','direct','${'e'.repeat(64)}')`));
+        const [beforeClaim,afterClaim,finished,afterFinish,elapsed,json]=(await race.output(betaRunning)).split('\n');
+        const beta=JSON.parse(json);
         assert.equal(beta.send,true);
-        assert.equal(db.sql("select exists(select 1 from pg_stat_activity where application_name='raw-cleanup-wait' and wait_event_type='Lock')"),'t','cleanup still waits after beta claim');
-        assert.equal(await db.asyncSql(`set statement_timeout='900ms';set role service_role;select public.finish_signup_delivery_v1('${beta.id}','${beta.token}','sent','beta-race-provider')`),'t');
-        assert.ok(Date.now()-began<1500,'same-address beta completes within deadline while launch cleanup is still waiting');
-        assert.equal(db.sql("select exists(select 1 from pg_stat_activity where application_name='raw-cleanup-wait' and wait_event_type='Lock')"),'t','cleanup still waits through beta finish');
+        assert.equal(beforeClaim,'t','actual cleanup Lock triggers beta dispatch');
+        assert.equal(afterClaim,'t','cleanup still waits after beta claim');assert.equal(finished,'t');
+        assert.ok(Number(elapsed)<1500,'same-address beta completes within deadline while launch cleanup is still waiting');
+        assert.equal(afterFinish,'t','cleanup still waits through beta finish');
+        t.diagnostic(`beta claim/finish server interval ${elapsed}ms with actual Lock before claim, after claim and after finish`);
         // Hold through the actual lock-timeout result, not an elapsed guess.
         const out=JSON.parse(await race.output(cleanup));assert.equal(out.outcome,'refused');assert.equal(out.reason,'unavailable');assert.equal(out.writes,0);
         race.release();await race.output(holder);

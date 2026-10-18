@@ -171,6 +171,13 @@ HTTP fixtures cover Q. Exact frozen-source full/DB/HTTP results are recorded in
 the final-wave report; historical488/491 and earlier failures remain preserved.
 One fresh scoped combined rereview by the controller remains required.
 
+Same-address beta overlap uses a prestarted actual connection which waits for a
+fresh server activity snapshot showing cleanup Lock, then claims and finishes
+through the original RPCs and checks Lock before/after both. Its900ms statement,
+600ms lock and1500ms combined server bounds remain. A later host/Docker observer
+is not used to infer that short overlap; production cleanup's1s lock timeout is
+unchanged. The captured first frozen full failure remains historical evidence.
+
 Retained N3: frozen D2 UUID cleanup messages are ownership diagnostics, not failed
 cleanup. CLI update notices and the app's four existing experimental Node warnings
 do not establish product failure or install authority. Early overwritten output,
