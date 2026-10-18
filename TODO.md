@@ -5,11 +5,11 @@
 - `[release-blocker][qa][needs-verification]` Retention Task 1 source/mapping is
   independently accepted (controller archive app `cb26b33`). Task 2 private state
   is locally accepted after independent fix re-review at `c82de3f`, including
-  multi-generation receipt catch-up. Task 3 atomic raw minimization and exact late
-  finish implementation has local fix-1 SQL/race coverage for review T3-I1/T3-I2
-  and Ruling 8/M3; controller independent re-review of the exact fix commit/tree
-  remains required. Continue Tasks 4–6 before
-  whole-change acceptance. The combined migrated/HTTP/restore gate belongs to
+  multi-generation receipt catch-up. Task 3 is locally accepted after fix
+  `c41df0e5f9f588b579994084a2af8275ca2fb8d9`. Task 4's local independent
+  retirement/restore candidate requires controller fresh review of its exact
+  commit/tree; continue Tasks 5/6 before whole-change acceptance. The combined
+  migrated/HTTP/production-restore gate belongs to
   Task 6; original baseline fixture counts do not establish that coverage.
   Source: `docs/launch-retention-source-map.json`;
   external acceptance receipt: app `tasks/2026-10-18-launch-list-retention-progress.md`.
@@ -39,40 +39,64 @@
 
 - `[release-blocker][supabase][qa][needs-verification]` Ruling 9: Tasks 5/6 must
   bind and prove a trusted per-item caller sets a real 1..5000ms command deadline
-  BEFORE dispatching disposal. SQL rejects disabled/over-limit settings but cannot
+  BEFORE dispatching raw disposal or the new receipt/marker mutations. SQL rejects
+  disabled/over-limit settings but cannot
   attest when their timer was armed; an inline GUC setter is not that proof.
   Exercise actual transport/HTTP cancellation, rollback, resource release and
   sanitization outside the SQL body/connection failure. Do not change global
   role/default timeouts or old callers. Production transport is still unbound;
   keep cleanup OFF and protected adapters unavailable. No Task 5 transport code
   or Task 6 acceptance is supplied by the local Task 3 fix.
-- `[supabase][qa][needs-verification]` Before adopting Task 2/3 dormant mechanics,
+- `[release-blocker][supabase][qa][needs-verification]` Task 5 must preserve Task 4's
+  partial `review`/positive-writes outcome as partial progress, never all-complete
+  erasure; respect owning generation/scope advancement and consumed authority.
+  Bind the independent complete CURRENT restore hook to a real stable source
+  barrier/head and applied full replay state, including missing snapshot identities
+  and every older live key. The shipped private hooks remain unavailable; copied
+  local tables, snapshots, opaque references, booleans and TTLs cannot certify
+  currency. Synthetic second-clone success is not production coverage. See
+  `docs/launch-retention-runbook.md`; no general replay importer or public setter.
+- `[supabase][qa][needs-verification]` Before adopting Task 2/3/4 dormant mechanics,
   complete the combined compatible finish/readiness/restore acceptance and
   independently bind real necessity, references, holds, delivery, usable-link,
   suppression and current external restore coverage. Context deliberately returns
   those facts unavailable; synthetic owning facts must never become a production
-  adapter. Task 3's executor cannot proceed with those defaults; no retention
+  adapter. Retention executors cannot proceed with those defaults; no retention
   issuer/setter/force flag/schedule is installed. Preserve minimum ACLs,
   owner-installed fingerprint and separate retention/import authority purposes.
   Review migrations `20261018141524_launch_list_retention_state.sql` and
-  `20261018150520_launch_list_retention_disposition.sql` with the later ordered
+  `20261018150520_launch_list_retention_disposition.sql`, plus Task 4 migration
+  `20261018170026_launch_list_retention_retirement.sql`, with the later ordered
   website-only rollout; never blanket-push the app database. Keep retention-aware
   finish/readiness during rollback; do not recreate erased raw rows for old code.
 - `[qa][later]` Retention Minor M2: existing local PostgreSQL fixture cleanup
   chatter remains deferred to final review; do not change the frozen helper solely
   to remove it during Task 2. Task 2 RED/failed-GREEN/repaired-GREEN diagnostics
   remain unique append-only evidence; preserve them in the controller archive.
+- `[qa][needs-verification]` Task 4 final review: the default parallel full DB run
+  missed the unchanged Task 3 import-race fixture's 0.5-second lock-observation
+  window (242/244); that S+D-only fixture passed alone (13/13). Preserve the failed
+  run and assess parallel fixture-load reliability separately; no accepted test,
+  helper or production lock contract was changed to hide it. Serial full-suite
+  verification passed 244/244 on the same Task 4 code; default-run timing remains
+  a review concern, not a claimed default GREEN.
 - `[supabase][qa][needs-verification]` Run the full owned local DB suite for later
   launch changes. Verify hosted extension/schema/role parity, actual scale/locks,
   provider late-result persistence and fresh purpose-bound approvals before live
   use. Unknown consent remains unknown/non-sendable; dry-run cannot issue
   authority or send. Preserve original migration and `disposalAllowed:false`.
-- `[supabase][qa][needs-verification]` Define reviewed key/template transition and
-  purpose-specific retention end triggers without expiring usable links or
+- `[supabase][qa][needs-verification]` Verify actual key/template transition and
+  independently owned per-field end assessments without expiring usable links or
   deleting data on review dates. Keep distinct match/token/rate keys and stable
   payload/identity on retries. A timeout does not settle a handed-off message;
   commercial-message unsubscribe availability runs at least 30 days from actual
   send, not signup or withdrawal. No purge/resubscription flow is approved.
+- `[release-blocker][supabase][qa][needs-verification]` Provider/mailbox/export/
+  log/backup/PITR/operator copy integrations remain unavailable and uncompleted.
+  Assign actual owners/access/necessary identifiers/purpose ends and independently
+  verify each completion or restriction; zero local rows is not all-copy erasure.
+  Unknown runtime provenance on restored/orphan import contexts stays review;
+  no PID-age or coincidentally committed local-XID inference.
 
 ## Free version polish
 

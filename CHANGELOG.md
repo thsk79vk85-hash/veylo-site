@@ -1,5 +1,67 @@
 # Changelog
 
+## 2026-10-19 — Independent launch receipt/marker ends and restore coverage (Task 4)
+
+- Local candidate on `codex/launch-list-retention`, based on accepted Task 3
+  `c41df0e5f9f588b579994084a2af8275ca2fb8d9`; no PR, push or deployment. Areas:
+  new CLI-generated `20261018170026_launch_list_retention_retirement.sql`, two
+  PostgreSQL test files, the narrow nonraw-consent policy regression, and the new
+  retirement/restore/copy runbook. Original/accepted migration bytes, source
+  pins, package/config and shared fixture remain unchanged.
+- Service-only receipt/marker operations use protected per-field purpose proofs
+  with unavailable defaults. Provider/claim/terminal-time/provenance/expanded
+  authority facts end independently; erasure is one way with no new comparison
+  digests. Still-needed callbacks keep exact behavior; callbacks needing truly
+  retired comparisons return false without resend/reinflation. Raw unknown
+  consent stays review; nonraw consent stays unknown without blocking separately
+  proven ends. Partial `review` plus positive writes is explicit, advances the
+  owning generation and cannot replay/recount as complete erasure.
+- Current intake retains suppression with zero legacy rows; independently ended
+  old links can retire separately. Usable/unknown-last-send/under-30-day links
+  and all older live key representations remain. Expanded authority/completion
+  and minimal consumed-operation cohorts have separate ends; old epoch markers
+  require actual monotonic invalidation. Import contexts require actual runtime/
+  backend provenance, authoritative transaction non-liveness and locks, never
+  PID age or restored absence. Matching facts and optional decision metadata can
+  end while minimal replay facts remain; complete proven closure does not create
+  an endless self-referential completion archive.
+- Existing restore consumer now checks a private, read-only, default-unavailable
+  independently CURRENT complete coverage hook before readiness/reopen/approval
+  consumption. Exact namespace/source/schema/fingerprint/approval, external head/
+  watermarks, every live key and the full actually applied replay digest are
+  bound. Missing snapshot identities matter. Unknown handoffs still block reopen;
+  legitimate coverage plus readiness rebases exact receipts to the new target
+  epoch without inventing settlement. Private mode owner execution is limited to
+  that purpose-checked rebase; public tuple/shape and non-restore caller gates
+  remain compatible, with no direct ledger-write grant.
+- User-visible impact: none while dormant. No real fact/field/restore/transport/
+  copy adapter, issuer, setter, schedule or activation. Synthetic source barriers
+  and local replay transport are not independently current production evidence.
+  Copy adapters remain unavailable and uncompleted, not successful no-ops.
+- Migration SHA256:
+  `3ceebf9f8f08961c4f96c9086fdbf0a27805032910efbc11c5502dec42c5ebd9`.
+  Validation: formal missing-behavior RED, focused 156/156 and remaining website
+  tests 174/174. Required default parallel DB run was 242/244: an unchanged S+D-only
+  import-race lock-observation assertion failed under load; its standalone run
+  passed 13/13 and the complete serial DB rerun passed 244/244. No frozen
+  fixture/helper was edited. All failed/final outputs stay
+  in unique append-only scratch logs; original 256-line NEEDS_CONTEXT report is
+  preserved and implementation results appended. Controller fresh review pending.
+- Compatibility: website Sydney project only. iOS 1.0.2/build 1.0.20, Android
+  1.0.2/code 4 and retained 1.0.1 native/backend contracts unchanged. Both
+  platforms' physical browser/contact/deep-link QA remains open. No physical,
+  hosted, HTTP/DataAPI, provider, operator or production restore acceptance is
+  claimed by local fixtures.
+- Deployment: EAS Update possible/required no/no; new EAS Build no. Future ordered
+  website Supabase migration yes; none applied hosted. Edge Function deploy and
+  secret change no; Vercel website deployment only for later compatible adoption,
+  no admin deployment now; App Store metadata/privacy-label change no;
+  manual-QA-only no. Suggested current command: `npm run test:launch-db`; no EAS,
+  blanket app `db push` or production command. Keep cleanup/sending OFF until
+  real adapter, transport and operational acceptance. Rollback keeps suppression,
+  unknown and restore fences and compatible finish/readiness; never replay erased
+  raw facts or pretend SQL rollback reverses disposal.
+
 ## 2026-10-19 — Repair old pending handoffs and require a real caller deadline (Task 3 fix 1)
 
 - Review T3-I1/T3-I2 reproduced against `fbbead5`: real old public APIs wrote

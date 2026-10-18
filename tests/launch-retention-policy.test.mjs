@@ -15,6 +15,8 @@ test('beta purpose remains retained', () => expect(facts({ intent: 'beta' }), 'r
 test('active launch purpose remains retained', () => expect(change('necessity', { purposes: ['launch_notification'] }), 'retain', 'active_purpose'));
 test('verified active withdrawal state retains launch', () => expect(change('withdrawal', { status: 'active', at: null }, { withdrawnAt: null }), 'retain', 'active_purpose'));
 test('unknown consent stays review', () => expect(facts({ consent: 'unknown' }), 'review', 'unavailable'));
+test('unknown consent after raw removal does not invent consent or prevent separately proven receipt minimization', () =>
+  expect(facts({ lane: 'receipt', consent: 'unknown' }), 'minimize_receipt', 'eligible'));
 test('receipt facts can minimize independently of a usable link', () => expect(facts({ lane: 'receipt' }), 'minimize_receipt', 'eligible'));
 test('marker retires only after all independent purposes end', () => {
   const f = facts({ lane: 'marker' });
