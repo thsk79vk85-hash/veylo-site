@@ -1,5 +1,62 @@
 # Changelog
 
+## 2026-10-19 — Atomic launch raw minimization and exact late finishes (Task 3)
+
+- Branch `codex/launch-list-retention`, based on independently re-reviewed Task 2
+  `c82de3ffea196f5dcccfc78643f789359d1a75e9`. Local implementation only; no PR,
+  push, deployment, sending or live cleanup. Areas: one new website migration,
+  two real PostgreSQL test files, and website CHANGELOG/TODO. Original migrations,
+  accepted Task 2 bytes and all input pins are unchanged.
+- CLI-generated `20261018150520_launch_list_retention_disposition.sql`, SHA256
+  `90d933a14912a13bd5f70c86eb262a04c629a8220ec719f995ff6b120819cb0f`.
+  Adds service-only atomic raw disposal with exact authority, scope, generation,
+  epoch and protected-fact checks. External integrations remain unavailable;
+  there is no issuer, setter, force flag, schedule or production activation.
+  Canonical writer control is required. Suppression and usable links survive;
+  complete covered raw launch/legacy rows are removed in NO ACTION order while
+  necessary exact handoff facts and disposition provenance remain private.
+- Existing public signatures/shapes remain compatible. Raw and compact pending
+  finishes remain unresolved. Exact late definitive finishes can catch up across
+  multiple committed owning generations/epochs without reconstructing raw rows
+  or permitting resend. Conflicting/stale tokens and terminal regressions refuse.
+  Cancelled/disabled unsent leases do not invent provider settlement. Lifecycle
+  equality binds disposed source identities/versions, refuses missing active
+  mappings and drift, and extends owner-installed definition/ACL coverage.
+- User-visible impact: none while dormant. Synthetic migrated tests preserve all
+  active launch and both beta platform fields, repeat withdrawal after deletion,
+  and prove same-address beta claim AND finish while cleanup waits. Seven reached
+  failure boundaries roll back the complete transaction. No fake/nullable email.
+- Validation: actual assertion RED for missing disposition/pending settlement,
+  source-version drift, missing handoff evidence, malformed context and raw/guard
+  terminal contradiction; final Task 3 GREEN 34/34. Required
+  `npm run test:launch-db` ran once on final code: 152/152, comprising 103
+  original baseline tests, 15 Task 2 state tests and 34
+  Task 3 migrated tests. Remaining website test files: 173/173. No final failures,
+  skips or cancellations. Baseline fixtures do not install retention migrations;
+  the exact fixture migration sets and positive migrated old-caller coverage are
+  in the Task 3 scratch report. Combined migrated/HTTP/restore acceptance is Task 6.
+  An earlier 151/151 full run predates the final contradiction assertion/fix;
+  the new safety change justified the final follow-up run. No redundant
+  `npm run check` (alias for the same tests) or npm reporter forwarding.
+  Typecheck/lint scripts absent; no TS/native change;
+  expo-doctor N/A. Existing fixture cleanup chatter and CLI upgrade notice remain
+  deferred for final review. No upgrade performed. Whitespace check passed.
+- Compatibility: Sydney website database only; native iOS 1.0.2/build 1.0.20,
+  Android 1.0.2/code 4 and retained 1.0.1 contracts are unchanged. Both platforms'
+  browser/contact/deep-link physical QA remains open. Deploy compatible finish,
+  readiness and restore consumers before any separately authorized disposal;
+  bind actual external necessity/reference/hold/restore evidence first.
+- Deployment: EAS Update possible/required no/no; new EAS Build required no.
+  Future ordered website Supabase migration yes; Edge Function/secret changes no;
+  future website/Vercel deployment yes for adoption, admin deploy no; App Store
+  metadata/privacy-label change no; manual-QA-only no. Nothing deployed. Suggested
+  current command: `npm run test:launch-db`; no EAS or blanket app `db push`.
+- Remaining: controller independent Task 3 review, Tasks 4–6, protected adapters,
+  actual hosted/provider/restore/operator evidence and physical QA. Rollback must
+  first disable cleanup/claims and retain compatible compact finish/readiness,
+  suppression and unknown/restore fences. Never restore erased raw facts merely
+  to run an older deployment. Database rollback is not recovery of disposed data.
+
 ## 2026-10-19 — Repair delayed receipt generation catch-up (Task 2 fix 1)
 
 - Review finding T2-I1 reproduced against local base

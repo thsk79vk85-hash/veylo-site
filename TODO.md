@@ -3,12 +3,13 @@
 ## Release blockers
 
 - `[release-blocker][qa][needs-verification]` Retention Task 1 source/mapping is
-  independently accepted (controller archive app `cb26b33`). Task 2 dormant policy
-  and private generation state has local fix-1 coverage for review finding T2-I1
-  (multi-generation receipt catch-up) and migrated-schema restore-purpose reopen;
-  controller re-review of the exact fix commit/tree remains required. Continue
-  Tasks 3–6 before whole-change acceptance. No Task 3 mechanics or package/script
-  changes are included in Task 2.
+  independently accepted (controller archive app `cb26b33`). Task 2 private state
+  is locally accepted after independent fix re-review at `c82de3f`, including
+  multi-generation receipt catch-up. Task 3 atomic raw minimization and exact late
+  finish implementation has local SQL/race coverage; controller independent
+  review of its exact commit/tree remains required. Continue Tasks 4–6 before
+  whole-change acceptance. The combined migrated/HTTP/restore gate belongs to
+  Task 6; original baseline fixture counts do not establish that coverage.
   Source: `docs/launch-retention-source-map.json`;
   external acceptance receipt: app `tasks/2026-10-18-launch-list-retention-progress.md`.
   Preserve original66 inventory and 21/20-real release gates; no local test count
@@ -35,15 +36,18 @@
 
 ## Backend/Supabase follow-ups
 
-- `[supabase][qa][needs-verification]` Before adopting Task 2's dormant state,
-  complete compatible compact-finish/readiness/restore operations and independently
-  bind real necessity, references, holds, delivery, usable-link, suppression and
-  current external restore coverage. New context deliberately returns those facts
-  unavailable; the synthetic test helper must never become a production adapter.
-  No retention issuer/executor/schedule is installed. Preserve minimum ACLs,
+- `[supabase][qa][needs-verification]` Before adopting Task 2/3 dormant mechanics,
+  complete the combined compatible finish/readiness/restore acceptance and
+  independently bind real necessity, references, holds, delivery, usable-link,
+  suppression and current external restore coverage. Context deliberately returns
+  those facts unavailable; synthetic owning facts must never become a production
+  adapter. Task 3's executor cannot proceed with those defaults; no retention
+  issuer/setter/force flag/schedule is installed. Preserve minimum ACLs,
   owner-installed fingerprint and separate retention/import authority purposes.
-  Review migration `20261018141524_launch_list_retention_state.sql` with the later
-  ordered website-only rollout; never blanket-push the app database.
+  Review migrations `20261018141524_launch_list_retention_state.sql` and
+  `20261018150520_launch_list_retention_disposition.sql` with the later ordered
+  website-only rollout; never blanket-push the app database. Keep retention-aware
+  finish/readiness during rollback; do not recreate erased raw rows for old code.
 - `[qa][later]` Retention Minor M2: existing local PostgreSQL fixture cleanup
   chatter remains deferred to final review; do not change the frozen helper solely
   to remove it during Task 2. Task 2 RED/failed-GREEN/repaired-GREEN diagnostics
