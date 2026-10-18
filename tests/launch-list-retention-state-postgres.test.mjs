@@ -70,7 +70,7 @@ test('private generation-fenced retention state real PostgreSQL contract', async
       }
       assert.equal(db.sql("select bool_and(not prosecdef and proconfig=array['search_path=pg_catalog']) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='private' and p.proname like '%retention%'"), 't');
     });
-    await t.test('existing import and mode operations still succeed with both beta platforms unchanged', () => {
+    await t.test('existing import, mode and restore reopen succeed on the migrated schema with beta unchanged', () => {
       assert.equal(db.sql(`begin;
         update private.launch_list_control set project_ref='${project}',source_commit='${source}';
         insert into public.waitlist(email) values('synthetic-legacy@test.invalid');
@@ -84,22 +84,38 @@ test('private generation-fenced retention state real PostgreSQL contract', async
             end if;
           end loop;
           select jsonb_agg(to_jsonb(s) order by id) into b from public.signup_requests s where intent='beta';
-          for n in 1..3 loop
-            op:=case when n=2 then 'import' else 'mode' end;
-            target:=case when n=1 then 'fenced' when n=3 then 'canonical' end;
+          for n in 1..4 loop
+            if n=4 then
+              -- Synthetic trusted closure, not independent production restore proof.
+              update private.launch_list_control set mode='fenced',restore_required=true,fence_epoch=fence_epoch+1 where singleton;
+            end if;
+            op:=case when n=2 then 'import' when n=4 then 'restore' else 'mode' end;
+            target:=case when n=1 then 'fenced' when n in (3,4) then 'canonical' end;
             i:=public.inventory_launch_legacy_v1('synthetic-key');
             insert into private.launch_import_authorizations
               (approval_ref,project_ref,source_commit,schema_identity,expected_scope,fence_epoch,writer_ids,
-               control_evidence,test_evidence,settlement_evidence,verified_at,expires_at,operation,target_mode)
+               control_evidence,test_evidence,settlement_evidence,verified_at,expires_at,operation,target_mode,
+               restore_snapshot_ref,restore_replay_ref,restore_coverage_ref)
               values('compat-'||n,'${project}','${source}',i->>'schemaIdentity',i->>'scopeHash',(i->>'fenceEpoch')::bigint,
                array['synthetic-writer'],'synthetic-control','synthetic-test','synthetic-settlement',
-               clock_timestamp()-interval '1 second',clock_timestamp()+interval '1 hour',op,target);
+               clock_timestamp()-interval '1 second',clock_timestamp()+interval '1 hour',op,target,
+               case when n=4 then 'synthetic-snapshot' end,case when n=4 then 'synthetic-replay' end,
+               case when n=4 then 'synthetic-coverage' end);
             if n=2 then
               r:=public.reconcile_launch_legacy_v1(i->>'scopeHash','synthetic-key',true);
               if r->>'outcome' is distinct from 'reconciled' or r->>'disposalAllowed' is distinct from 'false' then raise exception 'compatible import failed'; end if;
             else
               r:=public.set_launch_mode_v1((i->>'fenceEpoch')::bigint,target,i->>'scopeHash','synthetic-key');
               if r->>'outcome' is distinct from 'mode_changed' then raise exception 'compatible mode failed'; end if;
+              if n=4 and (r->>'operation' is distinct from 'restore'
+                or r->>'restoreSnapshotRef' is distinct from 'synthetic-snapshot'
+                or r->>'restoreReplayRef' is distinct from 'synthetic-replay'
+                or r->>'restoreCoverageRef' is distinct from 'synthetic-coverage'
+                or (r->>'fenceEpoch')::bigint is distinct from (i->>'fenceEpoch')::bigint+1
+                or not exists(select 1 from private.launch_list_control where singleton and mode='canonical' and not restore_required)
+                or not exists(select 1 from private.launch_import_authorizations where approval_ref='compat-4' and consumed_at is not null)) then
+                raise exception 'compatible restore reopen failed';
+              end if;
             end if;
           end loop;
           if b is distinct from (select jsonb_agg(to_jsonb(s) order by id) from public.signup_requests s where intent='beta') then
@@ -180,6 +196,55 @@ test('private generation-fenced retention state real PostgreSQL contract', async
         assert.throws(() => db.sql(`begin; update private.launch_retention_items set generation=generation+1 where item_id='${id}';
           update private.launch_retention_delivery set generation=generation+1,${edit} where signup_id='${signup}'; rollback`), /retention receipt conflict/);
       }
+    });
+    await t.test('multiple delayed handoffs catch up across committed item generations without stale or conflicting writes', () => {
+      const late = '00000000-0000-4000-8000-000000000084';
+      const other = '00000000-0000-4000-8000-000000000085';
+      const snapshot = () => db.sql(`select jsonb_agg(to_jsonb(d) order by handoff_token)
+        from private.launch_retention_delivery d where item_id='${id}'`);
+      const finish = (handoff, generation, outcome = 'sent') => `update private.launch_retention_delivery
+        set generation=${generation},outcome='${outcome}',provider_ref=${outcome === 'sent' ? "'synthetic-late-provider'" : 'null'},
+        settled_at='2026-10-19' where signup_id='${signup}' and handoff_token='${handoff}'`;
+      for (const handoff of [late, other]) db.sql(`insert into private.launch_retention_delivery
+        (item_id,signup_id,handoff_token,generation,fence_epoch,handoff_at,outcome)
+        select item_id,'${signup}','${handoff}',generation,fence_epoch,'2026-10-17','unknown'
+        from private.launch_retention_items where item_id='${id}'`);
+      // Every sql call commits separately: two further legitimate decisions
+      // must not strand either exact receipt at its original generation.
+      db.sql(`update private.launch_retention_items set generation=generation+1,reason_code='held' where item_id='${id}'`);
+      db.sql(`update private.launch_retention_items set generation=generation+1,reason_code='unavailable' where item_id='${id}'`);
+      assert.equal(db.sql(`select generation from private.launch_retention_items where item_id='${id}'`), '9007199254740996');
+      assert.equal(db.sql(`select count(*) from private.launch_retention_delivery where item_id='${id}'
+        and generation=9007199254740994 and outcome='unknown'`), '2');
+      const before = snapshot();
+      for (const stale of ['9007199254740993', '9007199254740994', '9007199254740995', '9007199254740997']) {
+        assert.throws(() => db.sql(finish(late, stale)), /retention (generation|receipt scope) mismatch/);
+        assert.equal(snapshot(), before);
+      }
+      assert.doesNotThrow(() => db.sql(finish(late, '9007199254740996')), 'exact current generation must accept a definitive late result after a multi-generation gap');
+      assert.equal(db.sql(`select generation||':'||outcome||':'||provider_ref from private.launch_retention_delivery
+        where signup_id='${signup}' and handoff_token='${late}'`), '9007199254740996:sent:synthetic-late-provider');
+      assert.equal(db.sql(`select generation||':'||outcome from private.launch_retention_delivery
+        where signup_id='${signup}' and handoff_token='${other}'`), '9007199254740994:unknown');
+      const settled = snapshot();
+      // Same-current exact retries are idempotent; receipt generation is an
+      // owning-scope fence, not a separate unit-step receipt revision counter.
+      assert.doesNotThrow(() => db.sql(finish(late, '9007199254740996')));
+      assert.equal(snapshot(), settled);
+      for (const edit of ["outcome='pending',provider_ref=null,settled_at=null", "outcome='failed',provider_ref=null",
+        "provider_ref='conflicting-provider'", "settled_at='2026-10-20'", `handoff_token='${other}'`,
+        "signup_id='00000000-0000-4000-8000-000000000086'", "item_id='00000000-0000-4000-8000-000000000087'"]) {
+        assert.throws(() => db.sql(`update private.launch_retention_delivery set generation=9007199254740996,${edit}
+          where signup_id='${signup}' and handoff_token='${late}'`), /retention receipt (conflict|scope mismatch)/);
+        assert.equal(snapshot(), settled);
+      }
+      assert.throws(() => db.sql(finish(late, '9007199254740995')), /retention generation mismatch/);
+      assert.equal(snapshot(), settled);
+      assert.doesNotThrow(() => db.sql(finish(other, '9007199254740996', 'failed')));
+      assert.equal(db.sql(`select count(*) from private.launch_retention_delivery where item_id='${id}'
+        and generation=9007199254740996 and outcome in ('sent','failed')`), '2');
+      assert.equal(db.sql(`select generation||':'||outcome||':'||(provider_ref is null)::text
+        from private.launch_retention_delivery where signup_id='${signup}' and handoff_token='${other}'`), '9007199254740996:failed:true');
     });
     await t.test('receipt references block marker/retired states instead of hiding unsettled work', () => {
       assert.throws(() => db.sql(`begin; update private.launch_retention_items set generation=generation+1,state='marker' where item_id='${id}'; rollback`), /retention receipt remains/);

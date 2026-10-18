@@ -93,7 +93,11 @@ begin
   raise exception 'launch retention fenced' using errcode='55000';
  end if;
  if tg_op='UPDATE' then
-  if new.generation<>old.generation+1 or new.fence_epoch<old.fence_epoch then
+  -- Items own unit-step scope revisions. Receipts may catch up monotonically
+  -- across several revisions or retry at the same current scope; the receipt
+  -- branch below still requires the exact current owning generation/epoch.
+  if (tg_table_name='launch_retention_items' and new.generation<>old.generation+1)
+   or new.generation<old.generation or new.fence_epoch<old.fence_epoch then
    raise exception 'launch retention generation mismatch' using errcode='23514';
   end if;
  end if;

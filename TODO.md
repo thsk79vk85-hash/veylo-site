@@ -4,9 +4,11 @@
 
 - `[release-blocker][qa][needs-verification]` Retention Task 1 source/mapping is
   independently accepted (controller archive app `cb26b33`). Task 2 dormant policy
-  and private generation state is locally implemented/tested; controller review
-  of its exact commit/tree remains required. Continue Tasks 3–6 before whole-change
-  acceptance. No Task 3 mechanics or package/script changes are included in Task 2.
+  and private generation state has local fix-1 coverage for review finding T2-I1
+  (multi-generation receipt catch-up) and migrated-schema restore-purpose reopen;
+  controller re-review of the exact fix commit/tree remains required. Continue
+  Tasks 3–6 before whole-change acceptance. No Task 3 mechanics or package/script
+  changes are included in Task 2.
   Source: `docs/launch-retention-source-map.json`;
   external acceptance receipt: app `tasks/2026-10-18-launch-list-retention-progress.md`.
   Preserve original66 inventory and 21/20-real release gates; no local test count

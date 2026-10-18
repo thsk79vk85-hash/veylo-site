@@ -1,5 +1,52 @@
 # Changelog
 
+## 2026-10-19 — Repair delayed receipt generation catch-up (Task 2 fix 1)
+
+- Review finding T2-I1 reproduced against local base
+  `8018218c8857102aa57654cf8d8f80719f7342ec`: multiple committed item advances
+  could strand independent delivery receipts behind mutually exclusive generation
+  guards. The undeployed Task 2 migration now keeps item revisions unit-step while
+  allowing nondecreasing receipt catch-up and exact-current retries; every receipt
+  still requires its owning item's exact current generation/epoch. Exact handoff
+  identity, terminal outcomes, fields, minimum ACLs and unavailable external facts
+  remain guarded. No cleanup executor or authority is added.
+- Changed areas: Task 2 migration, its real PostgreSQL test and website records.
+  Migration SHA256 after the fix:
+  `4cd3a7593d17034d67e9c106ed088459e270c26b4c496b6ea2414aaf9db87b5c`.
+  Earlier Task 2 hashes/results below describe the prior local commit, not this fix.
+  All original migrations and source pins remain unchanged. No PR/push/deployment.
+- Validation: actual multi-generation/two-outstanding-handoff SQL assertion RED
+  (13 pass, 2 fail including parent; 15 total), then covering SQL GREEN 15/15 with
+  zero failures/skips/cancellations. Tests commit two item decisions before late
+  results and cover stale/backward/future/current generations, exact-current
+  retry, separate sent/failed results, identity and terminal conflicts. Existing
+  positive import/mode compatibility now also proves a consumed restore-purpose
+  canonical reopen, epoch increment and unchanged iOS/Android beta data on the
+  new migration set. Synthetic restore references are not real replay coverage.
+- Only `node --test --test-reporter=tap tests/launch-list-retention-state-postgres.test.mjs`
+  reran, using the existing owned offline fixture. Policy unchanged; no policy,
+  full website or 103-test SQL rerun for this scoped predicate change. Both affected
+  table paths, ACL/fingerprint behavior and old import/mode/restore are covered in
+  that migrated fixture. Previous full-suite counts remain historical. Whitespace
+  check passed; typecheck/lint scripts absent, no TS/native change, expo-doctor N/A.
+  Existing fixture cleanup chatter is retained; no npm/CLI invocation was needed.
+- Compatibility: website Sydney-only dormant state, not the app database.
+  iOS 1.0.2/build 1.0.20, Android 1.0.2/code 4 and retained 1.0.1 native contracts
+  unchanged; physical browser/contact/deep-link QA for both platforms still open.
+  Backend public signatures and old import receipt contract remain compatible.
+- Deployment: EAS Update possible/required no/no; new EAS Build required no.
+  Future ordered website Supabase migration yes; none applied to a hosted target.
+  Edge Function/secret/admin/App Store metadata/privacy-label changes no;
+  future Vercel website deployment yes for adoption, none now; manual-QA-only no.
+  Suggested current command is the covering Node command above; no EAS or blanket
+  `npx supabase db push` command is authorized. Compatible finish/readiness/restore
+  clients, independent operational evidence and review must precede disposition.
+- Remaining: controller re-review; Task 6 combined migration/HTTP/restore gate and
+  hosted/physical acceptance remain open. Prior report and logs are preserved;
+  fix evidence is appended to the same Task 2 report. Rollback keeps cleanup off
+  and preserves suppression, usable links, unknown handoffs and restore fences;
+  do not resurrect disposed raw data or restore the receipt-stranding predicate.
+
 ## 2026-10-19 — Add dormant private retention policy and generations (Task 2)
 
 - Branch `codex/launch-list-retention`, starting commit
