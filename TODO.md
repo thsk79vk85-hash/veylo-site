@@ -14,6 +14,9 @@
   deterministic race/settlement and all-owned teardown fixes, with the separate
   three-file app factual qualification. Obtain ONE fresh scoped combined rereview
   of the exact frozen wave and actual default full/DB/HTTP/source/package evidence.
+  Frozen executable73a9b56/tree4b77d170 has actual497/497 full,262/262 DB,29/29
+  HTTP and9/9 source/package passes, no fail/skip/cancel; final records-only
+  commits must be reviewed as code-equivalent, not falsely relabelled tested SHAs.
   Covering regression54/54 is not a substitute for those gates; historical
   full488/491 remains failed history. N3 diagnostics/provenance is explicitly
   retained, not a suppression/install/pin-change task. Local HTTP/restore

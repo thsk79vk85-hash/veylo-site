@@ -29,9 +29,14 @@
   observations before/after original claim/finish, retaining900ms/600ms caller
   limits and the1500ms server interval. The failed first freeze is preserved;
   a new combined source freeze requires fresh default/full DB/HTTP validation.
-  unique RED/failed-GREEN captures retained. Required frozen-source default full,
-  explicit DB, full HTTP and source/package checks are recorded in the wave report
-  after execution. One fresh scoped rereview remains; no self-acceptance or PR.
+  unique RED/failed-GREEN captures retained. Frozen73a9b56/tree4b77d170 passes
+  UNMODIFIED npm run check497/497, npm run test:launch-db262/262, full HTTP29/29
+  and source/package9/9, each0 fail/skip/cancel. These suites overlap; processing/
+  HTTP include Q, SQL-clone restore through R and races S+D retain actual scope.
+  Exact commands/raw stems/hashes and failed first-freeze495/497 are retained in
+  whole-fix-report.md. No app executables or heavy app tests changed. This final
+  record update is code-equivalent to tested73a9b56, not a new tested SHA.
+  One fresh scoped rereview remains; no self-acceptance or PR.
 - Deployment now: none. EAS Update possible/required no/no; new EAS Build no;
   future selective website Supabase migration yes (Q after I/L/C/S/D/R/P), none
   pushed; Edge Function/secret/admin/store/public-policy changes no. Future site
