@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+// Test transport only: no socket, database or container operation is performed.
+import { writeFileSync } from 'node:fs';
+if (process.argv.slice(2).join(' ') === 'context inspect') {
+  process.stdout.write(JSON.stringify([{ Endpoints: { docker: { Host: 'unix:///synthetic-fixture.sock' } } }]));
+} else {
+  let query = '';
+  process.stdin.on('data', bytes => { query += bytes; });
+  process.stdin.on('end', () => {
+    if (query === 'normal') process.stdout.write('result\n');
+    else if (query === 'failure') { process.stderr.write('controlled failure'); process.exitCode = 7; }
+    else {
+      if (query === 'ignore-term') process.on('SIGTERM', () => {});
+      setInterval(() => {}, 1000);
+      writeFileSync(process.env.LAUNCH_PROCESS_TEST_PIDFILE, String(process.pid));
+    }
+  });
+}

@@ -1,0 +1,400 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Cumulative local Task 1 candidate mapping; not deployment or acceptance authority",
+  "production": {
+    "commit": "0baab74af58b72072ac14c95287487fde47c6c26",
+    "tree": "4590415e49dfe4b3bc6f901d9250746b321ab550",
+    "deploymentId": "dpl_81afMJgSr7sdpJFTAgvSaH9SBwuL",
+    "projectId": "prj_8w6OsKo0Z7A7YuIc4DyNEWq0M5e4",
+    "teamId": "team_7JJ5glFkwoswn9JPoljpQvol",
+    "alias": "joinveylo.com",
+    "sourceQualification": "Fresh authenticated alias/deployment custom metadata plus previously verified immutable46-file uploaded artifact; not a fresh all-body scan"
+  },
+  "contact": {
+    "commit": "ba7da79dba655ee09f9a87766ccb0cbeccc90d8e",
+    "tree": "70c3426ed9b85bab5de0d3f7c0247d55eac09993"
+  },
+  "currentMain": {
+    "commit": "6ddbc5ca037d77b2c3111d6c4259097f4dfb703e",
+    "tree": "db8a447b2108298d4a39ec7e7609b8babb50e116"
+  },
+  "reviewedD2": {
+    "commit": "005a888d25009aa302d808d09126b18a03ea2484",
+    "tree": "9639160f5769f1d2e2db411b37160223ba48c038"
+  },
+  "integrationParentCommit": "ba7da79dba655ee09f9a87766ccb0cbeccc90d8e",
+  "integrationReceiptRef": "app:tasks/2026-10-18-launch-list-retention-progress.md",
+  "preservedFiles": [
+    {
+      "file": ".gitignore",
+      "sha256": "e8abc7db91a30aa64882e83aaf220705378e4438291901ecec6bc35668d99d6e"
+    },
+    {
+      "file": "README.md",
+      "sha256": "621bd3773a5eaea1d56fe6598742549b54ee775123ed861b7ff87b374f2bc371"
+    },
+    {
+      "file": "api/signup.js",
+      "sha256": "11ed7ffea9737ef2c0e472a172f4f60e1b224795608cd1c8f4625cb156b796fb"
+    },
+    {
+      "file": "assets/portraits/README.md",
+      "sha256": "f11e4b37d4303511126958aad734b24cb77b581ef212d62076f6df0c330657f7"
+    },
+    {
+      "file": "assets/portraits/jordan.jpg",
+      "sha256": "e6270eeaf11cf5d7535ca24b18bcd93c45c3d792e133acb981ce6b1787b86bbe"
+    },
+    {
+      "file": "assets/portraits/lina.jpg",
+      "sha256": "2a0e848d449a65756ee31f972583f8ca3d2dbb3e6e0fe84a8237c2ac37a375d9"
+    },
+    {
+      "file": "assets/portraits/mia.jpg",
+      "sha256": "debfb764fb811d0bb24cded5f1e6a0b839f8cd780a237e8350f76b23bf71052b"
+    },
+    {
+      "file": "assets/portraits/sam.jpg",
+      "sha256": "d2e2ef4cd7fb4bb6397fd66dc3425a0634c552a7994170ebd9c71f32c0b84b6f"
+    },
+    {
+      "file": "assets/share-card.png",
+      "sha256": "8b3b66b837035feea28bf0ce46b9a57274fefcd1026b0c0cbaedf89b54592d0a"
+    },
+    {
+      "file": "beta-preview.css",
+      "sha256": "8c14b7b7eb762cf42e03ae6718daf24b926a0106eb13ec32940e2fea057eeb8a"
+    },
+    {
+      "file": "beta-preview.html",
+      "sha256": "510ec37b07db3e030eeff7086706611cb84e7ae4ba8e3297c18418f7bf4a33e2"
+    },
+    {
+      "file": "beta-preview.js",
+      "sha256": "36c8b196990312f16fbcf18a6b25309c47b01f7896d7f03d53e8cf545462b0df"
+    },
+    {
+      "file": "beta.html",
+      "sha256": "98c18c6be380cb283f6b0ebf53888ce047e1095154536d9610296c4abba1ec15"
+    },
+    {
+      "file": "docs/beta-signup-preview.md",
+      "sha256": "6aff64b5cd80abe0ab98fb42fc4df9282fa9052ce383a5822d49d6052a30fc9a"
+    },
+    {
+      "file": "docs/superpowers/plans/2026-08-03-veylo-marketing-waitlist.md",
+      "sha256": "2db6c730119276f434c0942f7f2ac736764b31c62619e26f1a796926aa000edf"
+    },
+    {
+      "file": "docs/superpowers/plans/2026-08-10-waitlist-confirmation-email.md",
+      "sha256": "9db01415000161115b40f8a1b80201e8e2b1f8ef161541dc1cc50a154b45b11b"
+    },
+    {
+      "file": "docs/superpowers/specs/2026-08-04-student-guided-product-story-design.md",
+      "sha256": "28dcedc37f9cf064d6354c5c4a4baa47349d962ccf16510fca7ea705cb38c91f"
+    },
+    {
+      "file": "docs/superpowers/specs/2026-08-10-waitlist-confirmation-email-design.md",
+      "sha256": "f1e253d7b7edc21b9db0de729fec52898e267ba0e8762e794bd39120dac84698"
+    },
+    {
+      "file": "index.html",
+      "sha256": "f72779e67bb55b7cce0e85b01a2f2bd8e72dddde88924304da22e0a700988515"
+    },
+    {
+      "file": "lib/waitlist-confirmation.mjs",
+      "sha256": "7ce109fb8972c6a9027b610734f5f731ad361f858622f03dadd8dfcc9d7bf4e1"
+    },
+    {
+      "file": "lib/waitlist.mjs",
+      "sha256": "0f0e8790a201ffe4f98c10eee9d7e96a632ea644051f93abb3d56c395fcb2260"
+    },
+    {
+      "file": "privacy.html",
+      "sha256": "05d7d99888e4c986f62db206f1a42123f82f85e84acfb899f366df4ecfdb6b72"
+    },
+    {
+      "file": "showcase.js",
+      "sha256": "554ee692fe61cc7648b9b08fbfd0d311ba5fd5461080ad3260a546dbdcedeabf"
+    },
+    {
+      "file": "signup-motion.js",
+      "sha256": "b4cddf1bafc25fe00375230668c794b8867377ff607078f7002e8a20f2e01c28"
+    },
+    {
+      "file": "styles.css",
+      "sha256": "4e980f54737ff35659a25312962478175a6c25a327685467a2dbf41c29ab4ff0"
+    },
+    {
+      "file": "supabase/migrations/20261011050938_add_signup_intents.sql",
+      "sha256": "36a805b0e23d8a527bc01d71b918d6bec8c4fb62316bb75632503115970403ef"
+    },
+    {
+      "file": "supabase/waitlist.sql",
+      "sha256": "b46bf158126590f33971416ff2c3a0a4e4ed9fe816091a205d97c400436d7da8"
+    },
+    {
+      "file": "support.html",
+      "sha256": "6b1bc63cc9d4459dd5996b35a985f69fdf296f66986d3f6c053f1011f09cdf5f"
+    },
+    {
+      "file": "terms.html",
+      "sha256": "1f1c6a55fb2104127b4085db4194664eb574bed823177ac94f5fb582fbf6b710"
+    },
+    {
+      "file": "tests/signup.test.mjs",
+      "sha256": "bbd7252bff0edb425f1de670be5bea99e85001f6ae3c8675caa01953503534fc"
+    },
+    {
+      "file": "tests/site.test.mjs",
+      "sha256": "c940f3f6222b127967afc24d061682af4e6677899ee44cb8c73de8e02bb2a051"
+    },
+    {
+      "file": "tests/support-contact.test.mjs",
+      "sha256": "2761bedf13b76d9e9fa806ae054418d59796c88a6020ecd198e684823da7a5ac"
+    },
+    {
+      "file": "tests/waitlist-confirmation.test.mjs",
+      "sha256": "86e1cac0776c3c8dcb5fd532c2f0d5d44c5824eca1f2d4cb42c44fac55edf6a2"
+    },
+    {
+      "file": "tests/waitlist.test.mjs",
+      "sha256": "c53bfc75f2e4123e742fa0147b9724e7b08a0921df643d146c0874fdfb80ceea"
+    },
+    {
+      "file": "waitlist.js",
+      "sha256": "d5baf517429782853094f852b22ad508cd0777e3283228ab7f260d2a62f08cbd"
+    }
+  ],
+  "reviewedD2Files": [
+    {
+      "file": ".env.example",
+      "sha256": "14a937e4ae4d5da233fea00f507121f5cc844a80a1feadcdd5b9e191455d5c73"
+    },
+    {
+      "file": "api/launch-unsubscribe.js",
+      "sha256": "06a7228262c354d8fe99a16bf8ceb053a211f3650b9d7b48af03424af5c0009a"
+    },
+    {
+      "file": "api/waitlist.js",
+      "sha256": "975c7dd621d90651812f93c158644c05ed08d16c2d53378b17ddf57f7529bed6"
+    },
+    {
+      "file": "docs/launch-list-cutover.md",
+      "sha256": "1c98e502fa6c592c18d55ee633552faa5c84a0b7fc4314a66a0862c3fad05b7e"
+    },
+    {
+      "file": "docs/launch-list-receipt.schema.json",
+      "sha256": "3a39f109dfe8ad9c522e6a4b168705b1e3f4da880c43604d26d8d9309c8b9ee2"
+    },
+    {
+      "file": "launch-unsubscribe.html",
+      "sha256": "6cbab0ea1a37184b9de8c2641957f9ff5feed4b5391a891aa53edac1b8b68a3d"
+    },
+    {
+      "file": "launch-unsubscribe.js",
+      "sha256": "2aa403afcaf8773a7fa2fc7e61b04fe61dd80f1303858df4ab38cc2fff1d6ea5"
+    },
+    {
+      "file": "lib/consolidate-launch-list.mjs",
+      "sha256": "fe9afbd101810edf7f1a5037821e25526748af95a396788c3e5cc42c84b855e8"
+    },
+    {
+      "file": "lib/launch-list.mjs",
+      "sha256": "bdb06f3235262fcd747fcaa29e91c4d09638f06fd1d411fd1fb93a64546d7f63"
+    },
+    {
+      "file": "lib/signup.mjs",
+      "sha256": "9dacd183c1335807f2f5c5b391f9dbbc7f7308d0951c016c2fa35d02ba769239"
+    },
+    {
+      "file": "lib/waitlist-service.mjs",
+      "sha256": "a80035c419fd396ab4a332be3719bf26c0b40537ac09fc9d1b626c4a5bc08c56"
+    },
+    {
+      "file": "package.json",
+      "sha256": "e86d209e33fc7f6c4676f9dc566c529238c7f1393a808ed7b7d19559e443e9c6"
+    },
+    {
+      "file": "scripts/consolidate-launch-list.mjs",
+      "sha256": "8c867d241f662bcb116ca1833ed1aceee29b9817b619a8f550fe4c6a39e76245"
+    },
+    {
+      "file": "supabase/migrations/20261013112838_launch_list_lifecycle.sql",
+      "sha256": "ba1a07efda09ea9f6585c7e31d4c69a5bc6cfa0400848a875a7d9a99f187289c"
+    },
+    {
+      "file": "supabase/migrations/20261013125523_launch_list_canonical_cutover.sql",
+      "sha256": "9edc698ec81786e903c8682d2a53a39416f83fbeb1fca68e35ee31d5e7b413a0"
+    },
+    {
+      "file": "tests/api-waitlist.test.mjs",
+      "sha256": "c02e15fa0c8cf3a0e9e14346ba60d1a4ed9098884996038e9fdf0ddef1216ec2"
+    },
+    {
+      "file": "tests/consolidate-launch-list.test.mjs",
+      "sha256": "11e5404bcc2fad831f1bce15cae8ccac6ce22ba5f82732442e43184f2ef1190e"
+    },
+    {
+      "file": "tests/guarded-launch.test.mjs",
+      "sha256": "a9eb9419cb46a3c8ebff156fd6f1699863a9c000a0d1373fd044190f39d42c8e"
+    },
+    {
+      "file": "tests/helpers/guarded-launch.mjs",
+      "sha256": "9c09183fa1998c0cf18b47f561dc8b2dcca5d29b29cd6306db1d8540e3f2ee13"
+    },
+    {
+      "file": "tests/helpers/launch-postgres.mjs",
+      "sha256": "815efc683f945bfdd91596868e85684bbe05daae88fdd9f03ed44aa03a27e563"
+    },
+    {
+      "file": "tests/launch-list-cutover-postgres.test.mjs",
+      "sha256": "9c255ef9b93b46bd7d52d336d4dddee2984fbb9c83a03ff830fd6c3ff79f81a9"
+    },
+    {
+      "file": "tests/launch-list-fence-postgres.test.mjs",
+      "sha256": "e2a455042c62d218562c24b75f6090cd67bceb64e729198ce33e8dbf0a1d4b09"
+    },
+    {
+      "file": "tests/launch-list-postgres.test.mjs",
+      "sha256": "f79aa8e9d38a7386d293e1bdc3d9792404103315d905cbea2c3a5148fca45d5b"
+    },
+    {
+      "file": "tests/launch-list.test.mjs",
+      "sha256": "8ae26925d0b1070ec2919e7f4806c2f26c44a99c5de70c15a203bd7188532260"
+    },
+    {
+      "file": "tests/launch-unsubscribe.test.mjs",
+      "sha256": "73859a87fe8b4b1839e7f5bf1b37ba923925ac04427ca7ce8208e83ff14dad2d"
+    },
+    {
+      "file": "tests/waitlist-service.test.mjs",
+      "sha256": "bad624503feecb66d1cdfa175a1b382bd41cedd5b1775708b3594cdb25dd6410"
+    },
+    {
+      "file": "signup.js",
+      "sha256": "093c44d0c7426b53fc93d977ea8f90623a0dc100b4c9c58b0601c89a9b4acf9a"
+    },
+    {
+      "file": "tests/helpers/controlled-docker.fixture",
+      "sha256": "1022513f4a9ef80e59db30783832d3650e23df16d4bbc10af105337f0e1e8479"
+    },
+    {
+      "file": "tests/launch-list-cancellation-postgres.test.mjs",
+      "sha256": "7fc6012ba2ad57edc24d2a03980aedd2477deb20015fa5e6f28a7d88b88bb8c1"
+    },
+    {
+      "file": "tests/launch-process.test.mjs",
+      "sha256": "33c298d7cf2794bc2959058667a505486b5fa7f7ded51dbba725f76c99e3d51f"
+    },
+    {
+      "file": "tests/signup-page.test.mjs",
+      "sha256": "24ec62eb054d21212d4d68668c5ca9b940656875954536b42f853924f5bc0dba"
+    }
+  ],
+  "configuration": {
+    "productionRedirects": [
+      {
+        "source": "/privacy.html",
+        "destination": "https://thsk79vk85-hash.github.io/veylo-site/privacy.html",
+        "permanent": false
+      },
+      {
+        "source": "/terms.html",
+        "destination": "https://thsk79vk85-hash.github.io/veylo-site/terms.html",
+        "permanent": false
+      },
+      {
+        "source": "/delete-account.html",
+        "destination": "https://thsk79vk85-hash.github.io/veylo-site/delete-account.html",
+        "permanent": false
+      }
+    ],
+    "reviewedD2Headers": [
+      {
+        "source": "/launch-unsubscribe.html",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-store"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "no-referrer"
+          },
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex, nofollow"
+          },
+          {
+            "key": "Content-Security-Policy",
+            "value": "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+          }
+        ]
+      },
+      {
+        "source": "/api/launch-unsubscribe",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-store"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "no-referrer"
+          },
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex, nofollow"
+          }
+        ]
+      }
+    ],
+    "currentMainGit": {
+      "deploymentEnabled": {
+        "main": false
+      }
+    }
+  },
+  "recordsExceptions": [
+    "CHANGELOG.md",
+    "TODO.md",
+    "docs/2026-10-17-contact-release.md"
+  ],
+  "canonicalLegalStream": [
+    {
+      "file": "privacy.html",
+      "sha256": "f2b19f58a0331018bf14d938d470ba6f15d349e8a2e08a6e7693e248ea87ae6b",
+      "scope": "Current main canonical stream, not permission to overwrite marketing root"
+    },
+    {
+      "file": "terms.html",
+      "sha256": "91cbf8f44f6808cf71633f6665deaf03b1adde35d9a219195aa6a334b002937f",
+      "scope": "Current main canonical stream, not permission to overwrite marketing root"
+    },
+    {
+      "file": "delete-account.html",
+      "sha256": "3984874a3db008a90b80d85198291d965e54e6eb26dfd0f7cca7bbba13856eda",
+      "scope": "Current main canonical stream, not permission to overwrite marketing root"
+    }
+  ],
+  "reviewedD2BaseCommit": "708b176e098f3d4873676aa8ae9b09b90d5e9000",
+  "inputPins": {
+    "file": "tests/fixtures/launch-retention-source-pins.json",
+    "sha256": "fe7e7d6603dd5791f578e67c71c9151991eaa1b091d3be957b9e84afedcd01ec"
+  },
+  "configurationResolution": "Only current main's git.deploymentEnabled.main=false is integrated; retain exact production redirects and reviewed D2 headers. Current main legal bodies stay in their canonical stream.",
+  "outputBinding": "After commit the controller binds the actual integration commit/tree, this map and independent input hashes in integrationReceiptRef. No self-referential future commit is embedded.",
+  "task1AdditionalPaths": [
+    "docs/launch-retention-source-map.json",
+    "tests/launch-retention-source.test.mjs",
+    "tests/fixtures/launch-retention-source-pins.json"
+  ],
+  "futureException": "Task 5 may add its later independently reviewed package scripts. This does not authorize replacing the frozen package input hash, blanket rebaselining or changing other input pins.",
+  "compatibility": {
+    "ios": "1.0.2/build 1.0.20 and retained 1.0.1 native contracts unchanged; external browser/contact/deep-link QA remains required.",
+    "android": "1.0.2/code 4 and retained 1.0.1 native contracts unchanged; external browser/contact/deep-link QA remains required.",
+    "backend": "Sydney website project yohiumlrpfdhphsnnxxw only. Migration/site/writer-controls/activation ordering remains gated; no app backend changes or hosted actions.",
+    "deployment": "Local candidate only; launch intake/unsubscribe flags OFF. No migration, provider mail, keys, schedules, push, merge or deployment authorized."
+  }
+}

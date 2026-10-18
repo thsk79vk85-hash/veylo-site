@@ -1,5 +1,48 @@
 # Website follow-ups
 
+## Release blockers
+
+- `[release-blocker][qa][needs-verification]` Retention Task 1 cumulative local
+  source is assembled; controller must independently review the exact output
+  commit/tree and frozen input mapping before Task 2. Continue Tasks 2–6 before
+  whole-change acceptance. Source: `docs/launch-retention-source-map.json`;
+  external acceptance receipt: app `tasks/2026-10-18-launch-list-retention-progress.md`.
+  Preserve original66 inventory and 21/20-real release gates; no local test count
+  or this candidate confers deployment/cleanup authority.
+- `[release-blocker][supabase][qa][needs-verification]` Launch intake/unsubscribe
+  flags remain OFF. Before any separately authorized Sydney-only rollout, assign
+  owner/operator/reviewer, verify exact combined source/migrations/schema/roles,
+  preserve beta v1, deploy compatible website callers, control every historical
+  writer and settle actual in-flight handoffs. Follow the reviewed cutover guide;
+  never enforce an incompatible grant/RPC/writer boundary ahead of affected
+  callers. No hosted SQL, import, disposal, email, secrets, schedules or deployment
+  is authorized by this local plan; never target the native app database.
+- `[release-blocker][supabase][qa][needs-verification]` Obtain independent
+  production replay coverage, interval/watermark/access/retention ownership and
+  conflict decisions before restore acceptance. Synthetic local restore results
+  do not establish production coverage or full-disaster readiness. Pending,
+  incomplete or conflicting safety facts keep launch closed.
+- `[release-blocker][qa][needs-verification]` Perform separately authorized hosted
+  receive/explicit-withdrawal/repeated-link/no-op-GET and provider uncertainty/log
+  secrecy QA. Test physical iPhone Safari and Android Chrome/default mail clients
+  for signup, 409/503, stalled body, duplicate click, retry, fragment privacy,
+  contact/deep links and current/retained client navigation. Local executed
+  scripts and controller read-only route evidence are not physical/delivery QA.
+
+## Backend/Supabase follow-ups
+
+- `[supabase][qa][needs-verification]` Run the full owned local DB suite for later
+  launch changes. Verify hosted extension/schema/role parity, actual scale/locks,
+  provider late-result persistence and fresh purpose-bound approvals before live
+  use. Unknown consent remains unknown/non-sendable; dry-run cannot issue
+  authority or send. Preserve original migration and `disposalAllowed:false`.
+- `[supabase][qa][needs-verification]` Define reviewed key/template transition and
+  purpose-specific retention end triggers without expiring usable links or
+  deleting data on review dates. Keep distinct match/token/rate keys and stable
+  payload/identity on retries. A timeout does not settle a handed-off message;
+  commercial-message unsubscribe availability runs at least 30 days from actual
+  send, not signup or withdrawal. No purge/resubscription flow is approved.
+
 ## Free version polish
 
 - `[free][qa][needs-verification]` Domain cutover completed 9 September: apex A 216.198.79.1; www CNAME f5a5067f330ba589.vercel-dns-017.com; www redirects to apex. Remaining QA: physical iOS/Android, actual signup/email receipt and native auth round-trip. Preserve auth/mail records in future domain work.
@@ -19,6 +62,14 @@
 - `[free][qa]` Review combined beta preview motion on physical iOS/Android, including OS Reduce Motion switched during a reveal, keyboard focus, and signup/email transitions. No production promotion or live delivery authorized.
 
 ## EAS/deployment follow-ups
+
+- `[eas-update][qa][needs-verification]` Retention Task 1 needs no EAS Update or
+  native build. Keep candidate output binding external to its source map. For
+  future reviewed website promotion, verify production is an ancestor of the
+  exact combined tested commit and promote the tested immutable candidate;
+  legal-only main must not replace marketing or re-enable automatic deployment.
+  Task 5's later additive package scripts require their own scoped review while
+  retaining the original frozen package input pin.
 
 - `[qa][needs-verification]` 17 October2026 — Preserve/export the verified complete
   contact-release history bundle through82da1e8 before publication-plan workspace

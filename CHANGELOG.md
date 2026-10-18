@@ -1,5 +1,60 @@
 # Changelog
 
+## 2026-10-18 — Assemble the cumulative local launch-list candidate (retention Task 1)
+
+- Branch `codex/launch-list-retention`, integration parent
+  `ba7da79dba655ee09f9a87766ccb0cbeccc90d8e`; no PR/push/merge/deployment.
+  Integrated only the reviewed 31-path D2 source diff from `708b176` to
+  `005a888d25009aa302d808d09126b18a03ea2484`. All 35 pinned non-D2
+  production paths, including signup pages/API, original migration and the live
+  `support@joinveylo.com` page, remain byte-identical to production `0baab74`.
+  Preserved production canonical redirects and D2 privacy headers; imported only
+  `git.deploymentEnabled.main=false` from legal-only main `6ddbc5c`.
+- Areas: launch signup/withdrawal libraries and routes, browser timeout handling,
+  no-send importer, two undeployed website migrations, reviewed tests/helpers,
+  `.env.example`, package script and cutover guide/receipt schema. Added
+  `docs/launch-retention-source-map.json`, source preservation/negative-fixture
+  tests and an independently frozen input fixture. Production/contact history
+  remains in these records; historical D2 validation (193/193 website, 103/103
+  database) belongs to that input, not this candidate's new results.
+- Source map uses the integration parent and external app acceptance receipt;
+  the output commit/tree is bound there after commit, avoiding self-reference.
+  Immutable input pins remain independent of candidate output. Task 5's later
+  reviewed additive package scripts are a scoped future exception, never blanket
+  permission to regenerate pins. Controller owns app records and the unchanged
+  original66 inventory and 21/20-real release gates.
+- Validation: actual source-contract RED (3 pass/3 fail: missing D2 source,
+  missing main guard, missing map), focused GREEN 6/6 and full `npm run check`
+  203/203; standalone `npm run test:launch-db` 103/103, both with zero
+  failures/skips/cancellations or warnings. Exact 66 preserved/D2 file hashes and whitespace
+  checks pass. The first large diff transport was truncated; an initial GREEN
+  attempt failed 5/6 and the hash audit caught a damaged new SQL file. Recovered
+  exact per-file source before full suites; report retains all failed attempts.
+  Docker socket preflight initially required sandbox escalation. No dependencies
+  installed, hosted SQL/advisors, live requests or messages. Typecheck/lint scripts
+  absent; no TypeScript/native change; expo-doctor not applicable.
+- Compatibility: iOS 1.0.2/build 1.0.20, Android 1.0.2/code 4 and retained 1.0.1
+  native auth/session/RPC contracts unchanged. Website Sydney backend only
+  (`yohiumlrpfdhphsnnxxw`), never app project `tnwgabomdjrsadkaanjd`.
+  Existing beta v1 and both platform rows remain covered. Migration definitions,
+  compatible website routes, historical-writer controls and actual in-flight
+  settlement must precede activation/restrictive cutover; flags remain OFF.
+- Deployment impact: EAS Update safe/possible/required no; new EAS Build no.
+  Future reviewed Supabase migrations yes; Edge Function deploy no; Supabase
+  secret change no for this task (future website server-only provisioning needs
+  separate authority); future Vercel website deploy yes, admin deploy no; App
+  Store Connect metadata/privacy-label change no for this local assembly, final
+  notices/metadata need later review. Manual-QA-only no. Nothing deployed.
+  Suggested local commands: `npm run check` and `npm run test:launch-db`;
+  no EAS command or blanket `npx supabase db push` is authorized.
+- Remaining: independent controller review before Task 2, Tasks 2–6 and hosted
+  source/schema/writer/provider/restore acceptance. Physical iPhone Safari and
+  Android Chrome signup, withdrawal, contact, browser/deep-link and timeout QA
+  remains required for current/retained clients. No physical result claimed.
+  Rollback pauses launch dispatch, preserves suppression/usable links/handoff
+  and consent evidence, and uses compatible forward correction; never restore
+  unsafe historical writers or overwrite canonical legal main.
+
 ## 2026-10-17 — Recover and verify contact-release source history
 
 - Recovered13missing historical trees from the confirmed public live-beta-signup

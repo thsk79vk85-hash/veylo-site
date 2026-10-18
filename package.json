@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
+    "test:launch-db": "node --test tests/launch-list*-postgres.test.mjs",
     "check": "npm test"
   }
 }
