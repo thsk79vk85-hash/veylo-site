@@ -4,6 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { randomUUID, createHash } from 'node:crypto';
 import { launchPostgres } from './helpers/launch-postgres.mjs';
+import { withOwnedCleanup } from './helpers/owned-cleanup.mjs';
 import { launchMatch } from '../lib/launch-list.mjs';
 
 const project='yohiumlrpfdhphsnnxxw',sourceCommit='a'.repeat(40),key='synthetic-restore-key';
@@ -39,7 +40,7 @@ test('independent complete current restore coverage on a second owned restored c
   };
   const reopen=inv=>JSON.parse(call(clone,`select public.set_launch_mode_v1(${inv.fenceEpoch},'canonical','${inv.scopeHash}','${key}')`));
   let barrier;
-  try {
+  return withOwnedCleanup(async()=>{
     await setup(source);await setup(clone);
     const email='snapshot-only@test.invalid',match=launchMatch(email,key);
     source.sql(`insert into public.signup_requests(email,intent,platform,source,consent_version,launch_match) values('${email}','launch','unspecified','direct','synthetic','${match}')`);
@@ -166,8 +167,8 @@ test('independent complete current restore coverage on a second owned restored c
       assert.equal(clone.sql('select count(*) from public.signup_requests where intent=\'launch\''),'0');
       assert.equal(clone.sql('select count(*) from private.launch_suppressions'),'3');
     });
-  } finally {
-    if(barrier){source.sql('update synthetic_test.barrier set released=true');await barrier;}
-    clone.cleanup();source.cleanup();
-  }
+  },[
+    ()=>withOwnedCleanup(async()=>{if(barrier)source.sql('update synthetic_test.barrier set released=true');},[async()=>{if(barrier)await barrier;}]),
+    ()=>clone.cleanup(),()=>source.cleanup(),
+  ]);
 });

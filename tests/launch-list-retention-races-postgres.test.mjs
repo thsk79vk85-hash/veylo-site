@@ -4,6 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { launchPostgres } from './helpers/launch-postgres.mjs';
 import { launchMatch } from '../lib/launch-list.mjs';
+import { withOwnedCleanup } from './helpers/owned-cleanup.mjs';
 
 const key='synthetic-races-key', project='yohiumlrpfdhphsnnxxw', source='a'.repeat(40);
 const read=name=>readFileSync(new URL(`../supabase/${name}`,import.meta.url),'utf8');
@@ -46,6 +47,35 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
     (select jsonb_agg(to_jsonb(x) order by launch_match) from private.launch_suppressions x),
     (select jsonb_agg(to_jsonb(w) order by token_hash) from private.launch_withdrawal_receipts w),
     (select to_jsonb(c) from private.launch_list_control c where singleton))`);
+  // A committed owner-only gate keeps each holder alive until the observer
+  // confirms the contender. No fixed holder sleep or shortened lock window.
+  const withRace=async(r,body)=>{
+    const gate=randomUUID(),actors=[];
+    db.sql(`insert into synthetic_test.barriers values('${gate}',false)`);
+    const release=()=>db.sql(`update synthetic_test.barriers set released=true where id='${gate}'`);
+    const race={
+      wait:`reset role;set statement_timeout='25s';do $gate$ begin while not (select released from synthetic_test.barriers where id='${gate}') loop perform pg_sleep(0.02);end loop;end $gate$;`,
+      start(query){const actor=db.asyncSql(query).then(output=>({output}),error=>({error}));actors.push(actor);return actor;},
+      async output(actor){const result=await actor;if(result.error)throw result.error;return result.output;},release,
+    };
+    return withOwnedCleanup(()=>body(race),[
+      release,
+      async()=>{const results=await Promise.all(actors),errors=results.filter(r=>r.error).map(r=>r.error);if(errors.length)throw new AggregateError(errors,'Owned race actors failed.');},
+      ()=>{
+        assert.equal(db.sql("select pg_try_advisory_xact_lock(hashtextextended('launch-list-fence',0))"),'t','every actor releases the outer fence');
+        assert.equal(db.sql(`begin;set lock_timeout='300ms';select count(*) from (select 1 from public.signup_requests where id='${r.id}' for update nowait) s;rollback`),db.sql(`select count(*) from public.signup_requests where id='${r.id}'`));
+      },
+      ()=>{
+        // Settle this exact synthetic handoff even if an overlap assertion fails;
+        // a following global import check must not inherit an unknown delivery.
+        const state=JSON.parse(db.sql(`select coalesce(
+          (select jsonb_build_object('state',outcome,'settled',outcome in ('sent','failed')) from private.launch_retention_delivery where signup_id='${r.id}' and handoff_token='${r.token}'),
+          (select jsonb_build_object('state',s.delivery_state,'settled',g.settled) from public.signup_requests s join private.launch_delivery_guard g on g.signup_id=s.id where s.id='${r.id}'))`));
+        if(state.settled)assert.ok(['sent','failed'].includes(state.state),'do not replay an already settled raw finish, whose original API returns false');
+        else assert.equal(db.sql(`select public.finish_launch_delivery_v1('${r.id}','${r.token}','failed',null)`),'t');
+      },
+    ]);
+  };
   try {
     await db.start();
     db.sql('create role anon; create role authenticated; create role service_role bypassrls; grant usage on schema public to anon,authenticated,service_role');
@@ -56,6 +86,7 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
     db.sql(`update private.launch_list_control set mode='canonical',project_ref='${project}',source_commit='${source}';
       create schema synthetic_test; revoke all on schema synthetic_test from public,anon,authenticated,service_role;
       create table synthetic_test.facts(item_id uuid primary key,holds text[],refs text[],pause_seconds double precision not null default 0);
+      create table synthetic_test.barriers(id uuid primary key,released boolean not null);
       create sequence synthetic_test.proof_calls;
       ${db.sql("select replace(pg_get_functiondef('private.launch_retention_context_v1(uuid,bigint)'::regprocedure),'private.launch_retention_context_v1','synthetic_test.base_context')")};
       create or replace function private.launch_retention_context_v1(p_item_id uuid,p_generation bigint) returns jsonb language plpgsql stable security invoker set search_path=pg_catalog as $facts$
@@ -88,23 +119,26 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
     });
     await t.test('pre-command five-second deadline cancels a real 5.5-second proof and releases locks inside the open transaction',async()=>{
       const r=seed();db.sql(`update synthetic_test.facts set pause_seconds=5.5 where item_id='${r.item}'`);
-      const before=snapshot(),began=Date.now();
-      const running=db.asyncSql(`set application_name='bounded-slow-proof';begin;set local role service_role;
-        ${disposal(r)};reset role;select pg_sleep(1) /* post_cancel_pause */;commit`)
-        .then(output=>({output}),error=>({error}));
-      try {
+      const before=snapshot(),began=performance.now();
+      await withRace(r,async race=>{
+        const running=race.start(`set application_name='bounded-slow-proof';begin;set local role service_role;
+          select clock_timestamp() as server_started \\gset
+          ${disposal(r)};
+          select extract(epoch from (clock_timestamp()-:'server_started'::timestamptz))*1000;
+          ${race.wait}commit`);
         await observe('bounded-slow-proof');
-        await observe('bounded-slow-proof',"wait_event='PgSleep' and query like '%post_cancel_pause%'",400);
-        const elapsed=Date.now()-began;t.diagnostic(`slow proof cancellation observed after ${elapsed}ms`);
-        assert.ok(elapsed>=4500&&elapsed<5500,'real pre-command deadline, not the 5.5-second proof, ended the API statement');
+        await observe('bounded-slow-proof',"wait_event='PgSleep' and query like '%$gate$%'",400);
+        const observed=performance.now()-began;
         assert.equal(db.sql("select pg_try_advisory_xact_lock(hashtextextended('launch-list-fence',0))"),'t');
         assert.doesNotThrow(()=>db.sql(`begin;select item_id from private.launch_retention_items where item_id='${r.item}' for update nowait;
           select id from public.signup_requests where id='${r.id}' for update nowait;
           select approval_ref from private.launch_import_authorizations where approval_ref='${r.approval}' for update nowait;rollback`));
         assert.equal(snapshot(),before);
-      } finally {const result=await running;assert.ifError(result.error);
-        const out=JSON.parse(result.output);assert.deepEqual(out,{outcome:'refused',workId:r.item,generation:'2',reason:'unavailable',writes:0});}
-      assert.equal(db.sql(`select public.finish_launch_delivery_v1('${r.id}','${r.token}','failed')`),'t');
+        race.release();const [json,ms]=(await race.output(running)).split('\n'),elapsed=Number(ms);
+        t.diagnostic(`server API interval ${elapsed}ms; external observer scheduled after ${Math.round(observed)}ms`);
+        assert.ok(elapsed>=4500&&elapsed<5500,'real pre-command deadline, not the 5.5-second proof, ended the API statement');
+        assert.deepEqual(JSON.parse(json),{outcome:'refused',workId:r.item,generation:'2',reason:'unavailable',writes:0});
+      });
     });
     await t.test('actual statement cancellation after compact insertion rolls all writes back with sanitized count-only refusal',async()=>{
       db.sql(`create sequence synthetic_test.cancel_hits;
@@ -112,22 +146,20 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
           begin perform nextval('synthetic_test.cancel_hits');perform pg_sleep(5.5);return new;end $pause$;
         create trigger synthetic_cancel after insert on private.launch_retention_delivery for each row execute function synthetic_test.pause_after_compact()`);
       const r=seed(),before=snapshot(),began=Date.now();
-      try {
-        const out=JSON.parse(await db.asyncSql(`set role service_role;${disposal(r,'500ms')}`));
+      await withOwnedCleanup(()=>withRace(r,async race=>{
+        const out=JSON.parse(await race.output(race.start(`set role service_role;${disposal(r,'500ms')}`)));
         assert.ok(Date.now()-began<2000);assert.equal(db.sql('select is_called from synthetic_test.cancel_hits'),'t');
         assert.deepEqual(out,{outcome:'refused',workId:r.item,generation:'2',reason:'unavailable',writes:0});assert.equal(snapshot(),before);
         assert.equal(db.sql("select pg_try_advisory_xact_lock(hashtextextended('launch-list-fence',0))"),'t');
-      } finally {db.sql('drop trigger synthetic_cancel on private.launch_retention_delivery;drop function synthetic_test.pause_after_compact();drop sequence synthetic_test.cancel_hits');}
-      assert.equal(db.sql(`select public.finish_launch_delivery_v1('${r.id}','${r.token}','failed')`),'t');
+      }),[()=>db.sql('drop trigger synthetic_cancel on private.launch_retention_delivery;drop function synthetic_test.pause_after_compact();drop sequence synthetic_test.cancel_hits')]);
     });
     await t.test('same-address beta claim AND finish complete while cleanup waits for a launch tuple',async()=>{
       const r=seed();
-      const holder=db.asyncSql(`set statement_timeout='8s';set application_name='raw-tuple-holder';begin;
-        select id from public.signup_requests where id='${r.id}' for update;select pg_sleep(2);commit`);
-      let cleanup;
-      try {
+      await withRace(r,async race=>{
+        const holder=race.start(`set application_name='raw-tuple-holder';begin;
+          select id from public.signup_requests where id='${r.id}' for update;${race.wait}commit`);
         await observe('raw-tuple-holder');
-        cleanup=db.asyncSql(`set statement_timeout='6s';set application_name='raw-cleanup-wait';set role service_role;${disposal(r)}`);
+        const cleanup=race.start(`set application_name='raw-cleanup-wait';set role service_role;${disposal(r)}`);
         await observe('raw-cleanup-wait',"wait_event_type='Lock'");
         const began=Date.now();
         const beta=JSON.parse(await db.asyncSql(`set statement_timeout='900ms';set lock_timeout='600ms';set role service_role;
@@ -137,44 +169,63 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
         assert.equal(await db.asyncSql(`set statement_timeout='900ms';set role service_role;select public.finish_signup_delivery_v1('${beta.id}','${beta.token}','sent','beta-race-provider')`),'t');
         assert.ok(Date.now()-began<1500,'same-address beta completes within deadline while launch cleanup is still waiting');
         assert.equal(db.sql("select exists(select 1 from pg_stat_activity where application_name='raw-cleanup-wait' and wait_event_type='Lock')"),'t','cleanup still waits through beta finish');
-      } finally {await holder;if(cleanup) {
-        const out=JSON.parse(await cleanup);assert.equal(out.outcome,'refused');assert.equal(out.reason,'unavailable');assert.equal(out.writes,0);
-      }}
+        // Hold through the actual lock-timeout result, not an elapsed guess.
+        const out=JSON.parse(await race.output(cleanup));assert.equal(out.outcome,'refused');assert.equal(out.reason,'unavailable');assert.equal(out.writes,0);
+        race.release();await race.output(holder);
+      });
       assert.equal(db.sql(`select count(*) from public.signup_requests where id='${r.id}'`),'1');
       assert.equal(db.sql(`select delivery_state||':'||provider_id from public.signup_requests where email='${r.email}' and intent='beta'`),'sent:beta-race-provider');
-      assert.equal(db.sql(`select public.finish_launch_delivery_v1('${r.id}','${r.token}','failed')`),'t');
     });
     for(const actor of ['withdrawal','claim','finish']) await t.test(`cleanup versus ${actor} serializes on launch fence and cannot revive raw data`,async()=>{
       const r=seed();
-      const cleaning=db.asyncSql(`set statement_timeout='8s';set application_name='cleanup-${actor}';begin;set local role service_role;
-        ${disposal(r)};select pg_sleep(1);commit`);
-      try {
+      await withRace(r,async race=>{
+        const cleaning=race.start(`set application_name='cleanup-${actor}';begin;set local role service_role;
+          ${disposal(r)};${race.wait}commit`);
         await observe(`cleanup-${actor}`);
+        // Reproduce observer scheduling later than the old one-second holder.
+        // This delay is an adversarial test input, never synchronization.
+        if(actor==='withdrawal')await new Promise(resolve=>setTimeout(resolve,1200));
         const operation=actor==='withdrawal'?`select public.withdraw_launch_v1('${r.hash}')`:actor==='finish'?`select public.finish_launch_delivery_v1('${r.id}','${r.token}','sent','race-provider')`:`select public.claim_launch_signup_v2('${r.email}','direct','${'f'.repeat(64)}','2026-10-11-v1','recorded','${r.match}')`;
-        const competing=db.asyncSql(`set statement_timeout='6s';set application_name='competitor-${actor}';set role service_role;${operation}`);
+        const competing=race.start(`set statement_timeout='6s';set application_name='competitor-${actor}';set role service_role;${operation}`);
         await observe(`competitor-${actor}`,"wait_event_type='Lock'");
-        assert.equal(JSON.parse((await cleaning).split('\n')[0]).outcome,'disposed');
-        const out=await competing;
+        assert.equal(db.sql(`select exists(select 1 from pg_stat_activity where application_name='cleanup-${actor}' and wait_event='PgSleep')`),'t','holder overlaps actual contender');
+        race.release();assert.equal(JSON.parse(await race.output(cleaning)).outcome,'disposed');
+        const out=await race.output(competing);
         if(actor==='withdrawal')assert.equal(JSON.parse(out).outcome,'already_withdrawn');
         else if(actor==='claim')assert.equal(JSON.parse(out).suppressed,true);else assert.equal(out,'t');
         assert.equal(db.sql(`select count(*) from public.signup_requests where id='${r.id}'`),'0');
         if(actor!=='finish')assert.equal(db.sql(`select public.finish_launch_delivery_v1('${r.id}','${r.token}','failed')`),'t');
-      } finally {await cleaning;}
+      });
+    });
+    await t.test('I2 failed overlap assertion still releases, settles every actor and isolates following readiness',async()=>{
+      const r=seed(),original=Error('synthetic observer assertion');
+      await assert.rejects(withRace(r,async race=>{
+        race.start(`set application_name='failure-cleanup';begin;set local role service_role;${disposal(r)};${race.wait}commit`);
+        await observe('failure-cleanup');
+        race.start(`set statement_timeout='6s';set application_name='failure-competitor';set role service_role;select public.withdraw_launch_v1('${r.hash}')`);
+        await observe('failure-competitor',"wait_event_type='Lock'");
+        throw original;
+      }),error=>error===original);
+      assert.equal(db.sql("select count(*) from pg_stat_activity where application_name in ('failure-cleanup','failure-competitor')"),'0');
+      assert.equal(db.sql('select private.launch_delivery_data_ready_v1()'),'t');
+      assert.equal(db.sql(`select outcome from private.launch_retention_delivery where signup_id='${r.id}'`),'failed');
     });
     for(const actor of ['hold','reference','epoch']) await t.test(`committed ${actor} change invalidates the exact earlier cleanup decision`,async()=>{
       const r=seed();
       const change=actor==='hold'?`update synthetic_test.facts set holds=array['legal_hold'] where item_id='${r.item}';update private.launch_retention_items set generation=generation+1,reason_code='held' where item_id='${r.item}'`:actor==='reference'?`update synthetic_test.facts set refs=array['delivery_reference'] where item_id='${r.item}';update private.launch_retention_items set generation=generation+1,reason_code='live_reference' where item_id='${r.item}'`:actor==='epoch'?`update private.launch_list_control set fence_epoch=fence_epoch+1`:`update public.signup_requests set source='instagram' where id='${r.id}'`;
-      const writer=db.asyncSql(`set statement_timeout='8s';set application_name='owning-${actor}';begin;select pg_advisory_xact_lock(hashtextextended('launch-list-fence',0));${change};select pg_sleep(0.4);commit`);
-      try {
+      await withRace(r,async race=>{
+        const writer=race.start(`set application_name='owning-${actor}';begin;select pg_advisory_xact_lock(hashtextextended('launch-list-fence',0));${change};${race.wait}commit`);
         await observe(`owning-${actor}`);
-        const cleanup=db.asyncSql(`set statement_timeout='5s';set role service_role;${disposal(r)}`);
-        const out=JSON.parse(await cleanup);assert.equal(out.outcome,'refused');await writer;
+        const cleanup=race.start(`set application_name='stale-${actor}';set role service_role;${disposal(r)}`);
+        await observe(`stale-${actor}`,"wait_event_type='Lock'");
+        race.release();await race.output(writer);
+        const out=JSON.parse(await race.output(cleanup));assert.equal(out.outcome,'refused');assert.equal(out.writes,0);
         assert.equal(db.sql(`select count(*) from public.signup_requests where id='${r.id}'`),'1');
         assert.equal(db.sql(`select consumed_at is null from private.launch_import_authorizations where approval_ref='${r.approval}'`),'t');
         assert.equal(db.sql(`select count(*) from private.launch_retention_delivery where item_id='${r.item}'`),'0');
         assert.equal(JSON.parse(db.sql(disposal(r))).outcome,'refused');
         assert.equal(db.sql(`select public.finish_launch_delivery_v1('${r.id}','${r.token}','failed')`),'t');
-      } finally {await writer;}
+      });
     });
     await t.test('actual import API holds the launch fence and invalidates prior canonical cleanup scope',async()=>{
       const r=seed();assert.equal(db.sql(`select public.finish_launch_delivery_v1('${r.id}','${r.token}','failed')`),'t');
@@ -184,22 +235,30 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
       const inv=JSON.parse(db.sql(`select public.inventory_launch_legacy_v1('${key}')`));
       db.sql(`insert into private.launch_import_authorizations(approval_ref,project_ref,source_commit,schema_identity,expected_scope,fence_epoch,writer_ids,control_evidence,test_evidence,settlement_evidence,verified_at,expires_at)
         values('synthetic-import-race','${project}','${source}','${inv.schemaIdentity}','${inv.scopeHash}',${inv.fenceEpoch},array['synthetic-writer'],'synthetic-control','synthetic-test','synthetic-settlement',clock_timestamp()-interval '1 second',clock_timestamp()+interval '1 hour')`);
-      const importing=db.asyncSql(`set statement_timeout='8s';set application_name='actual-import';begin;set local role service_role;
-        select public.reconcile_launch_legacy_v1('${inv.scopeHash}','${key}',true);select pg_sleep(0.5);commit`);
-      try{
+      await withOwnedCleanup(()=>withRace(r,async race=>{
+        assert.equal(db.sql('select private.launch_delivery_data_ready_v1()'),'t','all earlier synthetic handoffs are settled before import');
+        const importing=race.start(`set statement_timeout='8s';set application_name='actual-import';begin;set local role service_role;
+          select public.reconcile_launch_legacy_v1('${inv.scopeHash}','${key}',true);${race.wait}commit`);
         await observe('actual-import');
-        const cleanup=db.asyncSql(`set statement_timeout='5s';set application_name='cleanup-after-import';set role service_role;${disposal(r)}`);
+        const cleanup=race.start(`set application_name='cleanup-after-import';set role service_role;${disposal(r)}`);
         await observe('cleanup-after-import',"wait_event_type='Lock'");
-        const imported=JSON.parse((await importing).split('\n')[0]);assert.equal(imported.outcome,'reconciled');assert.equal(imported.disposalAllowed,false);
-        assert.equal(JSON.parse(await cleanup).outcome,'refused');
+        race.release();const imported=JSON.parse(await race.output(importing));assert.equal(imported.outcome,'reconciled');assert.equal(imported.disposalAllowed,false);
+        const refused=JSON.parse(await race.output(cleanup));assert.equal(refused.outcome,'refused');assert.equal(refused.writes,0);
         assert.equal(db.sql(`select consumed_at is null from private.launch_import_authorizations where approval_ref='${r.approval}'`),'t');
         assert.equal(db.sql('select count(*) from private.launch_import_context'),'0');
         assert.equal(db.sql(`select count(*) from public.signup_requests where id='${r.id}'`),'1');
-      }finally{await importing;db.sql("update private.launch_list_control set mode='canonical'");}
+      }),[()=>db.sql("update private.launch_list_control set mode='canonical'")]);
     });
     await t.test('outer-fence timeout returns fixed count-only refusal with no partial loss',async()=>{
-      const r=seed();const holder=db.asyncSql("set application_name='timeout-holder';begin;select pg_advisory_xact_lock(hashtextextended('launch-list-fence',0));select pg_sleep(2);commit");
-      try {await observe('timeout-holder');const out=JSON.parse(await db.asyncSql(`set role service_role;${disposal(r)}`));assert.equal(out.outcome,'refused');assert.equal(out.reason,'unavailable');assert.equal(out.writes,0);} finally {await holder;}
+      const r=seed(),before=snapshot();
+      await withRace(r,async race=>{
+        const holder=race.start(`set application_name='timeout-holder';begin;select pg_advisory_xact_lock(hashtextextended('launch-list-fence',0));${race.wait}commit`);
+        await observe('timeout-holder');
+        const cleanup=race.start(`set application_name='timeout-contender';set role service_role;${disposal(r)}`);
+        await observe('timeout-contender',"wait_event_type='Lock'");
+        const out=JSON.parse(await race.output(cleanup));assert.equal(out.outcome,'refused');assert.equal(out.reason,'unavailable');assert.equal(out.writes,0);
+        assert.equal(snapshot(),before);race.release();await race.output(holder);
+      });
       assert.equal(db.sql(`select count(*) from public.signup_requests where id='${r.id}'`),'1');
     });
   } finally {db.cleanup();}

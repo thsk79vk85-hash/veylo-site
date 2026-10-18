@@ -8,14 +8,15 @@
   multi-generation receipt catch-up. Task 3 is locally accepted after fix
   `c41df0e5f9f588b579994084a2af8275ca2fb8d9`. Task4 was independently locally
   accepted at base `3d1883595b4082204be39ec8ba37e59c2a2a22af`. Tasks1–5 are
-  locally accepted at Task6 BASE `fd523da`. Initial Task6 review found T6-I1:
-  invalid-coverage cases were masked by an unknown handoff. Fix1 isolates all
-  six after settlement/replay with real source fences, readiness and unchanged
-  state/authority assertions; focused restore HTTP13/13 only. Obtain fresh
-  scoped/compound review of this fix and the separate three-file app factual
-  candidate, then broad whole-change review including M1/M2 and deferred T6-N1
-  cleanup-failure handling/T6-N2 disclosure precision. Previous full488/491 is
-  not superseded by this focused pass. Local HTTP/restore
+  locally accepted at Task6 BASE `fd523da`; Task6 fix1 accepted at d43db62.
+  Whole review found I1 selection starvation/I2 unreliable full validation and
+  N1 cleanup/N2 factual precision; consolidated wave implements forward Q,
+  deterministic race/settlement and all-owned teardown fixes, with the separate
+  three-file app factual qualification. Obtain ONE fresh scoped combined rereview
+  of the exact frozen wave and actual default full/DB/HTTP/source/package evidence.
+  Covering regression54/54 is not a substitute for those gates; historical
+  full488/491 remains failed history. N3 diagnostics/provenance is explicitly
+  retained, not a suppression/install/pin-change task. Local HTTP/restore
   fixtures do not close production restore or any real acceptance gate.
   Source: `docs/launch-retention-source-map.json`;
   external acceptance receipt: app `tasks/2026-10-18-launch-list-retention-progress.md`.
@@ -77,13 +78,16 @@
   `20261018150520_launch_list_retention_disposition.sql`, plus Task 4 migration
   `20261018170026_launch_list_retention_retirement.sql` and Task5 processing
   `20261018184435_launch_list_retention_processing.sql`, with the later ordered
+  forward selection `20261018215239_launch_list_retention_selection.sql` and
   website-only rollout; never blanket-push the app database. Keep retention-aware
   finish/readiness during rollback; do not recreate erased raw rows for old code.
-- `[qa][later]` Retention Minor M2: existing local PostgreSQL fixture cleanup
-  chatter remains deferred to final review; do not change the frozen helper solely
-  to remove it during Task 2. Task 2 RED/failed-GREEN/repaired-GREEN diagnostics
-  remain unique append-only evidence; preserve them in the controller archive.
-- `[qa][needs-verification]` Task 4 final review: the default parallel full DB run
+- `[qa][needs-verification]` Preserve N3 custody: original frozen-helper UUID
+  cleanup ownership messages, CLI notices, four app Node warnings and historical
+  overwritten/uncaptured/transcribed output limits. No reconstruction, generic
+  warning suppression, immutable pin relaxation or installation. Archive each
+  new capture uniquely with its exact tested source and scope.
+- `[qa][needs-verification]` Historical M1 evidence (retain, do not repeat solely
+  for clean logs): the Task4 default parallel full DB run
   missed the unchanged Task 3 import-race fixture's 0.5-second lock-observation
   window (242/244); that S+D-only fixture passed alone (13/13). Preserve the failed
   run and assess parallel fixture-load reliability separately; no accepted test,
@@ -100,8 +104,11 @@
   correction required a new final-runtime full run:488/491, all29 HTTP passing,
   unchanged withdrawal lock observation/import result/parent failing. Default
   DB260/260 passed separately. Preserve ALL results; load/timing causality remains
-  inferred, not proved. A passing DB run is no deterministic-handshake fix or
-  waiver; assess these differing old-race failures in the broad final wave.
+  inferred, not universally proved. The consolidated I2 fix now uses deterministic
+  gates, all-actor settlement, prerequisite isolation and separate server timing;
+  review its fresh frozen-source default gate evidence. Separate DB/serial passes
+  never waive earlier full failures. Original first-full observation5530ms and
+  whole subtest6993.059625ms are distinct; earlier conflation is explicitly corrected.
 - `[supabase][qa][needs-verification]` Run the full owned local DB suite for later
   launch changes. Verify hosted extension/schema/role parity, actual scale/locks,
   provider late-result persistence and fresh purpose-bound approvals before live

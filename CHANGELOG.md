@@ -1,5 +1,44 @@
 # Changelog
 
+## 2026-10-19 — Consolidated launch-retention review fixes (local candidate)
+
+- I1: new CLI-generated forward Q selection migration prioritizes unique current
+  usable authority before bounding inventory. Actual SQL/client regression keeps
+  100 older blocked rows unchanged/visible while two later ordinary work items
+  progress across invocations. Existing v1 signatures/envelopes/strict null age,
+  protected per-item checks, partial results and independent copy unknowns remain.
+  All seven accepted SQL files, source pins, package/default commands and frozen
+  D2 helper stay byte-exact. Q refreshes the existing owner-installed fingerprint.
+- I2: owned race gates replace holder sleeps; actual contender overlap, exact
+  outcomes, rollback/lock release, failed-assertion actor settlement and isolated
+  import readiness are asserted. Server execution and observer timing are separate;
+  pre-command5s admission/cancellation and no global defaults remain. Historical
+  first-full observation was5530ms;6993.059625ms was whole subtest duration. Old
+  reports/failures are preserved, not rewritten or relabelled as passes.
+- N1: test-only cleanup helper attempts all releases/fixtures and preserves original
+  and cleanup failures. Both HTTP/SQL restore fixtures use it; injected release/
+  first-cleanup failures cover the branch. N2: the separate three-file app factual
+  wave clarifies category57/61 ledger SELECT versus narrow RPC mutation; audiences,
+  66 IDs/crosswalks and unrelated facts remain frozen. N3: retain UUID cleanup
+  ownership diagnostics, CLI notices, four app Node warnings and honest lost/
+  uncaptured/transcribed evidence limits; no warning suppression or upgrades.
+- Areas: new selection SQL; processing/race/restore/HTTP tests and test-only cleanup
+  utility; runbook and website CHANGELOG/TODO. Focused covering run54/54 passes;
+  unique RED/failed-GREEN captures retained. Required frozen-source default full,
+  explicit DB, full HTTP and source/package checks are recorded in the wave report
+  after execution. One fresh scoped rereview remains; no self-acceptance or PR.
+- Deployment now: none. EAS Update possible/required no/no; new EAS Build no;
+  future selective website Supabase migration yes (Q after I/L/C/S/D/R/P), none
+  pushed; Edge Function/secret/admin/store/public-policy changes no. Future site
+  adoption/wiring only under separate authority, compatible consumers before
+  enforcement/cleanup, no blanket app db push. Suggested deployment command none.
+  iOS1.0.2/build1.0.20, Android1.0.2/code4 and retained1.0.1 native contracts
+  unchanged; both platforms' browser/contact/deep-link QA and all16 real rows
+  remain NOT RUN. All66/21open/20final/B3 RED and photo expiry OFF persist.
+  Typecheck/lint/expo-doctor N/A: no app executables/native/dependency changes.
+  Rollback: stop/fence claims/cleanup; preserve compatible finish/readiness and
+  suppression; never recreate disposed raw data to run older code.
+
 ## 2026-10-19 — Isolate restore-coverage HTTP refusals (Task6 fix1, T6-I1)
 
 - Moves the six invalid-coverage cases after actual unknown-handoff settlement

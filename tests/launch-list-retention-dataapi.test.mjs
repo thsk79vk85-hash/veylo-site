@@ -7,12 +7,13 @@ import {launchDataApi} from './helpers/launch-dataapi.mjs';
 import {createLaunchRetentionClient} from '../lib/launch-retention-client.mjs';
 import {processLaunchRetention,runReceipt} from '../lib/process-launch-retention.mjs';
 import {launchPostgres} from './helpers/launch-postgres.mjs';
+import {withOwnedCleanup} from './helpers/owned-cleanup.mjs';
 import {launchMatch} from '../lib/launch-list.mjs';
 import {consolidationReceipt} from '../lib/consolidate-launch-list.mjs';
 const migrations=['20261011050938_add_signup_intents.sql','20261013112838_launch_list_lifecycle.sql',
   '20261013125523_launch_list_canonical_cutover.sql','20261018141524_launch_list_retention_state.sql',
   '20261018150520_launch_list_retention_disposition.sql','20261018170026_launch_list_retention_retirement.sql',
-  '20261018184435_launch_list_retention_processing.sql'];
+  '20261018184435_launch_list_retention_processing.sql','20261018215239_launch_list_retention_selection.sql'];
 const read=n=>readFileSync(new URL(`../supabase/${n}`,import.meta.url),'utf8');
 const project='yohiumlrpfdhphsnnxxw',source='a'.repeat(40),key='synthetic-http-only-key';
 const quote=v=>v===null?'null':`'${String(v).replaceAll("'","''")}'`;
@@ -58,7 +59,7 @@ function bindFacts(db){
     update private.launch_write_fence_contract set definition_hash=private.launch_write_fence_fingerprint_v1();
     update private.launch_import_authorizations set schema_identity=private.launch_import_schema_v1() where consumed_at is null`);
 }
-test('real owned PostgREST HTTP retention integration on all seven accepted migrations',async t=>{
+test('real owned PostgREST HTTP retention integration on accepted I/L/C/S/D/R/P plus Q',async t=>{
   const api=launchDataApi();
   const client=createLaunchRetentionClient({transport:api.transport});
   const snapshot=()=>api.sql(`select jsonb_build_array(
@@ -266,7 +267,8 @@ test('nonempty old import/mode and independently current complete restore throug
     }
     assert.equal(observed,true);assert.equal(other.sql("select pg_try_advisory_xact_lock(hashtextextended('launch-list-fence',0))"),'f');
   };
-  const release=async()=>{if(barrier){other.sql('update synthetic_restore.barrier set released=true');await barrier;barrier=undefined;}};
+  const release=async()=>{if(barrier){const running=barrier;barrier=undefined;
+    await withOwnedCleanup(async()=>other.sql('update synthetic_restore.barrier set released=true'),[()=>running]);}};
   const sourceDigest=()=>other.sql('select private.launch_retention_replay_digest_v1(null)');
   const proofFor=(ref,iv)=>{
     const head=JSON.parse(other.sql("select jsonb_build_object('head',head,'watermark',watermark::text,'keys',keys) from synthetic_restore.current_head"));
@@ -277,12 +279,12 @@ test('nonempty old import/mode and independently current complete restore throug
       externalWatermark:head.watermark,coveredWatermark:head.watermark,liveKeyGenerations:head.keys,coveredKeyGenerations:head.keys,manifestDigest:sourceDigest()};
   };
   const bind=proof=>api.sql(`delete from synthetic_restore.coverage;insert into synthetic_restore.coverage values(${quote(JSON.stringify(proof))}::jsonb)`);
-  try{
+  return withOwnedCleanup(async()=>{
     await install(api,t);await other.start();
     other.sql('create role anon;create role authenticated;create role service_role bypassrls;grant usage on schema public to anon,authenticated,service_role');
     other.sql(read('waitlist.sql'));other.sql('grant all on public.waitlist to service_role');
     for(const n of migrations)other.sql(read(`migrations/${n}`));
-    t.diagnostic(`Independent network-none source ${other.name}: same waitlist.sql + ALL seven accepted migrations`);
+    t.diagnostic(`Independent network-none source ${other.name}: same waitlist.sql + accepted I/L/C/S/D/R/P plus Q`);
     api.sql(`update private.launch_list_control set project_ref='${project}',source_commit='${source}';
       insert into public.waitlist(email,created_at) values('legacy-http@test.invalid','2026-01-01'),('suppressed-import@test.invalid','2026-01-02');
       insert into private.launch_suppressions values('${launchMatch('suppressed-import@test.invalid',key)}','2026-01-03','legacy-reconciliation');
@@ -418,7 +420,7 @@ test('nonempty old import/mode and independently current complete restore throug
       const betaClaim=await rpc(api,'claim_signup_v1',{p_email:'after-stop@test.invalid',p_intent:'beta',p_platform:'android',p_source:'direct',p_ip_hash:hash(randomUUID())});
       assert.equal(betaClaim.send,true);
     });
-  }finally{await release();await api.cleanup();other.cleanup();}
+  },[release,()=>api.cleanup(),()=>other.cleanup()]);
 });
 
 test('HTTP keeps independent uncertainty for unenrolled raw work and after actual R removes the last local marker',async t=>{

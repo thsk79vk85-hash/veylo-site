@@ -8,7 +8,7 @@ import { processLaunchRetention } from '../lib/process-launch-retention.mjs';
 const read=n=>readFileSync(new URL(`../supabase/${n}`,import.meta.url),'utf8');
 const project='yohiumlrpfdhphsnnxxw',source='a'.repeat(40);
 
-test('bounded processing and actual startup-deadline supplier on W+I+L+C+S+D+R+P',async t=>{
+test('bounded processing and actual startup-deadline supplier on W+I+L+C+S+D+R+P+Q',async t=>{
   const fixture=createOwnedLaunchRetentionFixture(),db=fixture.db;
   const client=createLaunchRetentionClient({transport:fixture.transport});
   const call=q=>db.sql(`set role service_role;${q}`);
@@ -44,7 +44,7 @@ test('bounded processing and actual startup-deadline supplier on W+I+L+C+S+D+R+P
     db.sql(read('waitlist.sql'));db.sql('grant all on public.waitlist to service_role');
     const migrations=['20261011050938_add_signup_intents.sql','20261013112838_launch_list_lifecycle.sql','20261013125523_launch_list_canonical_cutover.sql',
       '20261018141524_launch_list_retention_state.sql','20261018150520_launch_list_retention_disposition.sql','20261018170026_launch_list_retention_retirement.sql',
-      ...readdirSync(new URL('../supabase/migrations/',import.meta.url)).filter(n=>n.endsWith('_launch_list_retention_processing.sql'))];
+      ...readdirSync(new URL('../supabase/migrations/',import.meta.url)).filter(n=>n.endsWith('_launch_list_retention_processing.sql')||n.endsWith('_launch_list_retention_selection.sql')).sort()];
     for(const name of migrations)db.sql(read(`migrations/${name}`));
     t.diagnostic(`Actual fixture: waitlist.sql + ${migrations.join(', ')}`);
     const installed=db.sql("select to_regprocedure('public.inventory_launch_retention_v1(integer)') is not null and to_regprocedure('public.sweep_launch_rate_events_v1(integer)') is not null");
@@ -183,10 +183,37 @@ test('bounded processing and actual startup-deadline supplier on W+I+L+C+S+D+R+P
         from private.launch_import_authorizations where approval_ref='${approval}'`),'t');
       const after=snapshot(),again=await processLaunchRetention({client});assert.equal(again.state,'partial');assert.equal(again.counts.receipt.completed,0);assert.equal(snapshot(),after);
     });
+    await t.test('I1 unchanged blocked prefix cannot hide usable authority beyond the hundredth row',async()=>{
+      db.sql(`insert into private.launch_retention_items(item_id,launch_match,key_generation,generation,fence_epoch,state,policy_version,reason_code,evidence_ref,scope_hash,withdrawn_at,decided_at)
+        select gen_random_uuid(),repeat(md5('blocked-prefix-'||n),2),'1',1,0,'marker',1,'unavailable','synthetic-blocked','${'c'.repeat(64)}','2026-10-18','1990-01-01'
+        from generate_series(1,100) n`);
+      const blocked=()=>db.sql("select jsonb_agg(to_jsonb(i) order by item_id) from private.launch_retention_items i where evidence_ref='synthetic-blocked'");
+      const before=blocked();
+      for(let invocation=0;invocation<2;invocation++){
+        const eligible=seed();
+        const inventory=await client.inventory({limit:100});
+        assert.equal(inventory.items.length,100);assert.equal(inventory.hasMore,true);
+        assert.ok(inventory.items.some(i=>i.itemId===eligible.itemId&&i.reason==='eligible'),'a usable authority beyond 100 unchanged blocked rows must be selected');
+        assert.ok(inventory.items.some(i=>i.approvalRef===null&&i.reason==='unavailable'),'blocked work remains visible for review');
+        const receipt=await processLaunchRetention({client,limit:100});
+        assert.equal(receipt.state,'partial');assert.ok(receipt.counts.raw.completed>0);
+        assert.ok(Object.values(receipt.counts).reduce((sum,c)=>sum+c.visited,0)<=100);
+        assert.equal(db.sql(`select state||':'||(source_signup_id is null) from private.launch_retention_items where item_id='${eligible.itemId}'`),'marker:true','a disabled unsent source is removed without inventing a handoff receipt');
+        assert.equal(blocked(),before,'progress cannot mutate, authorize or dismiss blocked work');
+      }
+      const beforeRead=snapshot();
+      assert.equal(JSON.parse(db.sql('begin read only;set local role service_role;select public.inventory_launch_retention_v1(100);commit')).state,'ready');
+      assert.equal(snapshot(),beforeRead);
+    });
     await t.test('fingerprint covers new processing facade definitions/ACLs and no new global defaults',()=>{
       assert.equal(db.sql(`begin;revoke execute on function public.sweep_launch_rate_events_v1(integer) from service_role;
         select private.launch_write_fence_ready_v1();rollback`),'f');
       assert.equal(db.sql('select private.launch_write_fence_ready_v1()'),'t');assert.equal(db.sql('show statement_timeout'),'0');
+      const definition=db.sql("select pg_get_functiondef('private.inventory_launch_retention_v1(integer)'::regprocedure)");
+      const altered=definition.replace('p_limit>100','p_limit>99');assert.notEqual(altered,definition);
+      assert.equal(db.sql(`begin;${altered};select private.launch_write_fence_ready_v1();
+        set local role service_role;select public.inventory_launch_retention_v1(1)->>'state';rollback`),'f\nunavailable','Q body drift must fail the existing owner-installed fingerprint');
+      assert.equal(db.sql('select private.launch_write_fence_ready_v1()'),'t');
     });
     await t.test('active launch and both platform beta rows remain byte-equivalent; SQL bounds fail closed',async()=>{
       assert.equal(preserved(),beforePreserved);
@@ -207,7 +234,8 @@ async function installProcessingFixture(t,fixture){
   db.sql(read('waitlist.sql'));db.sql('grant all on public.waitlist to service_role');
   const names=['20261011050938_add_signup_intents.sql','20261013112838_launch_list_lifecycle.sql','20261013125523_launch_list_canonical_cutover.sql',
     '20261018141524_launch_list_retention_state.sql','20261018150520_launch_list_retention_disposition.sql',
-    '20261018170026_launch_list_retention_retirement.sql','20261018184435_launch_list_retention_processing.sql'];
+    '20261018170026_launch_list_retention_retirement.sql','20261018184435_launch_list_retention_processing.sql',
+    '20261018215239_launch_list_retention_selection.sql'];
   for(const name of names)db.sql(read(`migrations/${name}`));
   t.diagnostic(`Actual separate I2 fixture: waitlist.sql + ${names.join(', ')}`);
   db.sql(`update private.launch_list_control set project_ref='${project}',source_commit='${source}',mode='canonical'`);

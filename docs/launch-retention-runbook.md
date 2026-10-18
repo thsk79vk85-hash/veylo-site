@@ -24,8 +24,14 @@ unavailable for unsafe fingerprint/restore state. Protected owning facts remain
 unavailable. The D/R executors still recheck all consent/purpose/hold/reference/
 settlement/restore/field facts transactionally; inventory never substitutes for
 them. Missing or ambiguous authority is review, never minted or guessed. More
-than the selected bound remains explicit follow-up; exceptional first-page work
-needs private operator resolution rather than an unbounded scan or bypass.
+than the selected bound remains explicit follow-up. Forward migration Q joins
+unique current usable authority before selecting at most100 items (one extra
+read-only lookahead for hasMore), prioritizing usable authority then decision
+time/ID. An unchanged no-authority prefix cannot hide ordinary authorized work.
+Missing/ambiguous/stale/consumed authority stays unchanged and available for private
+review, with hasMore when outside the selected page; it cannot authorize itself.
+The next run re-evaluates all authority matches. D/R still recheck actual owning
+facts; authority priority is not eligibility, coverage or an all-copy result.
 Inventory selection does not establish completeness: it cannot account for an
 unenrolled withdrawn/unknown raw row or independent outstanding copies. Fixed
 `coverage_unavailable` and `copies_unavailable` remain explicit even when the
@@ -115,7 +121,8 @@ and installed `/usr/bin/nc -w 30` to that exact owned PostgREST. It is a byte
 tunnel, without HTTP routes/parsing/rewriting/error responses. Awaited cleanup
 closes its sockets/children and removes/checks only exact owned resources.
 
-Each fixture installs waitlist.sql plus ALL seven accepted I/L/C/S/D/R/P migrations;
+Each HTTP fixture installs waitlist.sql plus seven accepted I/L/C/S/D/R/P migrations
+and new Q `20261018215239_launch_list_retention_selection.sql`;
 original migration bytes are unchanged. Synthetic roles use explicit grants,
 the original RLS/ACL contract, owner-only necessity/field/restore bindings and
 purpose-specific authority. No test issuer/binding ships. Requests exercise
@@ -151,11 +158,25 @@ fence THROUGH activation. Missing/stale/self-certified/tampered proof refuses;
 complete coverage cannot settle unknown delivery. Owner-only synthetic dump/replay
 and proof tables are local fixtures, not a production currency/replay integration.
 
-Controller review of Task6/compound facts and the broad final review remain next.
-Mandatory full-run results and every failed diagnostic are retained in the Task6
-scratch report; a focused pass does not replace those results. The known default
-S+D-only import-race observation failure remains a final-review concern until a
-deterministic fix is separately reviewed; no skip, clean-log rerun or waiver.
+The consolidated final wave replaces fixed race-holder sleeps with explicit
+owner-only gates and observed contender locks. Every started actor is awaited on
+success or failure; each synthetic handoff is settled before following global
+import prerequisites. Server execution timing is recorded separately from external
+observer scheduling, preserving the five-second command deadline/rollback oracle.
+Both SQL-clone and HTTP restore fixtures attempt every owned teardown and retain
+original plus cleanup errors. Successful absence audits alone cannot prove this
+failure branch. The S+D-only race fixture and I/L/C/S/D/R-only SQL-clone restore
+fixture retain those scopes; they do not become Q coverage. The processing and
+HTTP fixtures cover Q. Exact frozen-source full/DB/HTTP results are recorded in
+the final-wave report; historical488/491 and earlier failures remain preserved.
+One fresh scoped combined rereview by the controller remains required.
+
+Retained N3: frozen D2 UUID cleanup messages are ownership diagnostics, not failed
+cleanup. CLI update notices and the app's four existing experimental Node warnings
+do not establish product failure or install authority. Early overwritten output,
+uncaptured generator output and transcribed diagnostics retain their provenance
+limits; none is reconstructed. New captures use unique labels/UUIDs. No generic
+warning suppression, pin loosening or cosmetic heavy rerun is warranted.
 
 After separate operational acceptance, the proposed cadence is hourly bounded
 runs. Assign private actionable exceptions/overdue reviews to John or his
