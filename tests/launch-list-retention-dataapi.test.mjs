@@ -351,15 +351,6 @@ test('nonempty old import/mode and independently current complete restore throug
       delete from private.launch_import_authorizations;delete from public.waitlist;delete from public.signup_requests;delete from public.signup_rate_events;
       ${dump(other.name)}\ncommit;`);
     iv=await inventory();ref=legacyApproval(iv,'restore','canonical');
-    const base=proofFor(ref,iv);
-    for(const [name,patch] of [
-      ['stale head',{coveredHead:hash('older')}],['stale watermark',{coveredWatermark:'9007199254740992'}],
-      ['missing older live key',{coveredKeyGenerations:['2']}],['self-certified source',{origin:'restored_snapshot'}],
-      ['tampered full manifest',{manifestDigest:'f'.repeat(64)}],['missing source barrier',{stableBarrierRef:null}],
-    ])await t.test(`HTTP restore refuses ${name} without consuming approval`,async()=>{
-      bind({...base,...patch});assert.equal((await mode(iv)).outcome,'refused');
-      assert.equal(api.sql(`select consumed_at is null from private.launch_import_authorizations where approval_ref='${ref}'`),'t');
-    });
     await t.test('complete current coverage and exact applied digest still cannot settle an unknown handoff',async()=>{
       await fence();try{
         bind(proofFor(ref,iv));assert.equal(api.sql(`select private.launch_retention_replay_digest_v1('${ref}')`),sourceDigest());
@@ -374,6 +365,41 @@ test('nonempty old import/mode and independently current complete restore throug
       delete from private.launch_import_authorizations where approval_ref='${ref}'`);
     other.sql(`update synthetic_restore.current_head set head='${hash('settled-current-head')}',watermark=watermark+1`);
     iv=await inventory();ref=legacyApproval(iv,'restore','canonical');
+    const restoreReady=()=>api.sql(`set role service_role;select private.launch_retention_restore_ready_v1((select a from private.launch_import_authorizations a where approval_ref='${ref}'),'${iv.scopeHash}',${iv.fenceEpoch})`);
+    const restoreState=()=>api.sql(`select jsonb_build_object(
+      'manifest',private.launch_retention_replay_manifest_v1(null),
+      'control',(select to_jsonb(c) from private.launch_list_control c),
+      'authorities',(select jsonb_agg(to_jsonb(a) order by approval_ref) from private.launch_import_authorizations a),
+      'legacy',(select jsonb_agg(to_jsonb(w) order by id) from public.waitlist w),
+      'signups',(select jsonb_agg(to_jsonb(s) order by id) from public.signup_requests s),
+      'rate',(select jsonb_agg(to_jsonb(r) order by id) from public.signup_rate_events r))`);
+    for(const [name,patch] of [
+      ['stale head',{coveredHead:hash('older')}],['stale watermark',{coveredWatermark:'9007199254740992'}],
+      ['missing older live key',{coveredKeyGenerations:['2']}],['self-certified source',{origin:'restored_snapshot'}],
+      ['tampered full manifest',{manifestDigest:'f'.repeat(64)}],['missing source barrier',{stableBarrierRef:null}],
+    ])await t.test(`HTTP restore refuses ${name} without consuming approval`,async()=>{
+      await fence();try{
+        // First establish the same current proof can pass every readiness check.
+        // Only then corrupt one field, after the unknown handoff was settled and
+        // replayed. No independent delivery or absent source fence may mask it.
+        const base=proofFor(ref,iv);bind(base);
+        assert.equal(api.sql('select private.launch_delivery_data_ready_v1()'),'t','invalid coverage must be the only refusal condition, not an unknown handoff');
+        assert.equal(restoreReady(),'t');
+        assert.equal(api.sql(`select private.launch_cutover_data_ready_v1('${key}') and private.launch_write_fence_ready_v1()`),'t');
+        assert.equal(api.sql(`select private.launch_retention_replay_digest_v1('${ref}')`),sourceDigest());
+        assert.equal(iv.configured,true);assert.equal(iv.counts.invalid,0);assert.equal(iv.counts.conflicts,0);
+        assert.deepEqual(await inventory(),iv,'scope/epoch remain current before corrupting only coverage');
+        if(name==='missing source barrier')await release();
+        assert.equal(other.sql("select pg_try_advisory_xact_lock(hashtextextended('launch-list-fence',0))"),name==='missing source barrier'?'t':'f','real OTHER-source barrier must match the isolated case');
+        bind({...base,...patch});const before=restoreState();
+        assert.equal(restoreReady(),'f',`${name} must independently invalidate restore coverage`);
+        assert.equal((await mode(iv)).outcome,'refused');
+        assert.equal(restoreState(),before,'refusal preserves control, authority, replay cohorts and raw state');
+        assert.equal(api.sql(`select consumed_at is null from private.launch_import_authorizations where approval_ref='${ref}'`),'t');
+        assert.deepEqual(await inventory(),iv,'refusal leaves scope/epoch unchanged');
+        assert.equal(other.sql("select pg_try_advisory_xact_lock(hashtextextended('launch-list-fence',0))"),name==='missing source barrier'?'t':'f','source barrier state persists through HTTP refusal');
+      }finally{await release();}
+    });
     await t.test('independent source fence persists through legitimate nonempty HTTP restore activation and rebase',async()=>{
       await fence();try{
         bind(proofFor(ref,iv));assert.equal(api.sql(`select private.launch_retention_replay_digest_v1('${ref}')`),sourceDigest());

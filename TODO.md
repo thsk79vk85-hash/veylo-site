@@ -8,9 +8,14 @@
   multi-generation receipt catch-up. Task 3 is locally accepted after fix
   `c41df0e5f9f588b579994084a2af8275ca2fb8d9`. Task4 was independently locally
   accepted at base `3d1883595b4082204be39ec8ba37e59c2a2a22af`. Tasks1–5 are
-  locally accepted at Task6 BASE `fd523da`. Obtain fresh controller Task6 review
-  of owned full-migration HTTP tests and the separate three-file app factual
-  candidate, then broad whole-change review including M1/M2. Local HTTP/restore
+  locally accepted at Task6 BASE `fd523da`. Initial Task6 review found T6-I1:
+  invalid-coverage cases were masked by an unknown handoff. Fix1 isolates all
+  six after settlement/replay with real source fences, readiness and unchanged
+  state/authority assertions; focused restore HTTP13/13 only. Obtain fresh
+  scoped/compound review of this fix and the separate three-file app factual
+  candidate, then broad whole-change review including M1/M2 and deferred T6-N1
+  cleanup-failure handling/T6-N2 disclosure precision. Previous full488/491 is
+  not superseded by this focused pass. Local HTTP/restore
   fixtures do not close production restore or any real acceptance gate.
   Source: `docs/launch-retention-source-map.json`;
   external acceptance receipt: app `tasks/2026-10-18-launch-list-retention-progress.md`.

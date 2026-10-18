@@ -1,5 +1,31 @@
 # Changelog
 
+## 2026-10-19 — Isolate restore-coverage HTTP refusals (Task6 fix1, T6-I1)
+
+- Moves the six invalid-coverage cases after actual unknown-handoff settlement
+  and replay. Each first verifies valid-proof delivery/cutover/fence readiness,
+  current scope and applied digest, then changes one proof field. The actual
+  OTHER-source barrier stays held through each HTTP refusal except the deliberate
+  missing-barrier case. Full control/authority/replay/raw-state snapshots and
+  unchanged scope prove refusal is non-consuming. The separate complete-proof
+  unknown-handoff refusal and one valid activation remain.
+- Focused real-HTTP RED: six prerequisite failures plus parent (6/13 pass),
+  demonstrating the old arrangement's independent delivery blocker. Corrected
+  restore group GREEN:13/13, no failures/skips/cancellations. Unique raw captures
+  preserved. No SQL, private client, helper, old race, package, pin or baseline
+  change; no product defect demonstrated. No full website/DB/app-root rerun for
+  this test-only correction; previous29 HTTP/260 DB/9 focused and488/491 full
+  results remain historical, not a new all-tests pass.
+- New fix candidate awaits fresh scoped/compound review. M1/M2 and deferred
+  T6-N1 cleanup-failure handling/T6-N2 disclosure precision remain for broad
+  final review. Website CHANGELOG/TODO updated; main owns app records/index.
+- User-visible/native/backend/deployment impact:none. EAS Update possible/
+  required no/no; new EAS Build no; Supabase migration/Edge Function/secret no;
+  Vercel/admin/site/store/publication no; suggested command none; no PR. All16
+  real manual rows stay NOT RUN, all schedules/cleanup/sending OFF. Existing
+  iOS/Android/retained-client and real-binding gates remain; no rollback needed
+  beyond reverting these test assertions/records.
+
 ## 2026-10-19 — Owned full-migration HTTP retention integration (Task6)
 
 - Adds only test-owned `tests/helpers/launch-dataapi.mjs` and
