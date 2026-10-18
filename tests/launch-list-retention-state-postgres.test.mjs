@@ -4,6 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { launchPostgres } from './helpers/launch-postgres.mjs';
 import { assessLaunchRetention } from '../lib/launch-retention-policy.mjs';
+import { validateRetentionPackage } from './helpers/launch-retention-package.mjs';
 
 const root = new URL('../', import.meta.url);
 const read = path => readFileSync(new URL(path, root), 'utf8');
@@ -52,6 +53,7 @@ test('private generation-fenced retention state real PostgreSQL contract', async
     await t.test('original migration and independent pins remain byte-exact', () => {
       const pins = JSON.parse(read('tests/fixtures/launch-retention-source-pins.json'));
       for (const p of [...pins.preservedFiles, ...pins.reviewedD2Files]) {
+        if(p.file==='package.json'){validateRetentionPackage(readFileSync(new URL(p.file,root)),'task5');continue;}
         assert.equal(createHash('sha256').update(readFileSync(new URL(p.file, root))).digest('hex'), p.sha256, p.file);
       }
     });

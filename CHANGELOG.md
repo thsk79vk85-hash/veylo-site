@@ -487,3 +487,64 @@
 - Android invitation independently verified in connected Gmail INBOX (not spam), with correct group/testing/store links and SPF/DKIM/DMARC passing. iCloud inbox receipt remains unconfirmed; do not label both delivered.
 - Production email activation rejected by automatic review: requires iCloud receipt confirmation and explicit approval for future signup emails. Public website remains live with signup saving enabled and emails disabled. Pending user question combines those confirmations.
 - Files changed: CHANGELOG.md and TODO.md only (website and app records). No PR. EAS Update required no/possible N/A, new EAS Build no, Supabase migration/Edge Function/secret change no, App Store metadata change no. Vercel protected preview/config changed; production activation not completed. Existing iOS/Android clients/backend compatible. Validation: real provider responses, database duplicate query, received Gmail MIME/headers. No code tests rerun because code unchanged. Manual QA: iCloud receipt and physical-device install remain. Suggested app command none.
+
+## 2026-10-19 — Prepare disabled bounded launch retention processing (Task 5)
+
+- Local website implementation only; controller independent review remains next.
+  Added strict private client/processor, offline-only CLI, RunReceipt schema1 and
+  focused unit/real PostgreSQL tests. At most100 work items total across raw,
+  receipt and marker lanes; independent bounded100-row rate sweep runs first.
+  Every apply is a separate supplied-transport autocommit transaction. No stale
+  approval caching, issuer, force switch, sender/provider, schedule or production
+  transport is supplied. Default unbound processing reports unavailable/zero work.
+- Unknown consent/settlement and active launch/beta/account purposes remain
+  protected. Positive-write Task4 review remains partial/review; completed ordinary
+  work plus one unknown/unavailable copy remains partial. Existing import
+  `disposalAllowed:false`, public response shapes and all accepted SQL bytes stay
+  unchanged. Receipts contain only opaque run ID, bounded counts, qualified
+  observed decision age and fixed reasons; no all-copy-erasure success field.
+- Generated forward migration
+  `supabase/migrations/20261018184435_launch_list_retention_processing.sql`
+  adds read-only service-only inventory and an independent rate-event sweep for
+  events strictly older than the existing day. Recent events and the ten-minute
+  limiter remain unchanged. Existing owner-installed fingerprint covers new
+  private/public definitions/ACLs and rate-table access; no ledger DML grants or
+  old-caller prerequisites are added. Migration SHA256:
+  `dfd97570e5d4eb39a6f230762ba126154db07aa19595249e0d5514a04207c1b1`.
+- Ruling12 consumes a private trusted-code `executeBounded({rpc,args})` dependency;
+  shape/booleans do not attest arbitrary owner I/O. Only the authorized test helper
+  creates/owns a network-none/pull-never local fixture. The SAME actual client and
+  psql supplier use fixed startup libpq `PGOPTIONS` with5000ms deadline before any
+  SQL, proving valid processing, actual slow-proof cancellation, reached-write
+  rollback and released locks. Production remains unbound; Task6 must independently
+  prove actual owned HTTP/cancel/connection behavior. Unit doubles are not timer proof.
+- Package adds ONLY `test:launch-retention` and `launch:retention:dry-run` under
+  the independently frozen exact exception. Added exact fixture/shared validator/
+  negative tests and necessary source/S-state checks plus separate source-map
+  exception phase. Original211-byte D2 package baseline, scripts/dependencies/
+  other fields and frozen input pins/map entries are preserved. No Task6 command.
+- User-visible/hosted backend impact: none while dormant. Runbook now documents
+  states, per-item processing, separate rate bound, private exceptions, proposed
+  future hourly cadence and missing protected/copy/production bindings.
+- Validation: assertion RED preserved (unit4/16, required SQL0/2 before P, plus
+  package RED); all failed implementation/debug attempts remain separate raw
+  scratch captures. Focused final253/253; required `npm run check` once448/450,
+  reproducing unchanged S+D import-race child+parent Lock-observation failures.
+  Required `npm run test:launch-db` once255/257, same unchanged child+parent failure.
+  Neither full run is GREEN; no full-suite rerun was made for clean logs.
+  Offline dry-run exit0, unavailable with zero work; whitespace check passed.
+  No TypeScript/lint scripts or Expo/native changes; typecheck/lint/expo-doctor N/A.
+  Old baseline counts do not establish all-R/P or HTTP coverage. The new13-result
+  fixture installs W+I+L+C+S+D+R+P; earlier fixture sets remain unchanged.
+- Compatibility/deployment: Sydney website only. iOS1.0.2/build1.0.20,
+  Android1.0.2/code4 and retained1.0.1 native/backend contracts unchanged; physical
+  browser/contact/deep-link QA on both platforms remains NOT RUN. EAS Update
+  possible/required no/no; new EAS Build no. Future selective ordered website
+  Supabase migration yes, none applied hosted; Edge Function deploy no; secret
+  change no; Vercel/website/admin deploy no now (future compatible website/consumer
+  adoption separately required); App Store metadata/privacy-label change no;
+  manual-QA-only no. Suggested deployment command: none now. Preserve cumulative
+  source and compatible consumer-first/transition ordering before enforcement.
+  All66 inventory/21open/20final real gates remain uncompleted. Rollback stops
+  processing while retaining suppression/unknown/restore fences and compatible
+  finish/readiness; never reconstruct erased raw facts or claim SQL reverses disposal.

@@ -5,6 +5,8 @@
   "scripts": {
     "test": "node --test",
     "test:launch-db": "node --test tests/launch-list*-postgres.test.mjs",
-    "check": "npm test"
+    "check": "npm test",
+    "test:launch-retention": "node --test tests/launch-retention*.test.mjs tests/launch-list-retention*.test.mjs",
+    "launch:retention:dry-run": "node scripts/launch-retention.mjs"
   }
 }

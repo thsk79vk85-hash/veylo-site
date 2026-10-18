@@ -1,10 +1,92 @@
-# Website launch retention: retirement, restore and copies
+# Website launch retention: disabled bounded processing, retirement, restore and copies
 
-Local Task4 mechanics only. Website Sydney project `yohiumlrpfdhphsnnxxw`;
+Local Task4/5 mechanics only. Website Sydney project `yohiumlrpfdhphsnnxxw`;
 never the native app database. Production cleanup, sending and scheduling remain
 OFF. Installing SQL is not operational approval. Real fact, field, restore,
 transport and copy adapters remain unavailable; no issuer, proof setter, general
 replay importer or force switch is supplied.
+
+## Bounded private processing — no production wiring
+
+`processLaunchRetention({client,limit=100})` observes at most100 total opaque
+work items across raw/receipt/marker lanes, with one awaited apply RPC/autocommit
+transaction per item. It never issues authority, imports senders, contacts providers
+or installs schedules. It consumes only fresh inventory tuples and never caches
+or refreshes consumed approvals. Duplicate/oversized/malformed inventory refuses
+before apply; mismatched/reordered results are unavailable for that item. Restarts
+observe current generations/scopes and existing purpose-specific unused authority.
+Old import receipts still require `disposalAllowed:false`.
+
+The read-only service-only `inventory_launch_retention_v1(integer)` supplies
+bounded exact bigint-string tuples and existing unique matching authority, not
+eligibility proof. It defaults disabled for unconfigured/transition control and
+unavailable for unsafe fingerprint/restore state. Protected owning facts remain
+unavailable. The D/R executors still recheck all consent/purpose/hold/reference/
+settlement/restore/field facts transactionally; inventory never substitutes for
+them. Missing or ambiguous authority is review, never minted or guessed. More
+than the selected bound remains explicit follow-up; exceptional first-page work
+needs private operator resolution rather than an unbounded scan or bypass.
+
+`createLaunchRetentionClient({transport})` consumes the PRIVATE TRUSTED-CODE
+dependency `executeBounded({rpc,args})`. Only fixed inventory/apply/sweep RPCs and
+strict validated arguments/results can cross it. Missing/wrong-shaped/claim-only
+rpc/fetch objects are unavailable. Object shape, a Boolean, a brand or reading a
+GUC is not proof that arbitrary owner code armed a timer. A supplied implementation
+must own the actual executing-connection deadline1..5000ms BEFORE dispatch and
+sanitize cancellation/connection errors, with each item committed or rolled back
+by its own server transaction. No production implementation is supplied/wired.
+
+The authorized test-only factory closes over its own labelled network-none,
+pull-never local PostgreSQL fixture. Each actual psql connection receives fixed
+libpq `PGOPTIONS=-c statement_timeout=5000` at startup, before role selection or
+SQL. It executes one allowlisted RPC SELECT in autocommit. The SAME real client
+and supplier exercise positive D/R operations, slow-proof cancellation, reached-
+write rollback and released locks. This proves that local supplier only. Task6
+must independently supply/prove owned HTTP/PostgREST cancellation and connection
+behavior; local psql or unit-double results cannot certify that implementation.
+
+`sweep_launch_rate_events_v1(integer)` independently deletes at most100 events
+strictly older than the existing one-day window, skipping locked rows and reporting
+remaining work. The processor attempts this separate bounded transaction FIRST,
+even if launch inventory fails or an exceptional launch item owns the outer fence.
+It does not take that fence or change recent events/the ten-minute limiter. No
+global role/database deadline or old-caller prerequisite is changed. Invocation
+requires the protected supplier; no default schedule is created.
+
+`docs/launch-retention-receipt.schema.json` is schema1 for the new RunReceipt.
+Only an opaque run ID, state, bounded lane counts, independent rate counts,
+oldest newly completed eligible item's age since its recorded ledger decision
+observed within this run (null when not established), and fixed reasons are returned.
+This is not a first-eligibility clock, a global eligible-age measure or a copy
+inventory. Age cannot establish purpose end. `disabled` means the observed launch configuration is OFF
+and there was no progress; `unavailable` means no progress and unavailable
+processing/necessary facts; `idle` means no eligible work observed; `processed`
+means bounded work completed without a known blocked item; `partial` means work
+or necessary follow-up is blocked/unresolved, including a remaining bound.
+An already-disposed retry has zero writes and adds no new completion count.
+Positive-write R review counts as review/partial, never full item completion.
+SQL inventory explicitly reports `copies_unavailable` for observed lifecycle
+items: off-database adapters are not delivered. Completed ordinary work alongside
+one unknown/copy exception stays partial. No state asserts all-copy erasure.
+
+Local commands: `npm run test:launch-retention` and
+`npm run launch:retention:dry-run -- --limit 100`. The CLI always constructs an
+UNBOUND client, ignores environment/credentials/client injection, and cannot
+select a target or execute live mutations. It emits a sanitized unavailable
+receipt with zero work; URL/key/env/live/force/apply flags are rejected.
+
+Only the two Task5 commands are added under the independently frozen exact
+package contract (SHA2564018cfc8af0f8563e2cb810d40cd40bc1661266f15e415dc3682c38a4146b7b4).
+The reviewed211-byte D2 baseline, original commands/dependencies/fields, old
+input pins and source-map inputs stay unchanged. The additive map exception
+records phaseTask5 separately. Task6's command is not permitted yet.
+
+After separate operational acceptance, the proposed cadence is hourly bounded
+runs. Assign private actionable exceptions/overdue reviews to John or his
+authorized backup through existing operator tools. A review date reassesses;
+it neither deletes nor extends retention. Do not send routine cleanup emails.
+Real protected facts, production supplier, copy/operator/restore/HTTP/physical
+acceptance and live authority remain prerequisites before any activation.
 
 ## Purpose-specific retirement
 

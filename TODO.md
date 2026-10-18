@@ -6,9 +6,10 @@
   independently accepted (controller archive app `cb26b33`). Task 2 private state
   is locally accepted after independent fix re-review at `c82de3f`, including
   multi-generation receipt catch-up. Task 3 is locally accepted after fix
-  `c41df0e5f9f588b579994084a2af8275ca2fb8d9`. Task 4's local independent
-  retirement/restore candidate requires controller fresh review of its exact
-  commit/tree; continue Tasks 5/6 before whole-change acceptance. The combined
+  `c41df0e5f9f588b579994084a2af8275ca2fb8d9`. Task4 was independently locally
+  accepted at base `3d1883595b4082204be39ec8ba37e59c2a2a22af`. Obtain controller
+  review of Task5's scoped disabled-processing commit, then complete Task6 before
+  whole-change acceptance. The combined
   migrated/HTTP/production-restore gate belongs to
   Task 6; original baseline fixture counts do not establish that coverage.
   Source: `docs/launch-retention-source-map.json`;
@@ -37,26 +38,20 @@
 
 ## Backend/Supabase follow-ups
 
-- `[release-blocker][supabase][qa][needs-verification]` Ruling 9: Tasks 5/6 must
-  bind and prove a trusted per-item caller sets a real 1..5000ms command deadline
-  BEFORE dispatching raw disposal or the new receipt/marker mutations. SQL rejects
-  disabled/over-limit settings but cannot
-  attest when their timer was armed; an inline GUC setter is not that proof.
-  Exercise actual transport/HTTP cancellation, rollback, resource release and
-  sanitization outside the SQL body/connection failure. Do not change global
-  role/default timeouts or old callers. Production transport is still unbound;
-  keep cleanup OFF and protected adapters unavailable. No Task 5 transport code
-  or Task 6 acceptance is supplied by the local Task 3 fix.
-- `[release-blocker][supabase][qa][needs-verification]` Task 5 must preserve Task 4's
-  partial `review`/positive-writes outcome as partial progress, never all-complete
-  erasure; respect owning generation/scope advancement and consumed authority.
-  Bind the independent complete CURRENT restore hook to a real stable source
+- `[release-blocker][supabase][qa][needs-verification]` Rulings9/12: Task6 must
+  independently supply/prove its actual owned HTTP per-item executing-connection
+  1..5000ms deadline BEFORE SQL dispatch, cancellation, rollback, resource release
+  and sanitization outside the SQL body/connection failure. Task5's local psql
+  startup proof and unit doubles do not certify HTTP or arbitrary owner I/O.
+  No production supplier is delivered/wired. Keep cleanup OFF and protected
+  adapters unavailable; no global role/default changes or old-caller prerequisites.
+- `[release-blocker][supabase][qa][needs-verification]` Bind the independent complete CURRENT restore hook to a real stable source
   barrier/head and applied full replay state, including missing snapshot identities
   and every older live key. The shipped private hooks remain unavailable; copied
   local tables, snapshots, opaque references, booleans and TTLs cannot certify
   currency. Synthetic second-clone success is not production coverage. See
   `docs/launch-retention-runbook.md`; no general replay importer or public setter.
-- `[supabase][qa][needs-verification]` Before adopting Task 2/3/4 dormant mechanics,
+- `[supabase][qa][needs-verification]` Before adopting Task 2/3/4/5 dormant mechanics,
   complete the combined compatible finish/readiness/restore acceptance and
   independently bind real necessity, references, holds, delivery, usable-link,
   suppression and current external restore coverage. Context deliberately returns
@@ -66,7 +61,8 @@
   owner-installed fingerprint and separate retention/import authority purposes.
   Review migrations `20261018141524_launch_list_retention_state.sql` and
   `20261018150520_launch_list_retention_disposition.sql`, plus Task 4 migration
-  `20261018170026_launch_list_retention_retirement.sql`, with the later ordered
+  `20261018170026_launch_list_retention_retirement.sql` and Task5 processing
+  `20261018184435_launch_list_retention_processing.sql`, with the later ordered
   website-only rollout; never blanket-push the app database. Keep retention-aware
   finish/readiness during rollback; do not recreate erased raw rows for old code.
 - `[qa][later]` Retention Minor M2: existing local PostgreSQL fixture cleanup
@@ -79,7 +75,12 @@
   run and assess parallel fixture-load reliability separately; no accepted test,
   helper or production lock contract was changed to hide it. Serial full-suite
   verification passed 244/244 on the same Task 4 code; default-run timing remains
-  a review concern, not a claimed default GREEN.
+  a review concern, not a claimed default GREEN. Task5's required full website
+  check also reproduced that exact unchanged child+parent failure (448/450),
+  as did its required DB run (255/257), each run once;
+  its focused retention command passed253/253. Carry the unresolved cause to
+  final deterministic-handshake review; do not repeat full suites solely for
+  clean logs or edit the frozen helper/old race/package command to hide it.
 - `[supabase][qa][needs-verification]` Run the full owned local DB suite for later
   launch changes. Verify hosted extension/schema/role parity, actual scale/locks,
   provider late-result persistence and fresh purpose-bound approvals before live
@@ -123,8 +124,10 @@
   future reviewed website promotion, verify production is an ancestor of the
   exact combined tested commit and promote the tested immutable candidate;
   legal-only main must not replace marketing or re-enable automatic deployment.
-  Task 5's later additive package scripts require their own scoped review while
-  retaining the original frozen package input pin.
+  Review Task5's exact frozen additive package exception with its scoped commit;
+  future Task6 commands must use only that contract's later authorized phase.
+  Preserve original frozen package/input-map pins, old scripts/dependencies and
+  all other fields; never regenerate old expectations from a candidate.
 
 - `[qa][needs-verification]` 17 October2026 — Preserve/export the verified complete
   contact-release history bundle through82da1e8 before publication-plan workspace

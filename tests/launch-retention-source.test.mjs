@@ -3,6 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
 import { test } from 'node:test';
+import { validateRetentionPackage,packageContractSha256 } from './helpers/launch-retention-package.mjs';
 
 const root = new URL('../', import.meta.url);
 const pinsPath = new URL('fixtures/launch-retention-source-pins.json', import.meta.url);
@@ -28,6 +29,7 @@ function preservesProduction(readSource) {
 
 test('preserves cumulative signup and contact sources', () => {
   preservesProduction(read);
+  validateRetentionPackage(read('package.json'),'task5');
   for (const { file } of pins.reviewedD2Files) {
     assert.ok(existsSync(new URL(file, root)), `reviewed cumulative D2 path is missing: ${file}`);
   }
@@ -80,4 +82,5 @@ test('binds the cumulative source map to independent inputs and an external acce
   assert.equal(Object.hasOwn(map, 'integrationCommit'), false, 'output commit must be bound outside its own tree');
   assert.equal(map.integrationParentCommit, 'ba7da79dba655ee09f9a87766ccb0cbeccc90d8e');
   assert.equal(map.integrationReceiptRef, 'app:tasks/2026-10-18-launch-list-retention-progress.md');
+  assert.deepEqual(map.packageException,{file:'tests/fixtures/launch-retention-package-contract.json',sha256:packageContractSha256,phase:'task5'});
 });

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Controller-frozen exact additive command exceptions under preflight Ruling4, before Task5 implementation; not deployment authority",
+  "inputPinsSha256": "fe7e7d6603dd5791f578e67c71c9151991eaa1b091d3be957b9e84afedcd01ec",
+  "baseline": {
+    "sourceCommit": "005a888d25009aa302d808d09126b18a03ea2484",
+    "acceptedTask3Commit": "c41df0e5f9f588b579994084a2af8275ca2fb8d9",
+    "inputGroup": "reviewedD2Files",
+    "file": "package.json",
+    "bytes": 211,
+    "sha256": "e86d209e33fc7f6c4676f9dc566c529238c7f1393a808ed7b7d19559e443e9c6",
+    "base64": "ewogICJuYW1lIjogInZleWxvLXNpdGUiLAogICJwcml2YXRlIjogdHJ1ZSwKICAidHlwZSI6ICJtb2R1bGUiLAogICJzY3JpcHRzIjogewogICAgInRlc3QiOiAibm9kZSAtLXRlc3QiLAogICAgInRlc3Q6bGF1bmNoLWRiIjogIm5vZGUgLS10ZXN0IHRlc3RzL2xhdW5jaC1saXN0Ki1wb3N0Z3Jlcy50ZXN0Lm1qcyIsCiAgICAiY2hlY2siOiAibnBtIHRlc3QiCiAgfQp9Cg=="
+  },
+  "additions": {
+    "task5": {
+      "test:launch-retention": "node --test tests/launch-retention*.test.mjs tests/launch-list-retention*.test.mjs",
+      "launch:retention:dry-run": "node scripts/launch-retention.mjs"
+    },
+    "task6": {
+      "test:launch-retention-dataapi": "node --test tests/launch-list-retention-dataapi.test.mjs"
+    }
+  },
+  "allowedPhases": {
+    "baseline": [],
+    "task5": ["task5"],
+    "task6": ["task5", "task6"]
+  },
+  "validationRules": [
+    "Baseline phase retains exact pinned package bytes.",
+    "Task5 and Task6 phases permit only the exact listed additive script keys and command values for that phase.",
+    "All original scripts, dependencies and every other package field remain unchanged; no new unlisted field or script.",
+    "Original independent input pins and source-map input entries remain byte/value exact; add a separate exception reference, never rebaseline them.",
+    "Both source and migrated-state verification use the same focused validator/fixture, whose exact contract hash is independently pinned.",
+    "Negative fixtures reject modified old script, unlisted script, dependency addition, new field, changed command and premature Task6 addition."
+  ],
+  "task5MinimalProofScope": [
+    "tests/fixtures/launch-retention-package-contract.json exact copy of this controller contract",
+    "one focused shared package-preservation validator/helper and its negative tests",
+    "necessary package exception validation in tests/launch-retention-source.test.mjs and tests/launch-list-retention-state-postgres.test.mjs",
+    "separate additive exception reference/phase in docs/launch-retention-source-map.json"
+  ],
+  "notAuthorized": ["changes to original SQL or frozen pins", "dependency or other package rewrites", "live CLI flags or credentials", "deployment", "live cleanup", "email sending"]
+}
