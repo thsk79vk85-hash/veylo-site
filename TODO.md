@@ -2,10 +2,12 @@
 
 ## Release blockers
 
-- `[release-blocker][qa][needs-verification]` Retention Task 1 cumulative local
-  source is assembled; controller must independently review the exact output
-  commit/tree and frozen input mapping before Task 2. Continue Tasks 2–6 before
-  whole-change acceptance. Source: `docs/launch-retention-source-map.json`;
+- `[release-blocker][qa][needs-verification]` Retention Task 1 source/mapping is
+  independently accepted (controller archive app `cb26b33`). Task 2 dormant policy
+  and private generation state is locally implemented/tested; controller review
+  of its exact commit/tree remains required. Continue Tasks 3–6 before whole-change
+  acceptance. No Task 3 mechanics or package/script changes are included in Task 2.
+  Source: `docs/launch-retention-source-map.json`;
   external acceptance receipt: app `tasks/2026-10-18-launch-list-retention-progress.md`.
   Preserve original66 inventory and 21/20-real release gates; no local test count
   or this candidate confers deployment/cleanup authority.
@@ -31,6 +33,19 @@
 
 ## Backend/Supabase follow-ups
 
+- `[supabase][qa][needs-verification]` Before adopting Task 2's dormant state,
+  complete compatible compact-finish/readiness/restore operations and independently
+  bind real necessity, references, holds, delivery, usable-link, suppression and
+  current external restore coverage. New context deliberately returns those facts
+  unavailable; the synthetic test helper must never become a production adapter.
+  No retention issuer/executor/schedule is installed. Preserve minimum ACLs,
+  owner-installed fingerprint and separate retention/import authority purposes.
+  Review migration `20261018141524_launch_list_retention_state.sql` with the later
+  ordered website-only rollout; never blanket-push the app database.
+- `[qa][later]` Retention Minor M2: existing local PostgreSQL fixture cleanup
+  chatter remains deferred to final review; do not change the frozen helper solely
+  to remove it during Task 2. Task 2 RED/failed-GREEN/repaired-GREEN diagnostics
+  remain unique append-only evidence; preserve them in the controller archive.
 - `[supabase][qa][needs-verification]` Run the full owned local DB suite for later
   launch changes. Verify hosted extension/schema/role parity, actual scale/locks,
   provider late-result persistence and fresh purpose-bound approvals before live

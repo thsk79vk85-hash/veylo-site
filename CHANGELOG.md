@@ -1,5 +1,57 @@
 # Changelog
 
+## 2026-10-19 — Add dormant private retention policy and generations (Task 2)
+
+- Branch `codex/launch-list-retention`, starting commit
+  `8c589f6e6c771b613151b127656f70ed254bb199`; local implementation only, no PR.
+  Task 1's cumulative source/mapping is independently accepted; controller
+  archive is app commit `cb26b33`. No controller/app records or input pins changed.
+- Areas: `lib/launch-retention-policy.mjs`, its policy tests and test-only
+  synthetic facts helper, real PostgreSQL retention-state tests, and CLI-generated
+  `supabase/migrations/20261018141524_launch_list_retention_state.sql`.
+  Migration SHA256:
+  `3cb2c5730a4bca6585ec432ac70e7dcc85c08a181db6f4b0008d02d60560144f`.
+  Added conservative, pure purpose decisions; private RLS ledgers, exact bigint
+  generation/epoch fencing, independent handoff receipts and separate
+  `retention_raw|retention_receipt|retention_marker` authority operations.
+  Extended the owner-installed definition/ACL/state fingerprint; service cannot
+  certify it. Service has only SELECT on new tables and EXECUTE on read context.
+- User-visible impact: none while dormant. All production external necessity,
+  reference, hold, delivery, link, suppression and independent restore facts stay
+  unavailable. No external adapter, authority issuer, cleanup executor or schedule
+  ships. Unknown consent stays unknown; usable links and independent suppression
+  purposes remain protected. The synthetic facts helper is test-only.
+- Backend compatibility: original migration bytes, input pins, public API
+  signatures/bodies/ACLs and old `disposalAllowed:false` contract preserved.
+  Positive migrated-schema import/mode tests preserve both beta platforms.
+  iOS 1.0.2/build 1.0.20, Android 1.0.2/code 4 and retained 1.0.1 native
+  contracts are unchanged; these are website Sydney-only tables, never the app
+  database. Future compatible finish/readiness/restore callers and writer control
+  must be verified before any separately authorized minimization or restriction.
+- Validation: assertion RED 20/74 passing, focused final GREEN 87/87, final
+  `npm run check -- --test-reporter=tap` 290/290 including the required existing
+  103-test launch database suite once (117 DB tests with Task 2). Zero final
+  failures/skips/cancellations. Additional state-retirement assertion RED and
+  repaired GREEN are retained, along with every failed GREEN and sandbox attempt,
+  in unique evidence files referenced by the Task 2 report. Final check emitted
+  one npm warning because the reporter option reached npm instead of Node; all
+  tests still ran. Existing owned-fixture cleanup chatter remains, per deferred
+  Minor M2. CLI emitted an update notice; nothing installed/upgraded. Typecheck
+  and lint scripts absent; no TypeScript/native change; expo-doctor not applicable.
+- Deployment impact: EAS Update possible/safe/required no; new EAS Build required
+  no. Supabase migration required yes for a future separately reviewed website
+  rollout; Edge Function deploy no; Supabase secret change no; future Vercel
+  website deploy yes for adoption, admin deploy no; App Store Connect
+  metadata/privacy-label change no; manual-QA-only no. No deployment performed.
+  Suggested command now: `npm run check`; no EAS command or blanket
+  `npx supabase db push` is authorized. No link/login/hosted SQL occurred.
+- Remaining: controller review of Task 2, Tasks 3–6 and actual hosted/Data API,
+  provider/writer/necessity/restore/operator acceptance. Physical current/retained
+  iPhone Safari and Android Chrome signup, withdrawal, retry, contact/deep-link QA
+  remains required; no physical test claimed. Rollback keeps cleanup disabled,
+  suppression/usable-link/unknown-handoff fences intact; never resurrect raw data
+  or activate an old client after future minimization.
+
 ## 2026-10-18 — Assemble the cumulative local launch-list candidate (retention Task 1)
 
 - Branch `codex/launch-list-retention`, integration parent
