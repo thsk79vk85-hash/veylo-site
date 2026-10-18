@@ -3,11 +3,11 @@ import { createLaunchRetentionClient } from '../lib/launch-retention-client.mjs'
 import { processLaunchRetention } from '../lib/process-launch-retention.mjs';
 
 // Offline only. No environment loading/target/credential/client injection route.
-export async function runCli(argv,{stdout=s=>process.stdout.write(s)}={}){
+export async function runCli(argv,{stdout=s=>process.stdout.write(s),stderr=s=>process.stderr.write(s)}={}){
   let limit=100;
   if(argv.length){
     if(argv.length!==2||argv[0]!=='--limit'||!/^(?:[1-9][0-9]?|100)$/.test(argv[1])){
-      stdout(`${JSON.stringify({schemaVersion:1,state:'unavailable',reason:'invalid_arguments'})}\n`);return 1;
+      stderr('Invalid launch retention arguments.\n');return 1;
     }
     limit=Number(argv[1]);
   }

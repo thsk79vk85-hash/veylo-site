@@ -5,11 +5,12 @@ create function private.inventory_launch_retention_v1(p_limit integer default 10
 returns jsonb language plpgsql stable security invoker set search_path=pg_catalog as $$
 declare c private.launch_list_control;items jsonb;result jsonb;
 begin
- result:=jsonb_build_object('state','unavailable','items','[]'::jsonb,'hasMore',false,'reasons',jsonb_build_array('unavailable'));
+ result:=jsonb_build_object('state','unavailable','items','[]'::jsonb,'hasMore',false,
+  'reasons',jsonb_build_array('unavailable','coverage_unavailable','copies_unavailable'));
  if p_limit is null or p_limit<1 or p_limit>100 or not private.launch_write_fence_ready_v1() then return result;end if;
  select * into c from private.launch_list_control where singleton;
  if c.project_ref is null or c.source_commit is null or c.mode='transition' then
-  return result||jsonb_build_object('state','disabled','reasons','[]'::jsonb);
+  return result||jsonb_build_object('state','disabled','reasons',jsonb_build_array('coverage_unavailable','copies_unavailable'));
  end if;
  if c.restore_required then return result;end if;
  -- Observation only. A valid existing authority is not proof of current field,
@@ -33,13 +34,17 @@ begin
   ) a on true
  ) select coalesce(jsonb_agg(jsonb_build_object('itemId',item_id,'generation',generation::text,'epoch',c.fence_epoch::text,
     'scope',work_scope,'approvalRef',approval_ref,'lane',lane,
-    'ageSeconds',greatest(0,floor(extract(epoch from now()-coalesce(decided_at,now()))))::bigint,
+    -- UNKNOWN: neither an authoritative eligibility clock nor complete eligible
+    -- population/page coverage is supplied. decided_at is only ordering here.
+    'ageSeconds',null,
     'reason',case when approval_ref is null then 'unavailable' else 'eligible' end)
     order by decided_at nulls last,item_id),'[]'::jsonb) into items from work;
  return jsonb_build_object('state','ready','items',(select coalesce(jsonb_agg(value order by ordinality),'[]'::jsonb)
    from jsonb_array_elements(items) with ordinality where ordinality<=p_limit),
   'hasMore',jsonb_array_length(items)>p_limit,
-  'reasons',case when jsonb_array_length(items)>0 then jsonb_build_array('copies_unavailable') else '[]'::jsonb end);
+  -- Independent unresolved follow-up, including uncovered raw work and copies
+  -- after the last local work object retires. No new marker/case/issuer.
+  'reasons',jsonb_build_array('coverage_unavailable','copies_unavailable'));
 exception when others then return result;
 end $$;
 

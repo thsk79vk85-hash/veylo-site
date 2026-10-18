@@ -17,14 +17,14 @@ test('bounded processing and actual startup-deadline supplier on W+I+L+C+S+D+R+P
     (select jsonb_agg(to_jsonb(i) order by item_id) from private.launch_retention_items i),
     (select jsonb_agg(to_jsonb(a) order by approval_ref) from private.launch_import_authorizations a),
     (select jsonb_agg(to_jsonb(d) order by signup_id,handoff_token) from private.launch_retention_delivery d))`);
-  const seed=(consent='recorded')=>{
+  const seed=(consent='recorded',decisionAt='clock_timestamp()')=>{
     const itemId=randomUUID(),signup=randomUUID(),match=randomUUID().replaceAll('-','').repeat(2),approvalRef=`synthetic-${randomUUID()}`;
     db.sql(`insert into public.signup_requests(id,email,intent,platform,source,consent_status,consent_version,registration_origin,withdrawn_at,launch_match,delivery_state)
       values('${signup}','${signup}@test.invalid','launch','unspecified','direct','${consent}',${consent==='recorded'?"'original'":"null"},
         '${consent==='recorded'?'current_form':'legacy_api'}','2026-10-18','${match}','disabled');
       insert into private.launch_suppressions values('${match}','2026-10-18','unsubscribe');
       insert into private.launch_retention_items(item_id,source_signup_id,launch_match,key_generation,generation,fence_epoch,state,policy_version,reason_code,evidence_ref,scope_hash,withdrawn_at,decided_at)
-      values('${itemId}','${signup}','${match}','1',9007199254740993,0,'raw',1,'eligible','synthetic-evidence','${'c'.repeat(64)}','2026-10-18',clock_timestamp());
+      values('${itemId}','${signup}','${match}','1',9007199254740993,0,'raw',1,'eligible','synthetic-evidence','${'c'.repeat(64)}','2026-10-18',${decisionAt});
       update private.launch_retention_items set generation=generation+1,scope_hash=private.launch_retention_scope_v1('${itemId}') where item_id='${itemId}';
       insert into private.launch_import_authorizations(approval_ref,project_ref,source_commit,schema_identity,expected_scope,fence_epoch,writer_ids,
         control_evidence,test_evidence,settlement_evidence,verified_at,expires_at,operation,retention_key_generation)
@@ -92,7 +92,11 @@ test('bounded processing and actual startup-deadline supplier on W+I+L+C+S+D+R+P
         assert.equal(db.sql("select exists(select 1 from pg_stat_activity where application_name='task5-owned-fence' and wait_event='PgSleep')"),'t','holder must still own the fence after rate completion');
       }finally{await holder;}
     });
-    const unavailable=seed();
+    const unavailable=seed('recorded',"'2000-01-01'");
+    await t.test('I1 an old synthetic decision time is not an eligibility clock or population proof',async()=>{
+      const inv=await client.inventory({limit:1});
+      assert.equal(inv.items[0].ageSeconds,null,'neither decision date nor a bounded page establishes oldest eligible age');
+    });
     await t.test('inventory is read-only exact bigint with unbound facts returning review and no mutation',async()=>{
       const before=snapshot();const inv=await client.inventory({limit:1});
       assert.equal(inv.items[0].generation,'9007199254740994');assert.equal(inv.items[0].scope,unavailable.scope);
@@ -126,6 +130,7 @@ test('bounded processing and actual startup-deadline supplier on W+I+L+C+S+D+R+P
       const out=await client.apply(unavailable);assert.equal(out.outcome,'disposed');assert.ok(out.writes>0);assert.equal(out.generation,'9007199254740995');
       assert.equal(db.sql('select last_value from synthetic_test.proof_calls'),'1');
       const retry=await client.apply(unavailable);assert.equal(retry.outcome,'already_disposed');assert.equal(retry.writes,0);
+      assert.equal((await client.inventory({limit:100})).items.find(i=>i.itemId===unavailable.itemId).ageSeconds,null,'D resetting decision time cannot invent a cross-lane eligibility clock');
       assert.equal(db.sql('show statement_timeout'),'0');
     });
     await t.test('same supplier cancels real slow protected proof at startup 5000ms and releases locks',async()=>{
@@ -191,5 +196,81 @@ test('bounded processing and actual startup-deadline supplier on W+I+L+C+S+D+R+P
         assert.equal(JSON.parse(call(`select public.sweep_launch_rate_events_v1(${limit})`)).completed,0);
       }
     });
+  }finally{fixture.cleanup();}
+});
+
+// Separate owned fixtures distinguish uncovered raw work from a genuinely empty
+// local ledger AFTER the accepted R operation. No production copy proof is seeded.
+async function installProcessingFixture(t,fixture){
+  await fixture.start();const db=fixture.db;
+  db.sql('create role anon;create role authenticated;create role service_role bypassrls;grant usage on schema public to anon,authenticated,service_role');
+  db.sql(read('waitlist.sql'));db.sql('grant all on public.waitlist to service_role');
+  const names=['20261011050938_add_signup_intents.sql','20261013112838_launch_list_lifecycle.sql','20261013125523_launch_list_canonical_cutover.sql',
+    '20261018141524_launch_list_retention_state.sql','20261018150520_launch_list_retention_disposition.sql',
+    '20261018170026_launch_list_retention_retirement.sql','20261018184435_launch_list_retention_processing.sql'];
+  for(const name of names)db.sql(read(`migrations/${name}`));
+  t.diagnostic(`Actual separate I2 fixture: waitlist.sql + ${names.join(', ')}`);
+  db.sql(`update private.launch_list_control set project_ref='${project}',source_commit='${source}',mode='canonical'`);
+}
+test('I2 empty ledger with unenrolled withdrawn unknown-consent raw work remains unavailable, rate-only progress partial',async t=>{
+  const fixture=createOwnedLaunchRetentionFixture(),db=fixture.db,client=createLaunchRetentionClient({transport:fixture.transport});
+  try{
+    await installProcessingFixture(t,fixture);
+    db.sql(`insert into public.signup_requests(email,intent,platform,source,registration_origin,consent_status,consent_version,withdrawn_at,delivery_state)
+      values('unenrolled@test.invalid','launch','unspecified','direct','legacy_api','unknown',null,'2026-10-18','review')`);
+    assert.equal(db.sql('select count(*) from private.launch_retention_items'),'0');
+    const inv=await client.inventory({limit:1});assert.equal(inv.items.length,0);
+    assert.ok(inv.reasons.includes('coverage_unavailable'));assert.ok(inv.reasons.includes('copies_unavailable'));
+    assert.equal((await processLaunchRetention({client})).state,'unavailable');
+    db.sql("insert into public.signup_rate_events(ip_hash,created_at) values('old',now()-interval '2 days')");
+    const r=await processLaunchRetention({client});assert.equal(r.state,'partial');assert.equal(r.rateEvents.completed,1);
+    assert.ok(r.reasons.includes('coverage_unavailable'));assert.ok(r.reasons.includes('copies_unavailable'));
+    assert.equal(db.sql("select consent_status||':'||delivery_state from public.signup_requests where email='unenrolled@test.invalid'"),'unknown:review');
+  }finally{fixture.cleanup();}
+});
+test('I2 accepted R removes the final local marker but unavailable coverage/copy follow-up survives empty ledger and rate purge',async t=>{
+  const fixture=createOwnedLaunchRetentionFixture(),db=fixture.db,client=createLaunchRetentionClient({transport:fixture.transport});
+  try{
+    await installProcessingFixture(t,fixture);
+    // OWNER-ONLY SYNTHETIC ended LOCAL marker proofs. No provider/copy/coverage
+    // binding, old signup erasure, authority issuer or production fact is supplied.
+    db.sql(`update private.launch_list_control set mode='fenced';
+      create or replace function private.launch_retention_context_v1(p_item_id uuid,p_generation bigint)
+      returns jsonb language plpgsql stable security invoker set search_path=pg_catalog as $facts$
+      declare i private.launch_retention_items;c private.launch_list_control;p jsonb;scope jsonb;f jsonb;fields jsonb:='{}';n text;begin
+        select * into i from private.launch_retention_items where item_id=p_item_id and generation=p_generation;
+        if not found then return '{"state":"unavailable"}';end if;select * into c from private.launch_list_control;
+        scope:=jsonb_build_object('state','verified','projectRef',c.project_ref,'sourceCommit',c.source_commit,
+          'schemaIdentity',private.launch_import_schema_v1(),'keyGeneration',i.key_generation,'scopeHash',i.scope_hash);
+        p:=jsonb_build_object('state','verified','evidenceRef','synthetic-local-end','generation',i.generation::text,'epoch',i.fence_epoch::text,'scope',scope,'purposes','[]'::jsonb);
+        f:=jsonb_build_object('lane',i.state,'intent','launch','consent','unknown','completed',false,'generation',i.generation::text,'epoch',i.fence_epoch::text,'scope',scope);
+        foreach n in array array['withdrawal','necessity','references','hold','delivery','link','suppression','restore'] loop f:=jsonb_set(f,array[n],p);end loop;
+        f:=jsonb_set(f,'{withdrawal}',p||jsonb_build_object('status','withdrawn','at',to_char(i.withdrawn_at at time zone 'UTC','YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')));
+        f:=jsonb_set(f,'{delivery}',p||'{"outcome":"none","compactCovered":true}');f:=jsonb_set(f,'{link}',p||'{"covered":true}');
+        f:=jsonb_set(f,'{suppression}',p||'{"covered":true,"liveKeyGenerations":[]}');f:=jsonb_set(f,'{restore}',p||'{"independent":true,"current":true}');
+        for n in select key from jsonb_each(to_jsonb(i)-'minimized_fields') where value<>'null'::jsonb loop
+          fields:=fields||jsonb_build_object('launch_retention_items.'||n,p);end loop;
+        return f||jsonb_build_object('fieldPurposes',fields);end $facts$;
+      update private.launch_write_fence_contract set definition_hash=private.launch_write_fence_fingerprint_v1()`);
+    const id=randomUUID(),approval=`synthetic-end-${randomUUID()}`;
+    db.sql(`insert into private.launch_retention_items(item_id,launch_match,key_generation,generation,fence_epoch,state,policy_version,reason_code,evidence_ref,scope_hash,withdrawn_at,decided_at)
+      values('${id}','${'d'.repeat(64)}','1',1,0,'marker',1,'eligible','synthetic-evidence','${'c'.repeat(64)}','2026-10-18','2026-10-18');
+      update private.launch_retention_items set generation=generation+1,scope_hash=private.launch_retention_retirement_scope_v1('${id}') where item_id='${id}';
+      insert into private.launch_import_authorizations(approval_ref,project_ref,source_commit,schema_identity,expected_scope,fence_epoch,writer_ids,
+        control_evidence,test_evidence,settlement_evidence,verified_at,expires_at,operation,retention_key_generation)
+      select '${approval}','${project}','${source}',private.launch_import_schema_v1(),scope_hash,0,array['synthetic-writer'],
+        'synthetic-control','synthetic-test','synthetic-settlement',clock_timestamp()-interval '1 second',clock_timestamp()+interval '1 hour','retention_marker','1'
+        from private.launch_retention_items where item_id='${id}'`);
+    const scope=db.sql(`select scope_hash from private.launch_retention_items where item_id='${id}'`);
+    const out=await client.apply({itemId:id,generation:'2',epoch:'0',scope,approvalRef:approval,lane:'marker'});
+    assert.equal(out.outcome,'retired');assert.ok(out.writes>0);
+    assert.equal(db.sql('select count(*) from private.launch_retention_items'),'0');
+    assert.equal(db.sql('select count(*) from public.signup_requests'),'0');
+    const inv=await client.inventory({limit:1});assert.equal(inv.items.length,0);
+    assert.ok(inv.reasons.includes('coverage_unavailable'));assert.ok(inv.reasons.includes('copies_unavailable'));
+    assert.equal((await processLaunchRetention({client})).state,'unavailable');
+    db.sql("insert into public.signup_rate_events(ip_hash,created_at) values('old',now()-interval '2 days')");
+    const r=await processLaunchRetention({client});assert.equal(r.state,'partial');assert.equal(r.rateEvents.completed,1);
+    assert.ok(r.reasons.includes('coverage_unavailable'));assert.ok(r.reasons.includes('copies_unavailable'));
   }finally{fixture.cleanup();}
 });

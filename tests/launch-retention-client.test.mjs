@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createLaunchRetentionClient } from '../lib/launch-retention-client.mjs';
 
 const item = {itemId:'00000000-0000-4000-8000-000000000001',generation:'9007199254740993',epoch:'0',
-  scope:'c'.repeat(64),approvalRef:'synthetic-approval',lane:'raw',ageSeconds:42,reason:'eligible'};
+  scope:'c'.repeat(64),approvalRef:'synthetic-approval',lane:'raw',ageSeconds:null,reason:'eligible'};
 const inventory = {state:'ready',items:[item],hasMore:false,reasons:[]};
 // Unit doubles exercise parsing/dispatch only. They are NOT deadline proof.
 test('unbound and claim-only generic transports stay unavailable without dispatch',async()=>{
@@ -75,4 +75,8 @@ test('independent rate sweep uses only bounded RPC and strict count result',asyn
     return {state:'processed',visited:3,completed:3,remaining:true};
   }}});
   assert.deepEqual(await c.sweepRateEvents({limit:3}),{state:'processed',visited:3,completed:3,remaining:true});
+});
+test('I1 adapter refuses numeric decision age presented as authoritative eligibility age',async()=>{
+  const c=createLaunchRetentionClient({transport:{async executeBounded(){return {...inventory,items:[{...item,ageSeconds:42}]};}}});
+  await assert.rejects(()=>c.inventory({limit:1}),/^Error: Launch retention unavailable\.$/);
 });

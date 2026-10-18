@@ -26,6 +26,12 @@ settlement/restore/field facts transactionally; inventory never substitutes for
 them. Missing or ambiguous authority is review, never minted or guessed. More
 than the selected bound remains explicit follow-up; exceptional first-page work
 needs private operator resolution rather than an unbounded scan or bypass.
+Inventory selection does not establish completeness: it cannot account for an
+unenrolled withdrawn/unknown raw row or independent outstanding copies. Fixed
+`coverage_unavailable` and `copies_unavailable` remain explicit even when the
+ledger/page is empty, including after accepted R removes the last local marker.
+No phantom marker, admission issuer or copy-case system is created to retain
+those signals. Independently eligible local work can still progress under D/R.
 
 `createLaunchRetentionClient({transport})` consumes the PRIVATE TRUSTED-CODE
 dependency `executeBounded({rpc,args})`. Only fixed inventory/apply/sweep RPCs and
@@ -55,25 +61,38 @@ requires the protected supplier; no default schedule is created.
 
 `docs/launch-retention-receipt.schema.json` is schema1 for the new RunReceipt.
 Only an opaque run ID, state, bounded lane counts, independent rate counts,
-oldest newly completed eligible item's age since its recorded ledger decision
-observed within this run (null when not established), and fixed reasons are returned.
-This is not a first-eligibility clock, a global eligible-age measure or a copy
-inventory. Age cannot establish purpose end. `disabled` means the observed launch configuration is OFF
+explicit UNKNOWN/null `oldestEligibleAgeSeconds`, and fixed reasons are returned.
+Current adapters establish neither the actual eligibility clock nor coverage of
+the relevant eligible population across bounded pages. Decision, withdrawal,
+review and completion times are not substituted, and completed work cannot
+exclude older eligible-but-blocked work from the metric. Item `ageSeconds` and
+the receipt metric must both remain null; client/schema/runtime reject numeric
+ages. An actual eligibility-clock AND population/coverage integration remains
+an uncompleted gate, with no timing framework or new authority supplied here.
+`disabled` means the observed launch configuration is OFF
 and there was no progress; `unavailable` means no progress and unavailable
 processing/necessary facts; `idle` means no eligible work observed; `processed`
 means bounded work completed without a known blocked item; `partial` means work
 or necessary follow-up is blocked/unresolved, including a remaining bound.
 An already-disposed retry has zero writes and adds no new completion count.
 Positive-write R review counts as review/partial, never full item completion.
-SQL inventory explicitly reports `copies_unavailable` for observed lifecycle
-items: off-database adapters are not delivered. Completed ordinary work alongside
-one unknown/copy exception stays partial. No state asserts all-copy erasure.
+SQL inventory and the processor retain independent unavailable coverage/copy
+signals; an empty ledger cannot discharge them. With current missing integrations,
+an otherwise empty configured run is unavailable; any local/rate progress remains
+partial, even after final local retirement. OFF with zero work remains disabled
+with explicit unknown follow-up. Current processing cannot establish idle or
+processed while these owning boundaries remain unavailable. Completed ordinary
+work alongside one unknown/copy exception stays partial. No state asserts all-copy erasure.
 
 Local commands: `npm run test:launch-retention` and
 `npm run launch:retention:dry-run -- --limit 100`. The CLI always constructs an
 UNBOUND client, ignores environment/credentials/client injection, and cannot
 select a target or execute live mutations. It emits a sanitized unavailable
 receipt with zero work; URL/key/env/live/force/apply flags are rejected.
+Valid/default stdout always conforms to RunReceipt schema1. Invalid arguments
+instead produce only the fixed `Invalid launch retention arguments.` diagnostic
+on stderr, exit nonzero and leave stdout empty. No argument/env/private values
+are echoed and no dispatch occurs on that separate error path.
 
 Only the two Task5 commands are added under the independently frozen exact
 package contract (SHA2564018cfc8af0f8563e2cb810d40cd40bc1661266f15e415dc3682c38a4146b7b4).

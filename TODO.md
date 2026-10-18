@@ -8,7 +8,8 @@
   multi-generation receipt catch-up. Task 3 is locally accepted after fix
   `c41df0e5f9f588b579994084a2af8275ca2fb8d9`. Task4 was independently locally
   accepted at base `3d1883595b4082204be39ec8ba37e59c2a2a22af`. Obtain controller
-  review of Task5's scoped disabled-processing commit, then complete Task6 before
+  scoped re-review of Task5 Fix1 I1/I2/I3 (unknown age, persistent uncertainty,
+  separate CLI error contract), then complete Task6 before
   whole-change acceptance. The combined
   migrated/HTTP/production-restore gate belongs to
   Task 6; original baseline fixture counts do not establish that coverage.
@@ -38,6 +39,14 @@
 
 ## Backend/Supabase follow-ups
 
+- `[supabase][qa][needs-verification]` Establish an independently authoritative
+  eligibility clock AND complete relevant eligible-population/page coverage before
+  numeric oldest-eligible-age reporting. Current SQL/client/schema/processor keep
+  it UNKNOWN/null; decision/withdrawal/review/completion are not substitute clocks.
+  Real coverage/copy bindings remain unavailable independently of local ledger
+  selection, including unenrolled raw records and final marker removal. Do not
+  treat rate-only progress, empty rows or a completed page as settled follow-up.
+  No new timing framework, copy-case system, phantom marker or issuer is supplied.
 - `[release-blocker][supabase][qa][needs-verification]` Rulings9/12: Task6 must
   independently supply/prove its actual owned HTTP per-item executing-connection
   1..5000ms deadline BEFORE SQL dispatch, cancellation, rollback, resource release

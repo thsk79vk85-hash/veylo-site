@@ -1,5 +1,51 @@
 # Changelog
 
+## 2026-10-19 — Correct Task5 age, empty-inventory uncertainty and CLI errors (Fix 1)
+
+- Addresses review I1/I2/I3 only. Eligibility age now remains explicitly UNKNOWN/
+  null throughout SQL inventory, client, processor and receipt schema; numeric
+  substitutes are rejected. No clock is inferred from decision/withdrawal/review/
+  completion, no completed-only population is substituted, and bounded pages
+  cannot prove the oldest eligible age. The initial candidate's qualified
+  decision-age metric below is superseded, not accepted as equivalent.
+- Coverage and copy uncertainty survive independently of ledger selection,
+  including unenrolled withdrawn/unknown raw rows and an empty ledger after
+  accepted R retires its final local marker. Configured zero-work runs remain
+  unavailable; local or rate-only progress remains partial. Independently proven
+  local work still progresses. No phantom marker, issuer, copy-case or timing
+  framework was added. Real clock/population/coverage/copy bindings remain gates.
+- Invalid CLI arguments now emit one fixed stderr diagnostic, exit nonzero and
+  leave stdout empty. Every valid/default stdout path is checked against both
+  actual RunReceipt validation and published schema1; no echoed argument/env/
+  private value, live switch or bad-argument dispatch.
+- Areas: private client/processor/CLI; own unaccepted processing P migration;
+  receipt schema; three unit/CLI files and owned SQL tests; website runbook/records.
+  Six older migrations, frozen helpers/race, original pins/package contract,
+  source-map inputs and package commands remain byte-exact to initial9a3a696.
+  P SHA256: `56debc36bb66f24626d5971a1e7a7fb5c0018efe37127b0cb4d20ff7b3455301`.
+  Schema SHA256: `3044a2d07b865b6aca4765750f6442c8992e38a1474f298e7135ef61264ae2db`.
+- TDD: new defect unit RED0/8 and owned SQL RED11/16; covering GREEN34/34
+  (client/process/CLI/schema/source/package) plus16/16 SQL. Three owned W+I+L+C+
+  S+D+R+P fixtures cover unchanged timer/rollback behavior, both distinct empty
+  cases and rate-only progress. Final-marker proof is owner-only synthetic LOCAL
+  purpose evidence invoking accepted R, not off-database or production completion.
+  Each attempt has a unique actual raw capture; original report bytes preserved.
+  Full check/DB suites were not rerun: historical253,448/450,255/257 stay historical.
+  Typecheck/lint/expo-doctor N/A for this website-only JS/SQL correction.
+  Deferred M1/M2 are untouched; fresh scoped controller re-review remains next.
+- User-visible/hosted backend impact: none while dormant. iOS1.0.2/build1.0.20,
+  Android1.0.2/code4 and retained1.0.1 native/backend contracts unchanged. Both
+  platforms' physical browser/contact/deep-link QA and all66/21/20 real gates
+  remain NOT RUN/uncompleted. No human waiver/default-GREEN/release acceptance.
+- Deployment: EAS Update possible/required no/no; new EAS Build no; future
+  selective website Supabase P migration yes, none applied hosted. Edge Function
+  deploy no; secret change no; Vercel/website/admin deploy no now; App Store
+  metadata/privacy-label change no; manual-QA-only no. Suggested deployment
+  command none. Future adoption requires exact cumulative source and compatible
+  ordered website migration/consumer integration before enforcement, followed by
+  real owning bindings and separate operational acceptance. Rollback keeps
+  suppression/unknown/restore fences; no erased raw reconstruction.
+
 ## 2026-10-19 — Independent launch receipt/marker ends and restore coverage (Task 4)
 
 - Local candidate on `codex/launch-list-retention`, based on accepted Task 3
