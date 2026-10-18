@@ -7,12 +7,11 @@
   is locally accepted after independent fix re-review at `c82de3f`, including
   multi-generation receipt catch-up. Task 3 is locally accepted after fix
   `c41df0e5f9f588b579994084a2af8275ca2fb8d9`. Task4 was independently locally
-  accepted at base `3d1883595b4082204be39ec8ba37e59c2a2a22af`. Obtain controller
-  scoped re-review of Task5 Fix1 I1/I2/I3 (unknown age, persistent uncertainty,
-  separate CLI error contract), then complete Task6 before
-  whole-change acceptance. The combined
-  migrated/HTTP/production-restore gate belongs to
-  Task 6; original baseline fixture counts do not establish that coverage.
+  accepted at base `3d1883595b4082204be39ec8ba37e59c2a2a22af`. Tasks1–5 are
+  locally accepted at Task6 BASE `fd523da`. Obtain fresh controller Task6 review
+  of owned full-migration HTTP tests and the separate three-file app factual
+  candidate, then broad whole-change review including M1/M2. Local HTTP/restore
+  fixtures do not close production restore or any real acceptance gate.
   Source: `docs/launch-retention-source-map.json`;
   external acceptance receipt: app `tasks/2026-10-18-launch-list-retention-progress.md`.
   Preserve original66 inventory and 21/20-real release gates; no local test count
@@ -47,11 +46,12 @@
   selection, including unenrolled raw records and final marker removal. Do not
   treat rate-only progress, empty rows or a completed page as settled follow-up.
   No new timing framework, copy-case system, phantom marker or issuer is supplied.
-- `[release-blocker][supabase][qa][needs-verification]` Rulings9/12: Task6 must
-  independently supply/prove its actual owned HTTP per-item executing-connection
-  1..5000ms deadline BEFORE SQL dispatch, cancellation, rollback, resource release
-  and sanitization outside the SQL body/connection failure. Task5's local psql
-  startup proof and unit doubles do not certify HTTP or arbitrary owner I/O.
+- `[release-blocker][supabase][qa][needs-verification]` Rulings9/12/13: obtain
+  independent review of Task6's owned actual HTTP executing-connection startup
+  deadline, slow-proof/write cancellation, rollback/lock release and separate
+  raw-error/client sanitization evidence. Preserve raw22P02/P0001/57014/PGRST001
+  behavior; local private output safety does not make raw HTTP public-safe.
+  Task5's psql proof and unit doubles cannot certify HTTP or arbitrary owner I/O.
   No production supplier is delivered/wired. Keep cleanup OFF and protected
   adapters unavailable; no global role/default changes or old-caller prerequisites.
 - `[release-blocker][supabase][qa][needs-verification]` Bind the independent complete CURRENT restore hook to a real stable source
@@ -90,6 +90,13 @@
   its focused retention command passed253/253. Carry the unresolved cause to
   final deterministic-handshake review; do not repeat full suites solely for
   clean logs or edit the frozen helper/old race/package command to hide it.
+  Task6 first full check was462/467 (two OWNED post-restart readiness failures,
+  old deadline observation/import result/parent). Its narrow owned readiness
+  correction required a new final-runtime full run:488/491, all29 HTTP passing,
+  unchanged withdrawal lock observation/import result/parent failing. Default
+  DB260/260 passed separately. Preserve ALL results; load/timing causality remains
+  inferred, not proved. A passing DB run is no deterministic-handshake fix or
+  waiver; assess these differing old-race failures in the broad final wave.
 - `[supabase][qa][needs-verification]` Run the full owned local DB suite for later
   launch changes. Verify hosted extension/schema/role parity, actual scale/locks,
   provider late-result persistence and fresh purpose-bound approvals before live
@@ -133,8 +140,8 @@
   future reviewed website promotion, verify production is an ancestor of the
   exact combined tested commit and promote the tested immutable candidate;
   legal-only main must not replace marketing or re-enable automatic deployment.
-  Review Task5's exact frozen additive package exception with its scoped commit;
-  future Task6 commands must use only that contract's later authorized phase.
+  Review the exact frozen additive package exception and its Task6 phase;
+  only the listed third command is authorized, with negative Task5 fixtures kept.
   Preserve original frozen package/input-map pins, old scripts/dependencies and
   all other fields; never regenerate old expectations from a candidate.
 

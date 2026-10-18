@@ -7,7 +7,7 @@ const bytes=readFileSync(new URL('../package.json',import.meta.url));
 test('independently pinned package exception fixture bytes are unchanged',()=>assert.equal(createHash('sha256')
   .update(readFileSync(new URL('fixtures/launch-retention-package-contract.json',import.meta.url))).digest('hex'),
   '4018cfc8af0f8563e2cb810d40cd40bc1661266f15e415dc3682c38a4146b7b4'));
-test('candidate retains independent D2 package with only the two Task5 commands',()=>validateRetentionPackage(bytes,'task5'));
+test('candidate retains independent D2 package with only the frozen Task5 and Task6 commands',()=>validateRetentionPackage(bytes,'task6'));
 test('frozen package validator rejects old script/dependency/unlisted field/command and premature Task6 changes',()=>{
   // Expectations and mutations are literal; none are regenerated from candidate.
   const allowed={name:'veylo-site',private:true,type:'module',scripts:{test:'node --test',

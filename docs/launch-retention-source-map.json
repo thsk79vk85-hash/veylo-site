@@ -3,7 +3,7 @@
   "packageException": {
     "file": "tests/fixtures/launch-retention-package-contract.json",
     "sha256": "4018cfc8af0f8563e2cb810d40cd40bc1661266f15e415dc3682c38a4146b7b4",
-    "phase": "task5"
+    "phase": "task6"
   },
   "purpose": "Cumulative local Task 1 candidate mapping; not deployment or acceptance authority",
   "production": {

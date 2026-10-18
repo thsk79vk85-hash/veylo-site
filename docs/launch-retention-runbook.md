@@ -1,6 +1,6 @@
 # Website launch retention: disabled bounded processing, retirement, restore and copies
 
-Local Task4/5 mechanics only. Website Sydney project `yohiumlrpfdhphsnnxxw`;
+Local Task4/5 mechanics and Task6 integration evidence only. Website Sydney project `yohiumlrpfdhphsnnxxw`;
 never the native app database. Production cleanup, sending and scheduling remain
 OFF. Installing SQL is not operational approval. Real fact, field, restore,
 transport and copy adapters remain unavailable; no issuer, proof setter, general
@@ -47,9 +47,9 @@ pull-never local PostgreSQL fixture. Each actual psql connection receives fixed
 libpq `PGOPTIONS=-c statement_timeout=5000` at startup, before role selection or
 SQL. It executes one allowlisted RPC SELECT in autocommit. The SAME real client
 and supplier exercise positive D/R operations, slow-proof cancellation, reached-
-write rollback and released locks. This proves that local supplier only. Task6
-must independently supply/prove owned HTTP/PostgREST cancellation and connection
-behavior; local psql or unit-double results cannot certify that implementation.
+write rollback and released locks. This proves that local psql supplier only.
+Task6's separate owned HTTP supplier is described below; neither result certifies
+arbitrary owner I/O or supplies the missing production implementation.
 
 `sweep_launch_rate_events_v1(integer)` independently deletes at most100 events
 strictly older than the existing one-day window, skipping locked rows and reporting
@@ -94,11 +94,68 @@ instead produce only the fixed `Invalid launch retention arguments.` diagnostic
 on stderr, exit nonzero and leave stdout empty. No argument/env/private values
 are echoed and no dispatch occurs on that separate error path.
 
-Only the two Task5 commands are added under the independently frozen exact
+Only the two Task5 commands and exact Task6 `test:launch-retention-dataapi`
+command are added under the independently frozen exact
 package contract (SHA2564018cfc8af0f8563e2cb810d40cd40bc1661266f15e415dc3682c38a4146b7b4).
 The reviewed211-byte D2 baseline, original commands/dependencies/fields, old
 input pins and source-map inputs stay unchanged. The additive map exception
-records phaseTask5 separately. Task6's command is not permitted yet.
+records phaseTask6 separately. No old command, dependency or other field changes.
+
+## Owned real HTTP integration — local evidence only
+
+`npm run test:launch-retention-dataapi` uses installed PostgREST14.13 digest
+`488093de819567422bc1d37cb79da6e84bca3726bac321daeed618f0ed957888` and
+PostgreSQL17.6.1.134 digest
+`9faa7279bcf1fd6834e65dc876b11e39cb53030bcb3d653beb7e5668200acbb5`.
+These are selected LOCAL versions, not inferred hosted versions. The test helper
+accepts no existing target, hosted URL or credentials. It creates UUID-labelled
+owned containers on one owned internal network with `--pull=never`. An ephemeral
+127.0.0.1 Node TCP listener pipes unchanged bytes through tracked Docker exec
+and installed `/usr/bin/nc -w 30` to that exact owned PostgREST. It is a byte
+tunnel, without HTTP routes/parsing/rewriting/error responses. Awaited cleanup
+closes its sockets/children and removes/checks only exact owned resources.
+
+Each fixture installs waitlist.sql plus ALL seven accepted I/L/C/S/D/R/P migrations;
+original migration bytes are unchanged. Synthetic roles use explicit grants,
+the original RLS/ACL contract, owner-only necessity/field/restore bindings and
+purpose-specific authority. No test issuer/binding ships. Requests exercise
+ordinary-role denial, service D/R/marker success, exact >2^53 decimal strings,
+null/malformed/stale/replayed tuples, usable repeat withdrawal after raw removal,
+old four-argument compact finish, terminal conflicts and no resend/refill after
+provider comparison retirement. Positive-write review remains partial. Age stays
+null; coverage/copies remain unavailable after actual final local marker removal
+and for unenrolled raw work. Rate-only progress cannot close those requirements.
+
+The private HTTP `executeBounded` supplier closes over that fixture's actual
+PostgREST pool. libpq connection-startup options set statement_timeout=5000
+before role/RPC dispatch. Actual slow proof and reached-delete cancellation,
+rolled-back state/authority and released locks establish conformance of THIS
+supplier. The30second netcat limit and15second fetch safeguard are outer bounds,
+not database timer evidence. No global role/database deadline/default or old
+import/restore/finish prerequisite is added. Production client/CLI stay UNBOUND.
+
+Raw API output is distinct from sanitized client receipts. PostgREST14.13 exposes
+malformed-bigint input in22P02/400, synthetic outside-body message/detail in
+P0001/400, outside-body statement cancellation in57014/500 and killed executing
+connection inPGRST001/503. SQL body catches do not sanitize those raw boundaries.
+The separate private supplier/client returns only its fixed unavailable diagnostic
+or strictly validated result; RunReceipt never passes backend errors through.
+This does not make the raw DataAPI public-safe or establish hosted log handling.
+
+The second-clone HTTP fixture verifies original NONEMPTY import/mode/restore on
+the FULL set, with `disposalAllowed:false` unchanged. Another owned network-none
+source advances beyond an older snapshot, including absent identities, old live
+key representations and an unresolved handoff. Complete current head/watermarks,
+live keys and actual applied manifest must agree under the OTHER source's real
+fence THROUGH activation. Missing/stale/self-certified/tampered proof refuses;
+complete coverage cannot settle unknown delivery. Owner-only synthetic dump/replay
+and proof tables are local fixtures, not a production currency/replay integration.
+
+Controller review of Task6/compound facts and the broad final review remain next.
+Mandatory full-run results and every failed diagnostic are retained in the Task6
+scratch report; a focused pass does not replace those results. The known default
+S+D-only import-race observation failure remains a final-review concern until a
+deterministic fix is separately reviewed; no skip, clean-log rerun or waiver.
 
 After separate operational acceptance, the proposed cadence is hourly bounded
 runs. Assign private actionable exceptions/overdue reviews to John or his
@@ -183,7 +240,7 @@ requirements to old import/restore/finish callers. Use one item transaction at a
 time. In-body cancellation/lock failures roll back writes and release acquired
 resources with a sanitized zero-write refusal; the real transport must separately
 sanitize connection loss and cancellation outside that body. Production transport
-binding and actual HTTP acceptance remain open.
+binding and actual hosted HTTP acceptance remain open.
 
 ## Independent restoration — quarantine first
 

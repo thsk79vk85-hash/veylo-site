@@ -1,5 +1,61 @@
 # Changelog
 
+## 2026-10-19 — Owned full-migration HTTP retention integration (Task6)
+
+- Adds only test-owned `tests/helpers/launch-dataapi.mjs` and
+  `tests/launch-list-retention-dataapi.test.mjs`, exact frozen third package
+  command/phase and necessary source/state/package phase assertions. Original
+  211-byte D2 input, independent pins/package contract, all seven accepted SQL
+  files, original commands/dependencies and every original map input stay exact.
+  No product SQL/JS defect was demonstrated or changed; no forward migration.
+- Real PostgREST14.13/PostgreSQL17.6.1.134 use installed pinned digests, owned
+  internal network, random synthetic auth and explicit original RLS/ACL grants.
+  Ruling13's ephemeral loopback TCP byte tunnel uses tracked Docker exec/netcat;
+  no HTTP stand-in, rewriting, dependency, image pull or exposed DB port. Awaited
+  cleanup closes tracked sockets/children and removes/verifies exact resources.
+- Actual HTTP covers ordinary denials, service D/R/marker success, exact bigint
+  strings, null/malformed/stale/replay refusal, repeated withdrawal after raw
+  removal, compact old Boolean finish/terminal conflicts/retired fact false,
+  positive-write partial review, null age and independent coverage/copy
+  uncertainty for unenrolled raw work and after final local marker retirement.
+  Full-set nonempty old import/mode and independent OTHER-source complete current
+  restore include absent snapshot identities/live older keys/necessary handoffs,
+  applied manifest and stable source fence through activation. Import receipt
+  `disposalAllowed:false` remains unchanged; synthetic replay is not production.
+- The test-only private HTTP supplier sets its actual pool's libpq startup
+  statement deadline before dispatch. Slow proof and reached-write cancellation
+  roll back state/authority and release locks. Raw malformed/outside-body/
+  cancellation/connection-loss responses remain visible as22P02/P0001/57014/
+  PGRST001; private client/RunReceipt sanitization is separately exercised. No
+  production transport or real fact/field/restore/copy/provider binding is added.
+- Validation: meaningful actual-HTTP supplier RED then GREEN; source/package9/9;
+  focused HTTP26/26 plus distinct empty/retirement3/3. First required full check
+  was462/467: two owned fixture restart-readiness failures and three unchanged
+  race-suite failures (deadline observation/import-result/parent). The owned
+  readiness gap was corrected without changing SQL, old races or frozen helpers.
+  Corrected final-runtime full check was488/491, with all29 HTTP tests passing:
+  unchanged withdrawal lock observation, import refused-vs-reconciled and their
+  parent failed. Default full DB suite passed260/260. Neither the later DB pass
+  nor focused HTTP passes resolve those full-run failures or historical M1/M2.
+  No cause is proved; deterministic handshake/full-load review remains required.
+  Every attempt remains in unique actual stdout/stderr/status captures.
+  Typecheck/lint/expo-doctor N/A: website test JS/docs only, no app/native code.
+- User-visible/hosted impact: none. New Task6 source awaits independent scoped
+  and compound factual/broad review. App facts are a separate three-file candidate
+  that only the controller stages/commits;66 inventory/21 open/20 final gates,
+  B3 RED and dependent photo deletion/expiry OFF remain unchanged. No PR created.
+- iOS1.0.2/build1.0.20, Android1.0.2/code4 and retained1.0.1 native/backend
+  contracts unchanged; both platforms' actual browser/contact/deep-link QA and
+  all16 real operator/provider/copy/restore/scale/stop rows remain NOT RUN.
+- Deployment now: EAS Update possible/required no/no; new EAS Build no; Supabase
+  migration no new change/no push; Edge Function deploy no; secret change no;
+  Vercel/admin/site no; store/privacy metadata no; publication/push/merge none.
+  Suggested command none; manual-QA-only no, because real integration/operations
+  and review remain. Future adoption requires exact cumulative source, selective
+  ordered compatible Sydney migrations/website consumers, actual owning bindings
+  and separate operational authority. No blanket app db push; rollback keeps
+  suppression/unknown/restore fences and never reconstructs erased raw data.
+
 ## 2026-10-19 — Correct Task5 age, empty-inventory uncertainty and CLI errors (Fix 1)
 
 - Addresses review I1/I2/I3 only. Eligibility age now remains explicitly UNKNOWN/

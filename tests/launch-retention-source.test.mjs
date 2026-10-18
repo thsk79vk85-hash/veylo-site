@@ -29,7 +29,7 @@ function preservesProduction(readSource) {
 
 test('preserves cumulative signup and contact sources', () => {
   preservesProduction(read);
-  validateRetentionPackage(read('package.json'),'task5');
+  validateRetentionPackage(read('package.json'),'task6');
   for (const { file } of pins.reviewedD2Files) {
     assert.ok(existsSync(new URL(file, root)), `reviewed cumulative D2 path is missing: ${file}`);
   }
@@ -82,5 +82,5 @@ test('binds the cumulative source map to independent inputs and an external acce
   assert.equal(Object.hasOwn(map, 'integrationCommit'), false, 'output commit must be bound outside its own tree');
   assert.equal(map.integrationParentCommit, 'ba7da79dba655ee09f9a87766ccb0cbeccc90d8e');
   assert.equal(map.integrationReceiptRef, 'app:tasks/2026-10-18-launch-list-retention-progress.md');
-  assert.deepEqual(map.packageException,{file:'tests/fixtures/launch-retention-package-contract.json',sha256:packageContractSha256,phase:'task5'});
+  assert.deepEqual(map.packageException,{file:'tests/fixtures/launch-retention-package-contract.json',sha256:packageContractSha256,phase:'task6'});
 });
