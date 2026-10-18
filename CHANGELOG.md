@@ -1,5 +1,58 @@
 # Changelog
 
+## 2026-10-19 — Repair old pending handoffs and require a real caller deadline (Task 3 fix 1)
+
+- Review T3-I1/T3-I2 reproduced against `fbbead5`: real old public APIs wrote
+  `pending:true` before D and exact late results then refused; unbounded callers
+  could dispose, and command cancellation escaped as raw SQL errors. The previous
+  function-local `statement_timeout` setting did not arm the current command's
+  deadline. This entry supersedes that claim in the initial Task 3 history below.
+- Scoped changes: undeployed disposition migration, its two PostgreSQL tests and
+  website CHANGELOG/TODO. Task 2/original migrations, input pins, shared fixture,
+  package/config, old public signatures, app records and global defaults unchanged.
+  New disposition migration SHA256:
+  `f12923d5063745285b17f2a4f3597b5a8eb202c5bb08e74c63aed27f7a33ce99`.
+- Exact timed/pinned historical pending may correct only its erroneous settled
+  bit under the existing outer/owning locks before accepting its late result.
+  The fenced writer guard adds only that exact transition; true terminal records
+  are not rewritten. Withdrawn historical pending compacts as unresolved, never
+  a fabricated settlement; missing evidence remains review. No resend authority.
+- Disposal now refuses disabled or over-5000ms caller statement-timeout settings
+  before taking the fence. The ineffective function setting is removed; actual
+  in-body `query_canceled` rolls writes/locks back and returns the fixed count-only
+  refusal. SQL checks the configured bound, not when a timer was armed. Tasks 5/6
+  must bind a trusted transport that establishes 1..5000ms BEFORE SQL dispatch,
+  never by an inline setter, and sanitizes cancellation outside the function or
+  connection failures. No such production transport is shipped or assumed here.
+- Validation: focused assertion RED 30 pass / 13 fail / 43 total (including
+  parents/cascaded readiness failures); deadline/race GREEN 13/13; old-pending
+  GREEN 31/31; final two-file GREEN 44/44, zero failures/skips/cancellations.
+  Final actual 5.5-second proof was cancelled after 5123ms; advisory and owning
+  row locks were available while its caller transaction remained open. A second
+  real deadline after compact insertion proves complete rollback. Ruling 8/M3
+  now checks cleanup's actual Lock state after BOTH beta claim and finish, plus
+  its eventual refused/unavailable/zero-write result and retained raw row.
+  Exact old-API pending is created on W+I+L+C+S before applying D. Initial 152/173
+  evidence remains historical; no original-103/full/HTTP/restore suite rerun or
+  inflated new-schema claim. Seven prior rollback boundaries, NO ACTION order,
+  active/both-beta preservation and multi-generation compact API regression pass.
+  Whitespace checks pass; no TS/typecheck/lint scripts or Expo/native work.
+  Existing fixture chatter and CLI notice remain deferred. Original 341-line
+  report bytes are preserved and fix evidence is appended to the same report.
+- Compatibility/deployment: Sydney website only. iOS 1.0.2/build 1.0.20,
+  Android 1.0.2/code 4 and retained 1.0.1 native contracts unchanged; physical
+  browser/contact/deep-link QA on both platforms remains open. No deployment,
+  sending, live cleanup, PR or push. EAS Update possible/required no/no; new EAS
+  Build required no (website SQL/tests/records only). Future ordered website
+  Supabase migration yes; Edge Function/secret change no; future website/Vercel
+  adoption yes after compatible transport/consumer acceptance, admin deploy no;
+  App Store metadata/privacy-label change no; manual-QA-only no. Suggested current
+  command: `node --test tests/launch-list-retention-disposition-postgres.test.mjs tests/launch-list-retention-races-postgres.test.mjs`.
+- Remaining: independent fix re-review, Tasks 4–6, actual pre-command production
+  transport/HTTP/restore and protected operational/physical acceptance. Rollback
+  keeps suppression, unresolved handoffs, compatible finish/readiness and restore
+  fences; never reconstitute erased raw rows or reintroduce the false deadline.
+
 ## 2026-10-19 — Atomic launch raw minimization and exact late finishes (Task 3)
 
 - Branch `codex/launch-list-retention`, based on independently re-reviewed Task 2

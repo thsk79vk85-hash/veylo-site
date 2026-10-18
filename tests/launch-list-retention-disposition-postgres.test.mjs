@@ -10,7 +10,9 @@ const read = name => readFileSync(new URL(`../supabase/${name}`, import.meta.url
 
 test('atomic raw disposition and exact late finish real PostgreSQL contract', async t => {
   const db = launchPostgres();
-  const call = query => db.sql(`set role service_role; ${query}`);
+  // psql sends this SET as a separate command BEFORE the API command. A SET
+  // clause on the function or set_config inside its SELECT cannot arm its timer.
+  const call = query => db.sql(`set role service_role; set statement_timeout='5s'; ${query}`);
   const json = query => JSON.parse(call(query));
   const snapshot = () => db.sql(`select jsonb_build_array(
     (select jsonb_agg(to_jsonb(s) order by id) from public.signup_requests s),
@@ -80,8 +82,50 @@ test('atomic raw disposition and exact late finish real PostgreSQL contract', as
     db.sql('create role anon; create role authenticated; create role service_role bypassrls; grant usage on schema public to anon,authenticated,service_role');
     db.sql(read('waitlist.sql')); db.sql('grant all on public.waitlist to service_role');
     for (const name of ['20261011050938_add_signup_intents.sql', '20261013112838_launch_list_lifecycle.sql', '20261013125523_launch_list_canonical_cutover.sql', '20261018141524_launch_list_retention_state.sql']) db.sql(read(`migrations/${name}`));
-    for (const name of readdirSync(new URL('../supabase/migrations/', import.meta.url)).filter(n => n.endsWith('_launch_list_retention_disposition.sql'))) db.sql(read(`migrations/${name}`));
     db.sql(`update private.launch_list_control set project_ref='${project}',source_commit='${source}',mode='canonical'`);
+    // Genuine old PUBLIC APIs establish the old pending:true shape BEFORE D.
+    // No guard mutation or post-D reconstruction stands in for this boundary.
+    const historical={};
+    for(const name of ['sent','failed','fenced-sent','fenced-failed','compact','compact-missing','missing']) {
+      const r=claim(`old-pending-${name}@test.invalid`),hash=handoff(r);
+      assert.equal(finish(r,'pending'),'t');
+      assert.equal(db.sql(`select handoff_state||':'||settled from private.launch_delivery_guard where signup_id='${r.id}'`),'pending:true');
+      if(['fenced-failed','compact','compact-missing'].includes(name))assert.equal(json(`select public.withdraw_launch_v1('${hash}')`).outcome,'withdrawn');
+      historical[name]={...r,hash};
+    }
+    const trueTerminals=[];
+    for(const state of ['sent','failed']) {
+      const r=claim(`old-terminal-${state}@test.invalid`);handoff(r);
+      assert.equal(finish(r,state,state==='sent'?'old-terminal-provider':null),'t');trueTerminals.push({...r,state});
+    }
+    const terminalRows=()=>db.sql(`select jsonb_agg(jsonb_build_array(to_jsonb(s),to_jsonb(g)) order by s.id)
+      from public.signup_requests s join private.launch_delivery_guard g on g.signup_id=s.id where s.id in (${trueTerminals.map(r=>`'${r.id}'`).join(',')})`);
+    const terminalBefore=terminalRows();
+    for (const name of readdirSync(new URL('../supabase/migrations/', import.meta.url)).filter(n => n.endsWith('_launch_list_retention_disposition.sql'))) db.sql(read(`migrations/${name}`));
+    for(const name of ['sent','failed','fenced-sent','fenced-failed']) await t.test(`old real-API pending before D accepts exact ${name} result without resend or terminal regression`,()=>{
+      const r=historical[name],state=name.endsWith('failed')?'failed':'sent',provider=state==='sent'?'old-late-provider':null;
+      if(name.startsWith('fenced'))db.sql("update private.launch_list_control set mode='fenced'");
+      try {
+        if(name==='fenced-sent')assert.equal(json(`select public.withdraw_launch_v1('${r.hash}')`).outcome,'withdrawn');
+        const before=snapshot();
+        assert.equal(finish(r,state,provider,randomUUID()),'f');assert.equal(snapshot(),before);
+        assert.equal(finish(r,'disabled'),'f');assert.equal(snapshot(),before);
+        assert.equal(finish(r,state,provider),'t');
+        assert.equal(db.sql(`select s.delivery_state||':'||g.handoff_state||':'||g.settled from public.signup_requests s join private.launch_delivery_guard g on g.signup_id=s.id where s.id='${r.id}'`),`${state}:${state}:true`);
+        const after=snapshot();assert.equal(finish(r,state==='sent'?'failed':'sent',state==='sent'?null:'contradiction'),'f');assert.equal(snapshot(),after);
+        if(!name.startsWith('fenced'))assert.equal(claim(`old-pending-${name}@test.invalid`).send,false);
+      } finally {if(name.startsWith('fenced'))db.sql("update private.launch_list_control set mode='canonical'");}
+    });
+    await t.test('D does not rewrite genuine old terminal rows; incomplete historical pending proof cannot settle',()=>{
+      assert.equal(terminalRows(),terminalBefore);
+      for(const r of trueTerminals)assert.equal(finish(r,r.state==='sent'?'failed':'sent',r.state==='sent'?null:'contradiction'),'f');
+      assert.equal(terminalRows(),terminalBefore);
+      const r=historical.missing;
+      for(const edit of ['handoff_at=null','payload_hash=null'])assert.equal(db.sql(`begin;
+        update private.launch_delivery_guard set ${edit} where signup_id='${r.id}';
+        select public.finish_launch_delivery_v1('${r.id}','${r.token}','sent','must-not-settle');rollback`),'f');
+      assert.equal(finish(r,'failed'),'t');
+    });
     await t.test('pending completion remains unresolved before raw removal', () => {
       const r = claim('raw-pending@test.invalid'); handoff(r);
       assert.equal(finish(r, 'pending'), 't');
@@ -108,6 +152,27 @@ test('atomic raw disposition and exact late finish real PostgreSQL contract', as
       assert.equal(finish(r,'failed'),'t');
     });
     bindSyntheticFacts();
+    await t.test('withdrawn old pending:true preserves unresolved compact facts after D and raw removal',()=>{
+      const r=historical.compact,x=prepare(r,r.hash);
+      assert.equal(dispose(x).outcome,'disposed');
+      assert.equal(db.sql(`select outcome||':'||(settled_at is null)::text||':'||(provider_ref is null)::text from private.launch_retention_delivery where signup_id='${r.id}'`),'pending:true:true');
+      assert.equal(json(`select public.withdraw_launch_v1('${r.hash}')`).outcome,'already_withdrawn');
+      assert.equal(claim('old-pending-compact@test.invalid').suppressed,true);
+      assert.equal(finish(r,'pending'),'t');
+      assert.equal(db.sql('select private.launch_delivery_data_ready_v1()'),'f');
+      assert.equal(finish(r,'sent','old-compact-provider'),'t');
+      const after=snapshot();assert.equal(finish(r,'sent','old-compact-provider'),'t');
+      assert.equal(finish(r,'failed'),'f');assert.equal(finish(r,'sent','old-compact-provider',randomUUID()),'f');assert.equal(snapshot(),after);
+    });
+    await t.test('missing evidence on withdrawn old pending remains review and cannot create compact settlement',()=>{
+      const r=historical['compact-missing'];
+      db.sql(`update private.launch_delivery_guard set payload_hash=null where signup_id='${r.id}'`);
+      const x=prepare(r,r.hash),before=snapshot(),out=dispose(x);
+      assert.equal(out.outcome,'review');assert.equal(out.reason,'unknown_delivery');assert.equal(out.writes,0);assert.equal(snapshot(),before);
+      assert.equal(finish(r,'sent','must-not-settle'),'f');assert.equal(snapshot(),before);
+      db.sql(`update private.launch_delivery_guard set payload_hash='${'d'.repeat(64)}' where signup_id='${r.id}'`);
+      assert.equal(finish(r,'failed'),'t');
+    });
     const active = claim('active@test.invalid');
     for(const [platform,ip] of [['ios','b'],['android','e']]) {
       const beta = json(`select public.claim_signup_v1('unknown@test.invalid','beta','${platform}','direct','${ip.repeat(64)}')`);
@@ -191,10 +256,10 @@ test('atomic raw disposition and exact late finish real PostgreSQL contract', as
       const before=snapshot();
       for (const args of [['1',r.fenceEpoch,x.scope,x.approval],['2',99,x.scope,x.approval],['2',r.fenceEpoch,'f'.repeat(64),x.approval],['2',r.fenceEpoch,x.scope,'missing']]) assert.equal(dispose(x,...args).outcome,'refused');
       for (const edit of ["operation='retention_receipt'","revoked_at=clock_timestamp()",`source_commit='${'b'.repeat(40)}'`,`project_ref='${'b'.repeat(20)}'`,`schema_identity='${'e'.repeat(64)}'`,"retention_key_generation='2'","verified_at=clock_timestamp()-interval '2 hours',expires_at=clock_timestamp()-interval '1 hour'", "writer_ids=array['dup','dup']"]) {
-        assert.equal(JSON.parse(db.sql(`begin; update private.launch_import_authorizations set ${edit} where approval_ref='${x.approval}'; select public.dispose_launch_raw_v1('${x.item}',2,${r.fenceEpoch},'${x.scope}','${x.approval}'); rollback`)).outcome,'refused');
+        assert.equal(JSON.parse(db.sql(`set statement_timeout='5s'; begin; update private.launch_import_authorizations set ${edit} where approval_ref='${x.approval}'; select public.dispose_launch_raw_v1('${x.item}',2,${r.fenceEpoch},'${x.scope}','${x.approval}'); rollback`)).outcome,'refused');
       }
       for (const [edit,reason] of [["available=false",'unavailable'],["holds=array['legal_hold']",'held'],["refs=array['delivery_reference']",'live_reference'],["necessity=array['required_record']",'active_purpose']]) {
-        const out=JSON.parse(db.sql(`begin; update synthetic_test.facts set ${edit} where item_id='${x.item}'; select public.dispose_launch_raw_v1('${x.item}',2,${r.fenceEpoch},'${x.scope}','${x.approval}'); rollback`));
+        const out=JSON.parse(db.sql(`set statement_timeout='5s'; begin; update synthetic_test.facts set ${edit} where item_id='${x.item}'; select public.dispose_launch_raw_v1('${x.item}',2,${r.fenceEpoch},'${x.scope}','${x.approval}'); rollback`));
         assert.equal(out.outcome,'review'); assert.equal(out.reason,reason);
       }
       assert.equal(snapshot(),before);
@@ -214,7 +279,7 @@ test('atomic raw disposition and exact late finish real PostgreSQL contract', as
     await t.test('malformed owning facts cannot bypass the policy through SQL NULL or unrecognized purposes',()=>{
       const r=claim('malformed@test.invalid'),x=prepare(r,handoff(r)),before=snapshot(),outcomes=[];
       for(const fault of ['missing_lane','missing_intent','missing_consent','unknown_link_purpose','duplicate_link_purpose']) {
-        const out=JSON.parse(db.sql(`begin;update synthetic_test.facts set fault='${fault}' where item_id='${x.item}';
+        const out=JSON.parse(db.sql(`set statement_timeout='5s'; begin;update synthetic_test.facts set fault='${fault}' where item_id='${x.item}';
           select public.dispose_launch_raw_v1('${x.item}',2,${r.fenceEpoch},'${x.scope}','${x.approval}');rollback`));
         outcomes.push(out.outcome);
       }

@@ -6,8 +6,9 @@
   independently accepted (controller archive app `cb26b33`). Task 2 private state
   is locally accepted after independent fix re-review at `c82de3f`, including
   multi-generation receipt catch-up. Task 3 atomic raw minimization and exact late
-  finish implementation has local SQL/race coverage; controller independent
-  review of its exact commit/tree remains required. Continue Tasks 4–6 before
+  finish implementation has local fix-1 SQL/race coverage for review T3-I1/T3-I2
+  and Ruling 8/M3; controller independent re-review of the exact fix commit/tree
+  remains required. Continue Tasks 4–6 before
   whole-change acceptance. The combined migrated/HTTP/restore gate belongs to
   Task 6; original baseline fixture counts do not establish that coverage.
   Source: `docs/launch-retention-source-map.json`;
@@ -36,6 +37,15 @@
 
 ## Backend/Supabase follow-ups
 
+- `[release-blocker][supabase][qa][needs-verification]` Ruling 9: Tasks 5/6 must
+  bind and prove a trusted per-item caller sets a real 1..5000ms command deadline
+  BEFORE dispatching disposal. SQL rejects disabled/over-limit settings but cannot
+  attest when their timer was armed; an inline GUC setter is not that proof.
+  Exercise actual transport/HTTP cancellation, rollback, resource release and
+  sanitization outside the SQL body/connection failure. Do not change global
+  role/default timeouts or old callers. Production transport is still unbound;
+  keep cleanup OFF and protected adapters unavailable. No Task 5 transport code
+  or Task 6 acceptance is supplied by the local Task 3 fix.
 - `[supabase][qa][needs-verification]` Before adopting Task 2/3 dormant mechanics,
   complete the combined compatible finish/readiness/restore acceptance and
   independently bind real necessity, references, holds, delivery, usable-link,

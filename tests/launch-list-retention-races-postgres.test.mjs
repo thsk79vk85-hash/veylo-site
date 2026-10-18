@@ -9,8 +9,8 @@ const key='synthetic-races-key', project='yohiumlrpfdhphsnnxxw', source='a'.repe
 const read=name=>readFileSync(new URL(`../supabase/${name}`,import.meta.url),'utf8');
 test('two-session raw cleanup races preserve owning fences and independent beta progress',async t=>{
   const db=launchPostgres();
-  const observe=async(name,condition="wait_event='PgSleep'")=>{
-    for(let i=0;i<150;i++) {
+  const observe=async(name,condition="wait_event='PgSleep'",attempts=150)=>{
+    for(let i=0;i<attempts;i++) {
       if(db.sql(`select exists(select 1 from pg_stat_activity where application_name='${name}' and ${condition})`)==='t') return;
       await new Promise(r=>setTimeout(r,20));
     }
@@ -27,14 +27,25 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
         select '${id}',fence_epoch,'${token}','${'d'.repeat(64)}','${token}','2026-10-17',false from private.launch_list_control;
       insert into private.launch_retention_items(item_id,source_signup_id,launch_match,key_generation,generation,fence_epoch,state,policy_version,reason_code,evidence_ref,scope_hash,withdrawn_at,decided_at)
         select '${item}','${id}','${match}','1',1,fence_epoch,'raw',1,'eligible','synthetic-evidence','${'c'.repeat(64)}','2026-10-18',clock_timestamp() from private.launch_list_control;
-      insert into synthetic_test.facts values('${item}','{}','{}');
+      insert into synthetic_test.facts(item_id,holds,refs) values('${item}','{}','{}');
       update private.launch_retention_items set generation=2,scope_hash=private.launch_retention_scope_v1('${item}') where item_id='${item}';
       insert into private.launch_import_authorizations(approval_ref,project_ref,source_commit,schema_identity,expected_scope,fence_epoch,writer_ids,control_evidence,test_evidence,settlement_evidence,verified_at,expires_at,operation,retention_key_generation)
         select '${approval}','${project}','${source}',private.launch_import_schema_v1(),scope_hash,fence_epoch,array['synthetic-writer'],'synthetic-control','synthetic-test','synthetic-settlement',clock_timestamp()-interval '1 second',clock_timestamp()+interval '1 hour','retention_raw','1' from private.launch_retention_items where item_id='${item}'`);
     const [scope,epoch]=db.sql(`select scope_hash||':'||fence_epoch from private.launch_retention_items where item_id='${item}'`).split(':');
     return {item,id,token,hash,approval,email,match,scope,epoch};
   };
-  const disposal=r=>`select public.dispose_launch_raw_v1('${r.item}',2,${r.epoch},'${r.scope}','${r.approval}')`;
+  // Separate protocol commands: configure the caller BEFORE dispatch, never
+  // set_config inside the API SELECT. No global role/default setting is changed.
+  const disposal=(r,timeout='5s')=>`set statement_timeout='${timeout}'; select public.dispose_launch_raw_v1('${r.item}',2,${r.epoch},'${r.scope}','${r.approval}')`;
+  const snapshot=()=>db.sql(`select jsonb_build_array(
+    (select jsonb_agg(to_jsonb(s) order by id) from public.signup_requests s),
+    (select jsonb_agg(to_jsonb(g) order by signup_id) from private.launch_delivery_guard g),
+    (select jsonb_agg(to_jsonb(i) order by item_id) from private.launch_retention_items i),
+    (select jsonb_agg(to_jsonb(d) order by signup_id,handoff_token) from private.launch_retention_delivery d),
+    (select jsonb_agg(to_jsonb(a) order by approval_ref) from private.launch_import_authorizations a),
+    (select jsonb_agg(to_jsonb(x) order by launch_match) from private.launch_suppressions x),
+    (select jsonb_agg(to_jsonb(w) order by token_hash) from private.launch_withdrawal_receipts w),
+    (select to_jsonb(c) from private.launch_list_control c where singleton))`);
   try {
     await db.start();
     db.sql('create role anon; create role authenticated; create role service_role bypassrls; grant usage on schema public to anon,authenticated,service_role');
@@ -44,12 +55,15 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
     assert.equal(db.sql("select to_regprocedure('public.dispose_launch_raw_v1(uuid,bigint,bigint,text,text)') is not null"),'t','cleanup must be installed before real races');
     db.sql(`update private.launch_list_control set mode='canonical',project_ref='${project}',source_commit='${source}';
       create schema synthetic_test; revoke all on schema synthetic_test from public,anon,authenticated,service_role;
-      create table synthetic_test.facts(item_id uuid primary key,holds text[],refs text[]);
+      create table synthetic_test.facts(item_id uuid primary key,holds text[],refs text[],pause_seconds double precision not null default 0);
+      create sequence synthetic_test.proof_calls;
       ${db.sql("select replace(pg_get_functiondef('private.launch_retention_context_v1(uuid,bigint)'::regprocedure),'private.launch_retention_context_v1','synthetic_test.base_context')")};
       create or replace function private.launch_retention_context_v1(p_item_id uuid,p_generation bigint) returns jsonb language plpgsql stable security invoker set search_path=pg_catalog as $facts$
       declare f jsonb;p jsonb;x synthetic_test.facts;n text;begin
         f:=synthetic_test.base_context(p_item_id,p_generation);select * into x from synthetic_test.facts where item_id=p_item_id;
-        if not found then return '{"state":"unavailable"}'::jsonb;end if;p:=f->'withdrawal';
+        if not found then return '{"state":"unavailable"}'::jsonb;end if;
+        perform nextval('synthetic_test.proof_calls');
+        if x.pause_seconds>0 then perform pg_sleep(x.pause_seconds);end if;p:=f->'withdrawal';
         foreach n in array array['necessity','references','hold','delivery','link','suppression','restore'] loop
           f:=jsonb_set(f,array[n],(p-array['status','at'])||jsonb_build_object('purposes',case n when 'references' then to_jsonb(x.refs) when 'hold' then to_jsonb(x.holds) else '[]'::jsonb end));
         end loop;
@@ -58,6 +72,54 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
         return jsonb_set(f,'{restore}',f->'restore'||'{"independent":true,"current":true}'::jsonb);
       end $facts$;
       update private.launch_write_fence_contract set definition_hash=private.launch_write_fence_fingerprint_v1()`);
+    await t.test('unbounded and over-five-second disposal callers refuse before proof or writes',()=>{
+      const outcomes=[];
+      for(const timeout of ['0','5001ms','6s']) {
+        const r=seed(),before=snapshot(),proofs=db.sql('select last_value::text||is_called from synthetic_test.proof_calls');
+        const out=JSON.parse(db.sql(`set role service_role;${disposal(r,timeout)}`));outcomes.push(out.outcome);
+        if(out.outcome==='refused') {
+          assert.equal(out.reason,'unavailable');assert.equal(out.writes,0);assert.equal(snapshot(),before);
+          assert.equal(db.sql('select last_value::text||is_called from synthetic_test.proof_calls'),proofs);
+        }
+        assert.equal(db.sql(`select public.finish_launch_delivery_v1('${r.id}','${r.token}','failed')`),'t');
+      }
+      assert.deepEqual(outcomes,['refused','refused','refused']);
+      assert.equal(db.sql("show statement_timeout"),'0','unrelated connections retain their default');
+    });
+    await t.test('pre-command five-second deadline cancels a real 5.5-second proof and releases locks inside the open transaction',async()=>{
+      const r=seed();db.sql(`update synthetic_test.facts set pause_seconds=5.5 where item_id='${r.item}'`);
+      const before=snapshot(),began=Date.now();
+      const running=db.asyncSql(`set application_name='bounded-slow-proof';begin;set local role service_role;
+        ${disposal(r)};reset role;select pg_sleep(1) /* post_cancel_pause */;commit`)
+        .then(output=>({output}),error=>({error}));
+      try {
+        await observe('bounded-slow-proof');
+        await observe('bounded-slow-proof',"wait_event='PgSleep' and query like '%post_cancel_pause%'",400);
+        const elapsed=Date.now()-began;t.diagnostic(`slow proof cancellation observed after ${elapsed}ms`);
+        assert.ok(elapsed>=4500&&elapsed<5500,'real pre-command deadline, not the 5.5-second proof, ended the API statement');
+        assert.equal(db.sql("select pg_try_advisory_xact_lock(hashtextextended('launch-list-fence',0))"),'t');
+        assert.doesNotThrow(()=>db.sql(`begin;select item_id from private.launch_retention_items where item_id='${r.item}' for update nowait;
+          select id from public.signup_requests where id='${r.id}' for update nowait;
+          select approval_ref from private.launch_import_authorizations where approval_ref='${r.approval}' for update nowait;rollback`));
+        assert.equal(snapshot(),before);
+      } finally {const result=await running;assert.ifError(result.error);
+        const out=JSON.parse(result.output);assert.deepEqual(out,{outcome:'refused',workId:r.item,generation:'2',reason:'unavailable',writes:0});}
+      assert.equal(db.sql(`select public.finish_launch_delivery_v1('${r.id}','${r.token}','failed')`),'t');
+    });
+    await t.test('actual statement cancellation after compact insertion rolls all writes back with sanitized count-only refusal',async()=>{
+      db.sql(`create sequence synthetic_test.cancel_hits;
+        create function synthetic_test.pause_after_compact() returns trigger language plpgsql as $pause$
+          begin perform nextval('synthetic_test.cancel_hits');perform pg_sleep(5.5);return new;end $pause$;
+        create trigger synthetic_cancel after insert on private.launch_retention_delivery for each row execute function synthetic_test.pause_after_compact()`);
+      const r=seed(),before=snapshot(),began=Date.now();
+      try {
+        const out=JSON.parse(await db.asyncSql(`set role service_role;${disposal(r,'500ms')}`));
+        assert.ok(Date.now()-began<2000);assert.equal(db.sql('select is_called from synthetic_test.cancel_hits'),'t');
+        assert.deepEqual(out,{outcome:'refused',workId:r.item,generation:'2',reason:'unavailable',writes:0});assert.equal(snapshot(),before);
+        assert.equal(db.sql("select pg_try_advisory_xact_lock(hashtextextended('launch-list-fence',0))"),'t');
+      } finally {db.sql('drop trigger synthetic_cancel on private.launch_retention_delivery;drop function synthetic_test.pause_after_compact();drop sequence synthetic_test.cancel_hits');}
+      assert.equal(db.sql(`select public.finish_launch_delivery_v1('${r.id}','${r.token}','failed')`),'t');
+    });
     await t.test('same-address beta claim AND finish complete while cleanup waits for a launch tuple',async()=>{
       const r=seed();
       const holder=db.asyncSql(`set statement_timeout='8s';set application_name='raw-tuple-holder';begin;
@@ -71,10 +133,14 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
         const beta=JSON.parse(await db.asyncSql(`set statement_timeout='900ms';set lock_timeout='600ms';set role service_role;
           select public.claim_signup_v1('${r.email}','beta','android','direct','${'e'.repeat(64)}')`));
         assert.equal(beta.send,true);
+        assert.equal(db.sql("select exists(select 1 from pg_stat_activity where application_name='raw-cleanup-wait' and wait_event_type='Lock')"),'t','cleanup still waits after beta claim');
         assert.equal(await db.asyncSql(`set statement_timeout='900ms';set role service_role;select public.finish_signup_delivery_v1('${beta.id}','${beta.token}','sent','beta-race-provider')`),'t');
         assert.ok(Date.now()-began<1500,'same-address beta completes within deadline while launch cleanup is still waiting');
-        assert.equal(db.sql("select exists(select 1 from pg_stat_activity where application_name='raw-tuple-holder' and wait_event='PgSleep')"),'t');
-      } finally {await holder;if(cleanup)await cleanup;}
+        assert.equal(db.sql("select exists(select 1 from pg_stat_activity where application_name='raw-cleanup-wait' and wait_event_type='Lock')"),'t','cleanup still waits through beta finish');
+      } finally {await holder;if(cleanup) {
+        const out=JSON.parse(await cleanup);assert.equal(out.outcome,'refused');assert.equal(out.reason,'unavailable');assert.equal(out.writes,0);
+      }}
+      assert.equal(db.sql(`select count(*) from public.signup_requests where id='${r.id}'`),'1');
       assert.equal(db.sql(`select delivery_state||':'||provider_id from public.signup_requests where email='${r.email}' and intent='beta'`),'sent:beta-race-provider');
       assert.equal(db.sql(`select public.finish_launch_delivery_v1('${r.id}','${r.token}','failed')`),'t');
     });

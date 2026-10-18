@@ -183,14 +183,22 @@ end $$;
 -- facade remains INVOKER, both EXECUTE ACLs are explicitly service-only. It
 -- creates no authority and cannot succeed with the shipped unavailable facts.
 create function private.dispose_launch_raw_v1(p_item_id uuid,p_generation bigint,p_epoch bigint,p_scope text,p_approval_ref text)
-returns jsonb language plpgsql security definer set search_path=pg_catalog set lock_timeout='1000ms' set statement_timeout='5s' as $$
+returns jsonb language plpgsql security definer set search_path=pg_catalog set lock_timeout='1000ms' as $$
 declare i private.launch_retention_items; c private.launch_list_control; a private.launch_import_authorizations;
  s public.signup_requests; g private.launch_delivery_guard; f jsonb; p jsonb; n text; reason text;
- result jsonb; writes integer:=0; affected integer; compact_outcome text; terminal_at timestamptz;
+ result jsonb; writes integer:=0; affected integer; compact_outcome text; terminal_at timestamptz; caller_deadline_ms integer;
 begin
  result:=jsonb_build_object('outcome','refused','workId',p_item_id,'generation',p_generation::text,'reason','scope_mismatch','writes',0);
  if p_item_id is null or p_generation is null or p_generation<0 or p_epoch is null or p_epoch<0
   or p_scope is null or p_scope !~ '^[0-9a-f]{64}$' or p_approval_ref is null or p_approval_ref !~ '^[a-zA-Z0-9_-]{1,100}$' then return result; end if;
+ -- Admission check, NOT a timer setter or proof of when the timer was armed.
+ -- Trusted callers MUST establish 1..5000ms before dispatching this command,
+ -- never via set_config/SET inside the current SELECT. Tasks 5/6 must bind and
+ -- verify that transport. No role/global defaults or old callers are changed.
+ select setting::integer into caller_deadline_ms from pg_catalog.pg_settings where name='statement_timeout';
+ if caller_deadline_ms is null or caller_deadline_ms<1 or caller_deadline_ms>5000 then
+  return result||jsonb_build_object('reason','unavailable');
+ end if;
  perform pg_advisory_xact_lock(hashtextextended('launch-list-fence',0));
  if not private.launch_write_fence_ready_v1() then return result; end if;
  select * into c from private.launch_list_control where singleton for update;
@@ -335,7 +343,12 @@ begin
   raise exception 'launch disposition unavailable';
  end if;
  return result;
-exception when others then
+exception when query_canceled then
+ -- Catch the command timer while executing this body. The subtransaction
+ -- unwinds writes AND locks before this count-only response. Cancellation
+ -- outside this body/connection failure still requires transport sanitization.
+ return jsonb_build_object('outcome','refused','workId',p_item_id,'generation',p_generation::text,'reason','unavailable','writes',0);
+when others then
  -- PL/pgSQL subtransaction rolls back ALL writes/locks in this body. Never
  -- expose raw exceptions or partial-write counts, including timeout/constraint.
  return jsonb_build_object('outcome','refused','workId',p_item_id,'generation',p_generation::text,'reason','unavailable','writes',0);
@@ -352,6 +365,129 @@ grant execute on function public.dispose_launch_raw_v1(uuid,bigint,bigint,text,t
 -- Exact late finishes cannot recreate raw state or acquire delivery authority.
 -- No ledger DML grant is added: this private service-only executor is privileged
 -- solely to advance the matching receipt under its current owning scope.
+-- Old finish marked pending as settled. Recognize ONLY that exact evidenced
+-- uncertainty; no migration-wide rewrite of guards or true terminal outcomes.
+create function private.launch_retention_historical_pending_v1(p_signup public.signup_requests,p_guard private.launch_delivery_guard)
+returns boolean language sql stable security invoker set search_path=pg_catalog as $$
+ select coalesce((p_signup).intent='launch' and (p_signup).delivery_state='pending' and (p_signup).provider_id is null
+  and (p_guard).settled and (p_guard).handoff_state='pending' and (p_guard).signup_id=(p_signup).id
+  and (p_guard).handoff_token is not null and (p_signup).delivery_token=(p_guard).handoff_token
+  and ((p_guard).claim_token is null or (p_guard).claim_token=(p_guard).handoff_token)
+  and (p_guard).claim_outcome is null and (p_guard).claim_finished_at is null
+  and (p_guard).payload_hash ~ '^[0-9a-f]{64}$' and isfinite((p_guard).handoff_at)
+  and (p_signup).delivery_template_version='launch-v1' and (p_signup).launch_token_nonce is not null
+  and (p_signup).launch_match ~ '^[0-9a-f]{64}$' and (p_signup).launch_unsubscribe_hash ~ '^[0-9a-f]{64}$'
+  and isfinite((p_signup).delivery_first_attempt_at) and isfinite((p_signup).delivery_attempted_at)
+  and (p_signup).delivery_first_attempt_at<=(p_guard).handoff_at and (p_signup).delivery_attempted_at<=(p_guard).handoff_at,false);
+$$;
+revoke all on function private.launch_retention_historical_pending_v1(public.signup_requests,private.launch_delivery_guard) from public,anon,authenticated;
+grant execute on function private.launch_retention_historical_pending_v1(public.signup_requests,private.launch_delivery_guard) to service_role;
+
+-- Same writer guard as C, with one extra fenced UPDATE shape: remove only the
+-- old pending's erroneous settled bit after the exact owning proof above.
+create or replace function private.guard_launch_writes_v1()
+returns trigger language plpgsql security invoker set search_path=pg_catalog as $$
+declare ctx private.launch_import_context; legacy public.waitlist; canonical public.signup_requests; allowed boolean:=false;
+begin
+ -- Neither beta-only rows nor beta-only intent-preserving updates participate.
+ if tg_table_schema='public' and tg_table_name='signup_requests' then
+  if (tg_op='INSERT' and new.intent='beta') or (tg_op='DELETE' and old.intent='beta')
+    or (tg_op='UPDATE' and old.intent='beta' and new.intent='beta') then
+   if tg_op='DELETE' then return old; else return new; end if;
+  end if;
+ end if;
+ -- A row trigger may run AFTER PostgreSQL acquired a tuple lock. Never wait
+ -- for outer fence from here: fail/rollback instead of reversing lock order.
+ if not pg_try_advisory_xact_lock(hashtextextended('launch-list-fence',0)) then
+  raise exception 'launch write fenced' using errcode='55000';
+ end if;
+ -- Operational control/authority changes use the fence, but the future trusted
+ -- operator must be able to revoke/issue authority or change mode while fenced.
+ if tg_table_schema='private' and tg_table_name in ('launch_list_control','launch_import_authorizations') then
+  if tg_op='DELETE' then return old; else return new; end if;
+ end if;
+ if tg_table_schema='public' and tg_table_name='waitlist' and tg_op='INSERT'
+   and exists(select 1 from private.launch_list_control where singleton and mode='canonical') then
+  raise exception 'obsolete launch writer' using errcode='55000';
+ end if;
+ if not exists(select 1 from private.launch_list_control where singleton and mode='fenced') then
+  if tg_op='DELETE' then return old; else return new; end if;
+ end if;
+ -- Maintenance closes intake, not durable safety facts. Only monotonic
+ -- withdrawal shapes and outcomes for an already recorded handoff may pass.
+ -- Service administration remains trusted; these are not public capabilities.
+ if tg_table_schema='private' and tg_table_name='launch_suppressions' and tg_op='INSERT' then
+  allowed:=new.basis='unsubscribe' and exists(select 1 from public.signup_requests s
+   where s.intent='launch' and s.launch_match=new.launch_match and s.launch_unsubscribe_hash is not null
+    and (s.withdrawn_at is null or s.withdrawn_at=new.withdrawn_at));
+ elsif tg_table_schema='private' and tg_table_name='launch_withdrawal_receipts' and tg_op='INSERT' then
+  allowed:=exists(select 1 from private.launch_suppressions x join public.signup_requests s on s.launch_match=x.launch_match
+   where s.intent='launch' and s.launch_unsubscribe_hash=new.token_hash and x.launch_match=new.launch_match and x.withdrawn_at=new.withdrawn_at);
+ elsif tg_table_schema='public' and tg_table_name='signup_requests' and tg_op='UPDATE' then
+  allowed:=old.intent='launch' and new.intent='launch' and (
+   ((to_jsonb(new)-array['withdrawn_at','delivery_token'])=(to_jsonb(old)-array['withdrawn_at','delivery_token'])
+    and new.withdrawn_at is not null and (old.withdrawn_at is null or new.withdrawn_at=old.withdrawn_at)
+    and (new.delivery_token is not distinct from old.delivery_token or new.delivery_token is null)
+    and exists(select 1 from private.launch_withdrawal_receipts w
+     where w.token_hash=old.launch_unsubscribe_hash and w.launch_match=old.launch_match and w.withdrawn_at=new.withdrawn_at))
+   or ((to_jsonb(new)-array['delivery_state','provider_id'])=(to_jsonb(old)-array['delivery_state','provider_id'])
+    and old.provider_id is null and exists(select 1 from private.launch_delivery_guard g where g.signup_id=old.id
+     and not g.settled and g.handoff_token=old.delivery_token)
+    and ((new.delivery_state='sent' and new.provider_id is not null and length(btrim(new.provider_id))>0)
+     or (new.delivery_state in ('failed','pending') and new.provider_id is null))));
+ elsif tg_table_schema='private' and tg_table_name='launch_delivery_guard' and tg_op='UPDATE' then
+  allowed:=((to_jsonb(new)-array['settled','handoff_state'])=(to_jsonb(old)-array['settled','handoff_state']) and not old.settled and new.settled
+   and old.handoff_token is not null and exists(select 1 from public.signup_requests s where s.id=old.signup_id
+    and s.delivery_token=old.handoff_token and s.delivery_state in ('sent','failed','pending') and new.handoff_state=s.delivery_state))
+   or ((to_jsonb(new)-'settled')=(to_jsonb(old)-'settled') and old.settled and not new.settled
+    and exists(select 1 from public.signup_requests s where s.id=old.signup_id
+     and private.launch_retention_historical_pending_v1(s,old)))
+   or ((to_jsonb(new)-array['claim_outcome','claim_finished_at'])=(to_jsonb(old)-array['claim_outcome','claim_finished_at'])
+    and old.claim_token is not null and old.handoff_token is distinct from old.claim_token
+    and new.claim_outcome='cancelled' and isfinite(new.claim_finished_at)
+    and exists(select 1 from public.signup_requests s join private.launch_withdrawal_receipts w
+     on w.token_hash=s.launch_unsubscribe_hash and w.launch_match=s.launch_match and w.withdrawn_at=s.withdrawn_at
+     where s.id=old.signup_id and s.delivery_token is null and s.withdrawn_at is not null
+      and new.claim_finished_at>=s.delivery_attempted_at));
+ end if;
+ if allowed is true then return new; end if;
+ select x.* into ctx from private.launch_import_context x
+  join private.launch_import_authorizations a on a.approval_ref=x.approval_ref
+  join private.launch_list_control c on c.singleton
+  where x.transaction_id=pg_current_xact_id() and x.backend_pid=pg_backend_pid()
+   and a.operation='import' and x.expected_scope=a.expected_scope and x.fence_epoch=a.fence_epoch and x.fence_epoch=c.fence_epoch
+   and a.project_ref=c.project_ref and a.source_commit=c.source_commit
+   and a.revoked_at is null and a.consumed_at is null and a.verified_at<=clock_timestamp() and a.expires_at>clock_timestamp();
+ if found and ctx.legacy_id is not null then
+  select * into legacy from public.waitlist where id=ctx.legacy_id;
+  select * into canonical from public.signup_requests where id=ctx.signup_id and intent='launch';
+  if tg_table_schema='public' and tg_table_name='signup_requests' and tg_op='INSERT' then
+   allowed:=new.id=ctx.signup_id and new.email=private.normalize_launch_import_email_v1(legacy.email)
+    and new.created_at=legacy.created_at and new.intent='launch' and new.platform='unspecified' and new.source='legacy'
+    and new.registration_origin='legacy_import' and new.consent_status='unknown' and new.consent_version is null
+    and new.delivery_state='review' and new.launch_match=ctx.launch_match and new.withdrawn_at is null
+    and new.delivery_attempted_at is null and new.delivery_first_attempt_at is null and new.delivery_token is null
+    and new.provider_id is null and new.launch_token_nonce is null and new.launch_unsubscribe_hash is null
+    and new.delivery_template_version is null;
+  elsif tg_table_schema='private' and tg_table_name='launch_legacy_provenance' and tg_op in ('INSERT','UPDATE') then
+   allowed:=new.legacy_id=legacy.id and new.legacy_created_at=legacy.created_at and new.launch_match=ctx.launch_match
+    and new.signup_id is not distinct from ctx.signup_id
+    and ((new.outcome='suppressed' and exists(select 1 from private.launch_suppressions where launch_match=ctx.launch_match))
+      or (canonical.email=private.normalize_launch_import_email_v1(legacy.email)
+        and new.outcome=case when canonical.registration_origin='legacy_import' then 'review' else 'registered' end));
+   if tg_op='UPDATE' then allowed:=allowed and (to_jsonb(new)-'outcome')=(to_jsonb(old)-'outcome'); end if;
+  elsif tg_table_schema='private' and tg_table_name='launch_suppressions' and tg_op='INSERT' then
+   allowed:=new.launch_match=ctx.launch_match and new.basis='legacy-reconciliation'
+    and (new.withdrawn_at=canonical.withdrawn_at or exists(select 1 from private.launch_suppressions s
+      where s.launch_match=ctx.launch_match and s.withdrawn_at=new.withdrawn_at));
+  end if;
+ end if;
+ if allowed is not true then raise exception 'launch write fenced' using errcode='55000'; end if;
+ return new;
+end $$;
+revoke all on function private.guard_launch_writes_v1() from public,anon,authenticated;
+grant execute on function private.guard_launch_writes_v1() to service_role;
+
 create or replace function private.finish_launch_delivery_v1(p_id uuid,p_token uuid,p_state text,p_provider_id text default null)
 returns boolean language plpgsql security definer set search_path=pg_catalog as $$
 declare r public.signup_requests; g private.launch_delivery_guard; d private.launch_retention_delivery; i private.launch_retention_items;
@@ -382,8 +518,14 @@ begin
   if g.claim_token is distinct from p_token or g.claim_outcome is not null
    or (g.handoff_token is not null and (not g.settled or g.handoff_state is distinct from 'failed' or g.handoff_token=p_token))
    or r.delivery_token is distinct from p_token or r.withdrawn_at is not null or r.delivery_state<>'sending' then return false; end if;
- elsif g.handoff_token is distinct from p_token or g.settled or g.handoff_at is null
+ elsif g.handoff_token is distinct from p_token
+  or (g.settled and not private.launch_retention_historical_pending_v1(r,g)) or g.handoff_at is null
   or not isfinite(g.handoff_at) or g.payload_hash is null then return false;
+ end if;
+ if p_state<>'disabled' and g.settled then
+  -- Under the same outer/owning locks, correct only the historical pending bit
+  -- before recording its exact late result. It remains unresolved on pending.
+  update private.launch_delivery_guard set settled=false where signup_id=p_id;
  end if;
  update public.signup_requests set delivery_state=p_state,provider_id=p_provider_id where id=p_id;
  if p_state='disabled' then
