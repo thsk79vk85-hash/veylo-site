@@ -1,5 +1,37 @@
 # Changelog
 
+## 2026-10-19 — Open guarded draft PR #6 after exact-source verification
+
+- [PR #6](https://github.com/thsk79vk85-hash/veylo-site/pull/6) is OPEN/DRAFT,
+  attached to the release chat and unmerged. Tested source
+  `ff89b5d4ed2833449e8e8675687babb79af6d6c6` / tree
+  `2174df926d0e17859bf39504084a9cd16254941f` passes unchanged `npm run check`:
+  498/498, zero failures/skips/cancellations. Reached-write server interval:
+  4996.108ms; isolated correction14/14 and guard/source/package10/10 overlap
+  that suite. Earlier496/498 failure, controlled12/14 RED and diagnostics remain
+  evidence, not reclassified passes. Independent exact-range review found no
+  Critical/Important/Minor issues. Later records-only commits are code-equivalent,
+  not newly tested SHAs; older pending-PR/review entries below are historical.
+- Changes in this phase: `vercel.json`, deployment-guard and cancellation tests,
+  CHANGELOG/TODO. Production SQL/timeouts, frozen inputs/package, API/lib/assets
+  unchanged. Main and the exact review branch stay Git-deployment disabled.
+  After push/PR, the selected Vercel project reports no review-branch deployment;
+  production remains READY `dpl_81afMJgSr7sdpJFTAgvSaH9SBwuL`. This is a scoped
+  observation, not a permanent deployment guarantee. GitHub reports not mergeable;
+  its cause is unverified. Separate canonical-legal/marketing integration is
+  required; do not wholesale replace either source stream or merge this draft.
+- iOS1.0.2/build1.0.20, Android1.0.2/code4 and retained1.0.1/backend contracts
+  unchanged. EAS Update possible/required:no/no; new EAS Build:no; Supabase
+  migration/Edge Function/secret:no for this correction; Vercel/admin/site
+  deploy:no; Store metadata/privacy/public legal activation:no. Command:none.
+  Dormant PR SQL needs separately approved selective Sydney website rollout,
+  never blanket app db push. Cleanup, schedules and sending remain OFF.
+- Records updated; all16 real manual rows,21open publication gates,20final
+  requirements and B3 remain unresolved. Hosted/provider/operator and physical
+  current/retained iOS/Android QA remain. App typecheck/lint/Expo not rerun for
+  website tests/config/records. Rollback: retain deployment guards and evidence;
+  stop/fence unsafe rollout, never recreate disposed raw data for older callers.
+
 ## 2026-10-19 — Correct reached-write cancellation fixture after explicit approval
 
 - User approved the test-only correction. A controlled750ms prerequisite pause

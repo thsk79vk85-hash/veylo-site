@@ -2,40 +2,18 @@
 
 ## Release blockers
 
-- `[release-blocker][qa][needs-verification]` Retention Task 1 source/mapping is
-  independently accepted (controller archive app `cb26b33`). Task 2 private state
-  is locally accepted after independent fix re-review at `c82de3f`, including
-  multi-generation receipt catch-up. Task 3 is locally accepted after fix
-  `c41df0e5f9f588b579994084a2af8275ca2fb8d9`. Task4 was independently locally
-  accepted at base `3d1883595b4082204be39ec8ba37e59c2a2a22af`. Tasks1–5 are
-  locally accepted at Task6 BASE `fd523da`; Task6 fix1 accepted at d43db62.
-  Whole review found I1 selection starvation/I2 unreliable full validation and
-  N1 cleanup/N2 factual precision; consolidated wave implements forward Q,
-  deterministic race/settlement and all-owned teardown fixes, with the separate
-  three-file app factual qualification. The controller accepted the ONE fresh
-  scoped combined re-review at app70e9a6e: all five findings addressed, no new
-  blocking finding. Do not repeat that completed review. The additional approved
-  branch-only deployment guard has passed its narrow review and10focused checks.
-  John subsequently approved the test-only correction. Controlled750ms fixture
-  prerequisite reproduces the old missed-write assertion12/14; corrected real5s
-  pre-command/server-measured API passes14/14 with reached-write, exact refusal,
-  rollback and open-transaction lock proof. Obtain fresh full exact-source check
-  and combined narrow review before the requested draft PR; no merge/rollout.
-  Preserve the earlier496/498full failure and unchanged14/14diagnostic; neither
-  is corrected-source acceptance or proof of its original exact error location.
-  Frozen executable73a9b56/tree4b77d170 has actual497/497 full,262/262 DB,29/29
-  HTTP and9/9 source/package passes, no fail/skip/cancel; final records-only
-  commits must be reviewed as code-equivalent, not falsely relabelled tested SHAs.
-  Covering regression54/54 is not a substitute for those gates; historical
-  full488/491 remains failed history. N3 diagnostics/provenance is explicitly
-  retained, not a suppression/install/pin-change task. Local HTTP/restore
-  fixtures do not close production restore or any real acceptance gate.
-  Source: `docs/launch-retention-source-map.json`;
-  external acceptance receipt: app `tasks/2026-10-18-launch-list-retention-progress.md`.
-  Preserve original66 inventory and 21/20-real release gates; no local test count
-  or this candidate confers deployment/cleanup authority. Keep both `main` and
-  `codex/launch-list-retention` Git deployments disabled; do not add a wildcard
-  opt-in or change the independent marketing branch's deployment workflow.
+- `[release-blocker][qa][needs-verification]` Resolve canonical-legal versus
+  marketing/signup source integration before considering draft
+  [PR #6](https://github.com/thsk79vk85-hash/veylo-site/pull/6) for merge.
+  GitHub reports not mergeable; exact cause needs verification. Preserve both
+  streams, live contact corrections and signup behavior. Do not wholesale
+  deploy legal-only main or overwrite canonical legal bodies. Local six-task
+  implementation/reviews and approved guard/correction are complete; exact
+  ff89b5d passes498/498 with clean independent review. Evidence/history belongs
+  in CHANGELOG, not a repeated implementation task. Keep both `main` and
+  `codex/launch-list-retention` Git deployments disabled; no wildcard opt-in or
+  independent marketing workflow change. All66 inventory/21open/20final/B3 and
+  real acceptance gates remain; no merge, deployment, cleanup or sending authority.
 - `[release-blocker][supabase][qa][needs-verification]` Launch intake/unsubscribe
   flags remain OFF. Before any separately authorized Sydney-only rollout, assign
   owner/operator/reviewer, verify exact combined source/migrations/schema/roles,
@@ -66,14 +44,13 @@
   selection, including unenrolled raw records and final marker removal. Do not
   treat rate-only progress, empty rows or a completed page as settled follow-up.
   No new timing framework, copy-case system, phantom marker or issuer is supplied.
-- `[release-blocker][supabase][qa][needs-verification]` Rulings9/12/13: obtain
-  independent review of Task6's owned actual HTTP executing-connection startup
-  deadline, slow-proof/write cancellation, rollback/lock release and separate
-  raw-error/client sanitization evidence. Preserve raw22P02/P0001/57014/PGRST001
-  behavior; local private output safety does not make raw HTTP public-safe.
-  Task5's psql proof and unit doubles cannot certify HTTP or arbitrary owner I/O.
-  No production supplier is delivered/wired. Keep cleanup OFF and protected
-  adapters unavailable; no global role/default changes or old-caller prerequisites.
+- `[release-blocker][supabase][qa][needs-verification]` Rulings9/12/13: before
+  real transport adoption, verify its executing-connection deadline, owner I/O,
+  rollback/lock release and raw-error secrecy against hosted bindings. Local
+  Task6 HTTP and final correction reviews are accepted, not production proof.
+  Preserve raw22P02/P0001/57014/PGRST001 behavior; private output safety does not
+  make raw HTTP public-safe. No production supplier is wired; cleanup stays OFF
+  and protected adapters unavailable, with no global role/default changes.
 - `[release-blocker][supabase][qa][needs-verification]` Bind the independent complete CURRENT restore hook to a real stable source
   barrier/head and applied full replay state, including missing snapshot identities
   and every older live key. The shipped private hooks remain unavailable; copied
@@ -100,29 +77,6 @@
   overwritten/uncaptured/transcribed output limits. No reconstruction, generic
   warning suppression, immutable pin relaxation or installation. Archive each
   new capture uniquely with its exact tested source and scope.
-- `[qa][needs-verification]` Historical M1 evidence (retain, do not repeat solely
-  for clean logs): the Task4 default parallel full DB run
-  missed the unchanged Task 3 import-race fixture's 0.5-second lock-observation
-  window (242/244); that S+D-only fixture passed alone (13/13). Preserve the failed
-  run and assess parallel fixture-load reliability separately; no accepted test,
-  helper or production lock contract was changed to hide it. Serial full-suite
-  verification passed 244/244 on the same Task 4 code; default-run timing remains
-  a review concern, not a claimed default GREEN. Task5's required full website
-  check also reproduced that exact unchanged child+parent failure (448/450),
-  as did its required DB run (255/257), each run once;
-  its focused retention command passed253/253. Carry the unresolved cause to
-  final deterministic-handshake review; do not repeat full suites solely for
-  clean logs or edit the frozen helper/old race/package command to hide it.
-  Task6 first full check was462/467 (two OWNED post-restart readiness failures,
-  old deadline observation/import result/parent). Its narrow owned readiness
-  correction required a new final-runtime full run:488/491, all29 HTTP passing,
-  unchanged withdrawal lock observation/import result/parent failing. Default
-  DB260/260 passed separately. Preserve ALL results; load/timing causality remains
-  inferred, not universally proved. The consolidated I2 fix now uses deterministic
-  gates, all-actor settlement, prerequisite isolation and separate server timing;
-  review its fresh frozen-source default gate evidence. Separate DB/serial passes
-  never waive earlier full failures. Original first-full observation5530ms and
-  whole subtest6993.059625ms are distinct; earlier conflation is explicitly corrected.
 - `[supabase][qa][needs-verification]` Run the full owned local DB suite for later
   launch changes. Verify hosted extension/schema/role parity, actual scale/locks,
   provider late-result persistence and fresh purpose-bound approvals before live
