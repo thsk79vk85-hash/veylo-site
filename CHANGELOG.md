@@ -1,5 +1,24 @@
 # Changelog
 
+## 2026-10-19 — Reconcile the approved marketing review base without runtime edits
+
+- John explicitly approved retargeting draft PR #6 to `codex/live-beta-signup`
+  and reconciling records only, an exception to the default main PR target.
+  Incorporating that base into the review branch required only CHANGELOG/TODO
+  reconciliation; both historical activation evidence and all later retention
+  records/qualified future QA remain. The earlier22d73f4 diagnostic had only a
+  CHANGELOG conflict; subsequent58ed582 factual edits also conflicted in TODO.
+  No production/main/marketing branch merge or deployment is authorized.
+- This review-branch history integration changes no runtime, SQL, package, pin,
+  test, asset, config or guard bytes from58ed582/previously testedff89b5d. The
+  original main/marketing destinations remain distinct. Final scope/review and
+  PR-base/provider readbacks are recorded separately, not inferred here.
+- Areas: CHANGELOG/TODO only. iOS/Android current/retained and backend contracts
+  unchanged. EAS Update possible/required:no/no; new Build:no; Supabase migration/
+  function/secret:no; Vercel/admin/site deploy:no; Store/privacy/public legal:no;
+  command:none. No new mail, cleanup, schedule or setting. Existing actual
+  hosted/provider/operator/physical QA and21open/20final/B3 gates remain required.
+
 ## 2026-10-19 — Diagnose publishing-source conflicts and recover mail history
 
 - Exact main6ddbc5ca versus review22d73f4 three-way diagnostic reproduces five
@@ -856,3 +875,8 @@
   All66 inventory/21open/20final real gates remain uncompleted. Rollback stops
   processing while retaining suppression/unknown/restore fences and compatible
   finish/readiness; never reconstruct erased raw facts or claim SQL reverses disposal.
+
+## 2026-10-11 — Activate signup email delivery
+- User confirmed the approved iCloud test worked after Gmail inbox/authentication verification. Production SIGNUP_EMAIL_MODE=send configured; staged READY deployment dpl_EgjCKrxUah9umPcCkmuftUBxBiSY (source 708b176) promoted to Joinveylo.com. New voluntary beta signups receive platform-specific access emails; launch-only signups receive confirmation. No bulk emails or additional test invitations sent.
+- Validation: staged homepage matches source; invalid-email signup returns expected validation with required production configuration. Vercel promotion succeeded. Prior actual Gmail inbox receipt and user-confirmed iCloud receipt complete the delivery check. Physical install QA remains; no guarantee every future email avoids spam.
+- Branch codex/live-beta-signup. Files changed: CHANGELOG.md and TODO.md only in website/app records. Production configuration/deploy changed; no app code change or PR. EAS Update required no/possible N/A; new EAS Build no; Supabase migration/Edge Function/secret change no; App Store metadata change no. iOS/Android clients and backend contracts unchanged. Suggested app command none. Rollback: promote dpl_3N9omRxSysJ52pAKZZP7Hafa22Mk to restore email-disabled production snapshot; set production email mode disabled for subsequent builds.

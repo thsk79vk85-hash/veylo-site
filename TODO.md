@@ -2,13 +2,12 @@
 
 ## Release blockers
 
-- `[release-blocker][qa][needs-verification]` Resolve canonical-legal versus
-  marketing/signup source integration before considering draft
-  [PR #6](https://github.com/thsk79vk85-hash/veylo-site/pull/6) for merge.
-  Five main/head three-way conflicts are now verified. The proposed bounded
-  retarget to existing marketing `codex/live-beta-signup` and record-only conflict
-  reconciliation awaits John's approval; do not change the PR base yet. Preserve both
-  streams, live contact corrections and signup behavior. Do not wholesale
+- `[release-blocker][qa][needs-verification]` Keep draft
+  [PR #6](https://github.com/thsk79vk85-hash/veylo-site/pull/6) on its approved
+  marketing base `codex/live-beta-signup`, separate from canonical legal main.
+  John approved the bounded base exception and record reconciliation19October;
+  it grants no merge/rollout authority. Preserve both source streams, live
+  contact corrections and signup behavior. Do not wholesale
   deploy legal-only main or overwrite canonical legal bodies. Local six-task
   implementation/reviews and approved guard/correction are complete; exact
   ff89b5d passes498/498 with clean independent review. Evidence/history belongs
