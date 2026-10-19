@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Private launch retention RunReceipt schema1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "runId", "state", "counts", "rateEvents", "oldestEligibleAgeSeconds", "reasons"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "runId": {"type": "string", "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"},
+    "state": {"enum": ["disabled", "unavailable", "partial", "idle", "processed"]},
+    "counts": {
+      "type": "object", "additionalProperties": false, "required": ["raw", "receipt", "marker"],
+      "properties": {"raw": {"$ref": "#/$defs/counts"}, "receipt": {"$ref": "#/$defs/counts"}, "marker": {"$ref": "#/$defs/counts"}}
+    },
+    "rateEvents": {
+      "type": "object", "additionalProperties": false, "required": ["visited", "completed", "remaining"],
+      "properties": {"visited": {"$ref": "#/$defs/count"}, "completed": {"$ref": "#/$defs/count"}, "remaining": {"type": "boolean"}}
+    },
+    "oldestEligibleAgeSeconds": {"type": "null", "description": "UNKNOWN. Current adapters establish neither the authoritative eligibility clock nor relevant population/page coverage. No other clock is substituted."},
+    "reasons": {"type": "array", "uniqueItems": true, "items": {"enum": ["active_purpose", "unavailable", "invalid_facts", "held", "live_reference", "unknown_delivery", "link_required", "restore_required", "scope_mismatch", "eligible", "already_done", "copies_unavailable", "coverage_unavailable", "more_work"]}}
+  },
+  "$defs": {
+    "count": {"type": "integer", "minimum": 0, "maximum": 100},
+    "counts": {
+      "type": "object", "additionalProperties": false, "required": ["visited", "completed", "review", "refused"],
+      "properties": {"visited": {"$ref": "#/$defs/count"}, "completed": {"$ref": "#/$defs/count"}, "review": {"$ref": "#/$defs/count"}, "refused": {"$ref": "#/$defs/count"}}
+    }
+  },
+  "description": "Runtime validator also enforces <=100 total lane visits, completed/review/refused <= visited, rate completed=visited, and state consistency. Oldest eligible age remains explicitly UNKNOWN/null, regardless of completion or bounded page selection. Unavailable coverage and copy handling remain independent follow-up even with no local work objects. No state asserts all-copy erasure."
+}

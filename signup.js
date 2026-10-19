@@ -15,14 +15,17 @@ function displayAccess(data){const container=document.querySelector('#beta-next-
 async function submit(form,intent,selectedPlatform,input){
  if(!form.reportValidity())return;
  const fields=form.querySelector('fieldset'),message=form.querySelector('[role="alert"]');
+ if(fields.disabled)return;
  const body={email:input.value,intent,platform:selectedPlatform,source,consent:true,company:form.querySelector('[name="company"]').value};
  fields.disabled=true;message.textContent='';
- try{const response=await fetch('/api/signup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(22000)});const data=await response.json();if(!response.ok||!data.saved)throw Error(data.message||'We couldn’t save your signup. Please try again.');
+ const controller=new AbortController();let timedOut=false;
+ const timeout=setTimeout(()=>{timedOut=true;controller.abort();},22000);
+ try{const response=await fetch('/api/signup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body),signal:controller.signal});const data=await response.json();if(!response.ok||!data.saved)throw Error(data.message||'We couldn’t save your signup. Please try again.');
  form.hidden=true;
  const delivery=data.delivery==='disabled'?'Your signup is saved.':data.delivery==='sent'?'Your email has been accepted for sending. Check your inbox and spam folder.':data.delivery==='pending'?'Your signup is saved. Email delivery is still being checked.':'Your signup is saved, but we couldn’t send the email right now.';
  if(intent==='beta'){document.querySelector('#beta-result-title').textContent='You’re ready for the next step.';document.querySelector('.beta-result-message').textContent=delivery+' You can also use the steps below.';displayAccess(data);result.hidden=false;document.querySelector('#reset-beta').focus();}
  else{const output=document.querySelector('#launch-result');output.querySelector('[role="status"]').textContent='You’re on the launch list. We’ll email you when Veylo launches. No beta or marketing subscription. '+delivery;output.hidden=false;document.querySelector('#reset-launch').focus();}
- }catch(error){message.textContent=error.name==='TimeoutError'?'This is taking longer than expected. Please try again; your signup won’t be duplicated.':error.message==='Failed to fetch'?'Check your connection and try again.':error.message;}finally{fields.disabled=false;}
+ }catch(error){message.textContent=timedOut?'We couldn’t confirm your signup. Please try again; your signup won’t be duplicated.':error.message==='Failed to fetch'?'Check your connection and try again.':error.message;}finally{clearTimeout(timeout);fields.disabled=false;}
 }
 betaForm.addEventListener('submit',event=>{event.preventDefault();void submit(betaForm,'beta',platform,email);});
 launchForm.addEventListener('submit',event=>{event.preventDefault();void submit(launchForm,'launch',document.querySelector('#launch-platform').value,document.querySelector('#launch-email'));});

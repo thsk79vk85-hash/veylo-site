@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createWaitlistHandler } from '../api/waitlist.js';
+import { launchEnv } from './helpers/guarded-launch.mjs';
 
 function createResponseRecorder() {
   return {
@@ -22,11 +23,12 @@ function createResponseRecorder() {
 }
 
 function request(body, method = 'POST') {
-  return { method, body };
+  return { method, body, headers: { 'content-type': 'application/json' } };
 }
 
 const env = {
-  WAITLIST_SUPABASE_URL: 'https://waitlist.supabase.co',
+  ...launchEnv,
+  WAITLIST_SUPABASE_URL: 'https://yohiumlrpfdhphsnnxxw.supabase.co',
   WAITLIST_SUPABASE_SERVICE_ROLE_KEY: 'service-key',
   RESEND_API_KEY: 're_test_key',
   WAITLIST_FROM_EMAIL: 'Veylo <hello@veylo.app>',
@@ -104,12 +106,8 @@ test('valid input passes normalized email and all server configuration to regist
   assert.equal(response.statusCode, 202);
   assert.deepEqual(calls, [{
     email: 'student@example.com',
-    supabaseUrl: env.WAITLIST_SUPABASE_URL,
-    serviceRoleKey: env.WAITLIST_SUPABASE_SERVICE_ROLE_KEY,
-    resendApiKey: env.RESEND_API_KEY,
-    fromEmail: env.WAITLIST_FROM_EMAIL,
-    siteUrl: 'https://joinveylo.com',
-    logger,
+    env,
+    ip: 'unknown',
   }]);
   assert.equal(JSON.parse(response.body).message, 'Accepted.');
 });

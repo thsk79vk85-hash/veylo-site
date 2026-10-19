@@ -1,149 +1,46 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { registerWaitlistEmail } from '../lib/waitlist-service.mjs';
+import { launchEnv as env, freshClaim, json } from './helpers/guarded-launch.mjs';
 
-const config = {
-  email: 'student@example.com',
-  supabaseUrl: 'https://waitlist.supabase.co',
-  serviceRoleKey: 'service-key',
-  resendApiKey: 're_test_key',
-  fromEmail: 'Veylo <hello@veylo.app>',
-  siteUrl: 'https://veylo-site-preview.vercel.app',
-  logger: { error() {} },
-};
-
-test('stores a new email and sends exactly one confirmation', async () => {
-  const sent = [];
-  const result = await registerWaitlistEmail({
-    ...config,
-    fetchImpl: async () => new Response(null, { status: 201 }),
-    sendConfirmation: async options => {
-      sent.push(options);
-      return { ok: true, id: 'email_123' };
-    },
+const config = { email: 'person@test.invalid', env, ip: 'synthetic-ip' };
+test('new legacy signup uses unknown consent and shared provider guards', async () => {
+  const calls = [];
+  const result = await registerWaitlistEmail({ ...config, fetchImpl: async (url, opts) => {
+    calls.push({ url, body: JSON.parse(opts.body) });
+    if (url.endsWith('/claim_launch_signup_v2')) return json(freshClaim);
+    return json(url.includes('resend.com') ? { id: 'synthetic-provider' } : true);
+  } });
+  assert.equal(result.status, 201); assert.match(result.message, /on the list/);
+  assert.equal(calls[0].body.p_consent_status, 'unknown'); assert.equal(calls[0].body.p_consent_version, null);
+  assert.equal(calls.at(-1).body.p_state, 'sent');
+  assert.equal(calls.filter(c => c.url.includes('resend.com')).length, 1);
+});
+test('duplicate returns legacy 200 message with no confirmation', async () => {
+  let n = 0;
+  const result = await registerWaitlistEmail({ ...config, fetchImpl: async () => { n++; return json({ ...freshClaim, send: false, created: false, delivery: 'sent' }); } });
+  assert.equal(result.status, 200); assert.match(result.message, /already/); assert.equal(n, 1);
+});
+for (const outcome of ['reject', 'timeout', 'malformed-success', 'server-error']) {
+  test(`legacy ${outcome} preserves registration and honest provider state`, async () => {
+    let final;
+    const result = await registerWaitlistEmail({ ...config, fetchImpl: async (url, opts) => {
+      if (url.endsWith('/claim_launch_signup_v2')) return json(freshClaim);
+      if (url.includes('resend.com')) {
+        assert.ok(opts.signal instanceof AbortSignal);
+        if (outcome === 'timeout') throw new DOMException('synthetic timeout', 'TimeoutError');
+        return json({}, outcome === 'reject' ? 403 : outcome === 'server-error' ? 503 : 200);
+      }
+      if (url.endsWith('/finish_launch_delivery_v1')) final = JSON.parse(opts.body);
+      return json(true);
+    } });
+    assert.equal(result.status, 201);
+    assert.equal(final.p_state, outcome === 'reject' ? 'failed' : 'pending');
+    assert.equal(final.p_provider_id, null);
   });
-  assert.equal(result.status, 201);
-  assert.equal(sent.length, 1);
-  assert.equal(sent[0].to, 'student@example.com');
-});
-
-test('does not send a confirmation for a duplicate email', async () => {
-  const sent = [];
-  const result = await registerWaitlistEmail({
-    ...config,
-    fetchImpl: async () => new Response(JSON.stringify({ code: '23505' }), {
-      status: 409,
-      headers: { 'content-type': 'application/json' },
-    }),
-    sendConfirmation: async options => {
-      sent.push(options);
-      return { ok: true };
-    },
-  });
-  assert.equal(result.status, 200);
-  assert.match(result.message, /already/i);
-  assert.equal(sent.length, 0);
-});
-
-test('does not send when Supabase fails', async () => {
-  const sent = [];
-  const result = await registerWaitlistEmail({
-    ...config,
-    fetchImpl: async () => new Response(JSON.stringify({ code: 'XX000' }), {
-      status: 500,
-      headers: { 'content-type': 'application/json' },
-    }),
-    sendConfirmation: async options => {
-      sent.push(options);
-      return { ok: true };
-    },
-  });
-  assert.equal(result.status, 500);
-  assert.equal(sent.length, 0);
-});
-
-test('keeps signup successful when confirmation delivery fails', async () => {
-  const result = await registerWaitlistEmail({
-    ...config,
-    fetchImpl: async () => new Response(null, { status: 201 }),
-    sendConfirmation: async () => ({ ok: false }),
-  });
-  assert.equal(result.status, 201);
-  assert.match(result.message, /on the list/i);
-});
-
-test('returns 201 within the configured deadline when the real Resend sender stalls', async () => {
-  let resendSignal;
-  const startedAt = Date.now();
-  const result = await settlesWithin(
-    registerWaitlistEmail({
-      ...config,
-      resendRequestTimeoutMs: 20,
-      fetchImpl: async (url, options) => {
-        if (url === 'https://waitlist.supabase.co/rest/v1/waitlist') {
-          return new Response(null, { status: 201 });
-        }
-        if (url === 'https://api.resend.com/emails') {
-          resendSignal = options.signal;
-          return new Promise((_, reject) => {
-            if (!resendSignal) return;
-            resendSignal.addEventListener('abort', () => reject(resendSignal.reason), { once: true });
-          });
-        }
-        throw new Error(`Unexpected URL: ${url}`);
-      },
-    }),
-    250,
-  );
-
-  assert.equal(result.status, 201);
-  assert.match(result.message, /on the list/i);
-  assert.equal(resendSignal.aborted, true);
-  assert.ok(Date.now() - startedAt < 250);
-});
-
-test('keeps signup successful when confirmation sender throws', async () => {
-  const logged = [];
-  const result = await registerWaitlistEmail({
-    ...config,
-    fetchImpl: async () => new Response(null, { status: 201 }),
-    sendConfirmation: async () => {
-      throw new Error('Resend unavailable');
-    },
-    logger: { error: (...args) => logged.push(args) },
-  });
-  assert.equal(result.status, 201);
-  assert.match(result.message, /on the list/i);
-  assert.equal(logged.length, 1);
-});
-
-test('does not log secrets when database insert throws', async () => {
-  const logged = [];
-  const result = await registerWaitlistEmail({
-    ...config,
-    fetchImpl: async () => {
-      throw new Error('request failed for student@example.com using service-key');
-    },
-    logger: { error: (...args) => logged.push(args) },
-  });
-  assert.equal(result.status, 500);
-  assert.equal(logged.length, 1);
-  assert.doesNotMatch(JSON.stringify(logged), /student@example\.com/);
-  assert.doesNotMatch(JSON.stringify(logged), /service-key/);
-});
-
-async function settlesWithin(promise, timeoutMs) {
-  let timer;
-  try {
-    return await Promise.race([
-      promise,
-      new Promise((_, reject) => {
-        timer = setTimeout(() => {
-          reject(new Error(`operation did not settle within ${timeoutMs}ms`));
-        }, timeoutMs);
-      }),
-    ]);
-  } finally {
-    clearTimeout(timer);
-  }
 }
+test('storage exceptions sanitize details and return retryable failure', async () => {
+  let calls = 0;
+  const out = await registerWaitlistEmail({ ...config, fetchImpl: async () => { calls++; throw Error('person@test.invalid synthetic-secret'); } });
+  assert.equal(out.status, 503); assert.equal(calls, 1); assert.doesNotMatch(JSON.stringify(out), /synthetic-secret|person@test/);
+});

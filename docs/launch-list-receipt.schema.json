@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Content-free launch reconciliation and mode receipt v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "projectRef", "sourceCommit", "schemaIdentity", "fenceEpoch", "mode", "scopeHash", "configured", "counts", "outcome", "equality", "disposalAllowed", "writes", "emails", "testedWriterIds", "approvalRef"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "projectRef": { "type": ["string", "null"], "pattern": "^[a-z]{20}$" },
+    "sourceCommit": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+    "schemaIdentity": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "scopeHash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "fenceEpoch": { "type": "integer", "minimum": 0 },
+    "mode": { "enum": ["transition", "fenced", "canonical"] },
+    "configured": { "type": "boolean" },
+    "outcome": { "enum": ["inventory", "dry_run", "refused", "review", "reconciled", "mode_changed"] },
+    "operation": { "enum": ["mode", "restore"] },
+    "targetMode": { "enum": ["fenced", "canonical"] },
+    "restoreSnapshotRef": { "type": ["string", "null"], "pattern": "^[a-zA-Z0-9_-]{1,100}$" },
+    "restoreReplayRef": { "type": ["string", "null"], "pattern": "^[a-zA-Z0-9_-]{1,100}$" },
+    "restoreCoverageRef": { "type": ["string", "null"], "pattern": "^[a-zA-Z0-9_-]{1,100}$" },
+    "equality": { "type": "boolean" },
+    "disposalAllowed": { "const": false },
+    "writes": { "type": "integer", "minimum": 0 },
+    "emails": { "const": 0 },
+    "approvalRef": { "type": ["string", "null"], "pattern": "^[a-zA-Z0-9_-]{1,100}$" },
+    "testedWriterIds": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-zA-Z0-9_-]{1,100}$" } },
+    "counts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["legacy", "launch", "beta", "invalid", "conflicts"],
+      "properties": {
+        "legacy": { "type": "integer", "minimum": 0 }, "launch": { "type": "integer", "minimum": 0 },
+        "beta": { "type": "integer", "minimum": 0 }, "invalid": { "type": "integer", "minimum": 0 },
+        "conflicts": { "type": "integer", "minimum": 0 }
+      }
+    }
+  },
+  "allOf": [{
+    "if": { "properties": { "outcome": { "const": "mode_changed" } } },
+    "then": {
+      "required": ["operation", "targetMode", "restoreSnapshotRef", "restoreReplayRef", "restoreCoverageRef"],
+      "properties": { "approvalRef": { "type": "string" }, "testedWriterIds": { "minItems": 1 }, "writes": { "const": 2 } },
+      "allOf": [{
+        "if": { "properties": { "operation": { "const": "restore" } } },
+        "then": { "properties": {
+          "targetMode": { "const": "canonical" },
+          "restoreSnapshotRef": { "type": "string" }, "restoreReplayRef": { "type": "string" }, "restoreCoverageRef": { "type": "string" }
+        } },
+        "else": { "properties": {
+          "restoreSnapshotRef": { "type": "null" }, "restoreReplayRef": { "type": "null" }, "restoreCoverageRef": { "type": "null" }
+        } }
+      }]
+    }
+  }]
+}

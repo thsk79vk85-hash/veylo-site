@@ -1,20 +1,139 @@
 # Website follow-ups
 
+## Release blockers
+
+- `[release-blocker][qa][needs-verification]` Keep draft
+  [PR #6](https://github.com/thsk79vk85-hash/veylo-site/pull/6) on its approved
+  marketing base `codex/live-beta-signup`, separate from canonical legal main.
+  John approved the bounded base exception and record reconciliation19October;
+  it grants no merge/rollout authority. Preserve both source streams, live
+  contact corrections and signup behavior. Do not wholesale
+  deploy legal-only main or overwrite canonical legal bodies. Local six-task
+  implementation/reviews and approved guard/correction are complete; exact
+  ff89b5d passes498/498 with clean independent review. Evidence/history belongs
+  in CHANGELOG, not a repeated implementation task. Keep both `main` and
+  `codex/launch-list-retention` Git deployments disabled; no wildcard opt-in or
+  independent marketing workflow change. All66 inventory/21open/20final/B3 and
+  real acceptance gates remain; no merge, deployment, cleanup or sending authority.
+- `[release-blocker][supabase][qa][needs-verification]` Launch intake/unsubscribe
+  flags remain OFF. Before any separately authorized Sydney-only rollout, assign
+  owner/operator/reviewer, verify exact combined source/migrations/schema/roles,
+  preserve beta v1, deploy compatible website callers, control every historical
+  writer and settle actual in-flight handoffs. Follow the reviewed cutover guide;
+  never enforce an incompatible grant/RPC/writer boundary ahead of affected
+  callers. No hosted SQL, import, disposal, email, secrets, schedules or deployment
+  is authorized by this local plan; never target the native app database.
+- `[release-blocker][supabase][qa][needs-verification]` Obtain independent
+  production replay coverage, interval/watermark/access/retention ownership and
+  conflict decisions before restore acceptance. Synthetic local restore results
+  do not establish production coverage or full-disaster readiness. Pending,
+  incomplete or conflicting safety facts keep launch closed.
+- `[release-blocker][qa][needs-verification]` Perform separately authorized hosted
+  receive/explicit-withdrawal/repeated-link/no-op-GET and provider uncertainty/log
+  secrecy QA. Test physical iPhone Safari and Android Chrome/default mail clients
+  for signup, 409/503, stalled body, duplicate click, retry, fragment privacy,
+  contact/deep links and current/retained client navigation. Local executed
+  scripts and controller read-only route evidence are not physical/delivery QA.
+
+## Backend/Supabase follow-ups
+
+- `[supabase][qa][needs-verification]` Establish an independently authoritative
+  eligibility clock AND complete relevant eligible-population/page coverage before
+  numeric oldest-eligible-age reporting. Current SQL/client/schema/processor keep
+  it UNKNOWN/null; decision/withdrawal/review/completion are not substitute clocks.
+  Real coverage/copy bindings remain unavailable independently of local ledger
+  selection, including unenrolled raw records and final marker removal. Do not
+  treat rate-only progress, empty rows or a completed page as settled follow-up.
+  No new timing framework, copy-case system, phantom marker or issuer is supplied.
+- `[release-blocker][supabase][qa][needs-verification]` Rulings9/12/13: before
+  real transport adoption, verify its executing-connection deadline, owner I/O,
+  rollback/lock release and raw-error secrecy against hosted bindings. Local
+  Task6 HTTP and final correction reviews are accepted, not production proof.
+  Preserve raw22P02/P0001/57014/PGRST001 behavior; private output safety does not
+  make raw HTTP public-safe. No production supplier is wired; cleanup stays OFF
+  and protected adapters unavailable, with no global role/default changes.
+- `[release-blocker][supabase][qa][needs-verification]` Bind the independent complete CURRENT restore hook to a real stable source
+  barrier/head and applied full replay state, including missing snapshot identities
+  and every older live key. The shipped private hooks remain unavailable; copied
+  local tables, snapshots, opaque references, booleans and TTLs cannot certify
+  currency. Synthetic second-clone success is not production coverage. See
+  `docs/launch-retention-runbook.md`; no general replay importer or public setter.
+- `[supabase][qa][needs-verification]` Before adopting Task 2/3/4/5 dormant mechanics,
+  complete the combined compatible finish/readiness/restore acceptance and
+  independently bind real necessity, references, holds, delivery, usable-link,
+  suppression and current external restore coverage. Context deliberately returns
+  those facts unavailable; synthetic owning facts must never become a production
+  adapter. Retention executors cannot proceed with those defaults; no retention
+  issuer/setter/force flag/schedule is installed. Preserve minimum ACLs,
+  owner-installed fingerprint and separate retention/import authority purposes.
+  Review migrations `20261018141524_launch_list_retention_state.sql` and
+  `20261018150520_launch_list_retention_disposition.sql`, plus Task 4 migration
+  `20261018170026_launch_list_retention_retirement.sql` and Task5 processing
+  `20261018184435_launch_list_retention_processing.sql`, with the later ordered
+  forward selection `20261018215239_launch_list_retention_selection.sql` and
+  website-only rollout; never blanket-push the app database. Keep retention-aware
+  finish/readiness during rollback; do not recreate erased raw rows for old code.
+- `[qa][needs-verification]` Preserve N3 custody: original frozen-helper UUID
+  cleanup ownership messages, CLI notices, four app Node warnings and historical
+  overwritten/uncaptured/transcribed output limits. No reconstruction, generic
+  warning suppression, immutable pin relaxation or installation. Archive each
+  new capture uniquely with its exact tested source and scope.
+- `[supabase][qa][needs-verification]` Run the full owned local DB suite for later
+  launch changes. Verify hosted extension/schema/role parity, actual scale/locks,
+  provider late-result persistence and fresh purpose-bound approvals before live
+  use. Unknown consent remains unknown/non-sendable; dry-run cannot issue
+  authority or send. Preserve original migration and `disposalAllowed:false`.
+- `[supabase][qa][needs-verification]` Verify actual key/template transition and
+  independently owned per-field end assessments without expiring usable links or
+  deleting data on review dates. Keep distinct match/token/rate keys and stable
+  payload/identity on retries. A timeout does not settle a handed-off message;
+  commercial-message unsubscribe availability runs at least 30 days from actual
+  send, not signup or withdrawal. No purge/resubscription flow is approved.
+- `[release-blocker][supabase][qa][needs-verification]` Provider/mailbox/export/
+  log/backup/PITR/operator copy integrations remain unavailable and uncompleted.
+  Assign actual owners/access/necessary identifiers/purpose ends and independently
+  verify each completion or restriction; zero local rows is not all-copy erasure.
+  Unknown runtime provenance on restored/orphan import contexts stays review;
+  no PID-age or coincidentally committed local-XID inference.
+
 ## Free version polish
 
-- `[free][qa][needs-verification]` Domain cutover completed 9 September: apex A 216.198.79.1; www CNAME f5a5067f330ba589.vercel-dns-017.com; www redirects to apex. Remaining QA: physical iOS/Android and native auth round-trip (signup/email receipt verified 11 October). Preserve auth/mail records in future domain work.
+- `[free][qa][needs-verification]` Domain cutover completed 9 September: apex A 216.198.79.1; www CNAME f5a5067f330ba589.vercel-dns-017.com; www redirects to apex. Remaining QA: physical iOS/Android and native auth round-trip. The11October controlled signup/delivery receipt is recovered; no repeat test or activation required. Current hosted/provider acceptance remains separate. Preserve auth/mail records in future domain work.
 
 - `[free][qa]` Smoke-test the refreshed showcase in physical iPhone Safari and Android Chrome, including the stock portrait crops/labels, keyboard navigation/screen reader, reduced motion, all four demo panels and signup states. Browser viewport checks have passed; this is not a native-device result.
 
 ## App Store readiness
 
+- `[app-store][qa][needs-verification]` 17 October 2026 — Verify both hosted `support.html` contacts and `Veylo Support` mailto subject on physical iPhone Safari and Android Chrome/default mail clients, including app-to-site navigation, after the isolated contact release. The separate single support mailbox receive/human reply test is verified10m26s; ongoing under48h response/backup/urgent/deletion operations are still open. Full canonical D3/D5 publication and independent D1 facts remain open.
 - `[app-store][qa]` Keep future legal amendments on the canonical GitHub Pages `main` documents and verify the marketing/app links after publishing. Do not reinstate separate legal-text copies on the marketing branch.
 
 - `[free][qa][needs-verification]` Review codex/interactive-campus-preview on physical iPhone Safari and Android Chrome: swipe versus vertical scrolling, keyboard and screen reader, reduced motion, all four screens and sample campus/status accuracy. HTML remains illustrative rather than pixel-exact native UI.
 - `[free][needs-verification]` Public marketing release promoted 11 October from codex/live-beta-signup; future production source protection remains: Keep marketing deployments separate from canonical legal main. Preserve canonical legal pages and current eligibility wording; do not overwrite main with marketing redirects.
 
-- `[free][qa][needs-verification]` Review beta-preview.html combined showcase/signup/email flow. beta-preview.html remains a mock; beta.html now has a real server integration with additive migration applied. Hosted signup and invitation delivery verified 11 October. TestFlight public URL supplied and browser-verified; confirm Android group join policy and eligible region before live access; follow docs/beta-signup-preview.md for additive intent-aware registration and server-side email design. Preserve launch-only consent and never infer installation from a signup/click.
-- `[free][qa]` Review combined beta preview motion on physical iOS/Android, including OS Reduce Motion switched during a reveal, keyboard focus, and signup/email transitions. Production website and signup emails enabled 11 October; keep physical-device motion QA outstanding.
+- `[free][qa][needs-verification]` Review beta-preview.html combined showcase/signup/email flow. beta-preview.html remains a mock; beta.html has a real server integration with additive migration applied. Historical signup/delivery/activation were verified11October, not current candidate-hosted acceptance. Confirm Android group join policy/eligible region and physical flows; follow docs/beta-signup-preview.md. Preserve launch-only consent and never infer installation from a signup/click.
+- `[free][qa]` Review combined beta preview motion on physical iOS/Android, including OS Reduce Motion switched during a reveal, keyboard focus, and signup/email transitions. Existing production/signup mail activation has a11October receipt; no new promotion or sending authority follows.
+
+## EAS/deployment follow-ups
+
+- `[eas-update][qa][needs-verification]` Retention Task 1 needs no EAS Update or
+  native build. Keep candidate output binding external to its source map. For
+  future reviewed website promotion, verify production is an ancestor of the
+  exact combined tested commit and promote the tested immutable candidate;
+  legal-only main must not replace marketing or re-enable automatic deployment.
+  Review the exact frozen additive package exception and its Task6 phase;
+  only the listed third command is authorized, with negative Task5 fixtures kept.
+  Preserve original frozen package/input-map pins, old scripts/dependencies and
+  all other fields; never regenerate old expectations from a candidate.
+
+- `[qa][needs-verification]` 17 October2026 — Preserve/export the verified complete
+  contact-release history bundle through82da1e8 before publication-plan workspace
+  cleanup. Its independent restore and commit/tree hashes passed; see the release
+  receipt for SHA256. Separately reconcile the pre-existing original shared
+  repository main-worktree HEAD error without resetting another chat's checkout.
+  The13missing historical trees are recovered; repeating contact deployment or
+  source-only tests is not the remaining task.
+
+- `[qa][needs-verification]` 17 October 2026 — Preserve the newly verified contact-only production source0baab74/builddpl_81afMJgSr7sdpJFTAgvSaH9SBwuL in future website releases; merge its exact contact correction into any cumulative candidate without activating unfinished D2 migration paths. Staging/promotion/public checks are complete, detailed in docs/2026-10-17-contact-release.md. Remaining work is physical mailto/app-to-site QA and broader legal/operational publication, not repeating this deploy. No EAS Update/build, Supabase migration/function/secret/admin/store change applies to the contact fix.
 
 ## Beta signup deployment follow-ups
 
@@ -23,4 +142,3 @@
 - `[qa][needs-verification]` Phone showcase refreshed from current app source; check physical iPhone/Android layout and compare against released native screens following production promotion.
 
 - `[qa][needs-verification]` Review screenshot-based five-tab green phone showcase on physical phones following public promotion; non-Campus screens remain illustrative.
-
