@@ -1,5 +1,41 @@
 # Changelog
 
+## 2026-10-19 — Diagnose publishing-source conflicts and recover mail history
+
+- Exact main6ddbc5ca versus review22d73f4 three-way diagnostic reproduces five
+  conflicts: index/privacy/support/terms/vercel.json. Diagnostic tree7476cee2
+  retains main's deletion page and both canonical tests byte-exact: direct-diff
+  deletions are NOT proof a normal merge deletes them. Whole-head replacement
+  is unsafe, however: marketing Privacy/Terms wrappers self-redirect if hosted
+  on canonical Pages, and that head lacks its standalone deletion page. The two
+  publishing targets also have different exact deployment-guard test contracts.
+  No actual merge/checkout/branch change. PR #6 description records the finding.
+- Deployed marketing0baab74 is an ancestor of the candidate; index, Privacy/Terms
+  wrappers, support and styles match it exactly. Fresh public branch heads match
+  local main/review and existing marketing3b49fef. A marketing-base diagnostic has
+  only a CHANGELOG conflict; its extra commit after708b176 changes records only.
+  Proposed bounded PR retarget/records reconciliation awaits explicit approval;
+  PR remains draft against main. No source fix or unified hosting design inferred.
+- Recovered the existing11October email-activation receipt from the actual
+  "Brainstorm user growth and monetise" chat, turn01a129a1-e270-72c2-a3e9-d3dbb4d72c70:
+  John's delivery confirmation, successful production-mode setting/deploy and
+  promotion ofdpl_EgjCKrxUah9umPcCkmuftUBxBiSY. Source3b49fef independently records
+  that history. Corrected stale TODOs; do NOT repeat delivery tests or activation.
+  Historical signup delivery is distinct from new retention/consolidation sending,
+  which remains OFF. This does not prove current provider flags/tracking/copy
+  retention, future delivery, current hosted flows or physical-device acceptance.
+- Areas: CHANGELOG/TODO and PR description only; runtime/SQL/pins/tests/config
+  unchanged. Existingff89b5d full498pass remains dated prior verification, not a
+  new run. Fresh ancestry/blob/three-way/scope assertions pass; conflict exit1 is
+  expected diagnostic evidence. Network sandbox DNS failure was followed by a
+  successful permitted public read, not branch mutation. App type/lint/check/Expo
+  not rerun. iOS/Android current/retained and backend contracts unchanged.
+- EAS Update possible/required:no/no; new Build:no; Supabase migration/function/
+  secret:no; Vercel/admin/site deploy:no; Store/privacy/public legal activation:no.
+  Command:none. All21open/20final/B3 and hosted/provider/operator/physical QA remain.
+  No new mail, cleanup, schedule or provider setting. Retain separate publication
+  paths, deployment guards and prior failures; never overwrite either live stream.
+
 ## 2026-10-19 — Open guarded draft PR #6 after exact-source verification
 
 - [PR #6](https://github.com/thsk79vk85-hash/veylo-site/pull/6) is OPEN/DRAFT,
