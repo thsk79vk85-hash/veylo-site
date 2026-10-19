@@ -1,5 +1,68 @@
 # Changelog
 
+## 2026-10-19 — Correct reached-write cancellation fixture after explicit approval
+
+- User approved the test-only correction. A controlled750ms prerequisite pause
+  reproduces the old500ms fixture's missed-write assertion:12pass/2fail(child and
+  parent). The delay remains as an adversarial input; no production SQL is changed.
+- The real API caller now arms the existing5s maximum before its SELECT. Two
+  materialized timing rows measure server execution around the real RPC, excluding
+  Docker/psql scheduling and the subsequent owner gate. The API must reach the
+  after-insert pause, return its exact sanitized zero-write refusal at4500–5500ms,
+  preserve the complete snapshot, and release item/raw/authority/advisory locks
+  while an outer transaction stays open. Outer commit is separately checked not
+  to publish cancelled writes. Existing bad-bound and other race cases remain.
+- Actual corrected isolated file14/14,0fail/skip/cancel; reached-write server
+  interval4999.179ms. Guard/source/package10/10 pass; counts overlap with the
+  upcoming full suite, not additional unique coverage. Earlier496/498 full and
+  diagnostic14/14 remain historical, not relabelled as corrected validation.
+- Areas:this test, prior approved branch-only guard/test and CHANGELOG/TODO.
+  Production SQL/functions/timeouts, frozen pins, package, APIs and assets unchanged.
+  Full exact-source default check and independent combined review still required
+  before the requested draft PR. No merge, deployment, cleanup or sending implied.
+- iOS/Android/backend contracts unchanged. EAS Update possible/required:no/no;
+  new EAS Build:no;Supabase migration/Edge Function/secret:no for this correction;
+  Vercel/admin/site deploy:no;Store/privacy/public legal:no. Suggested command:none.
+  Physical current/retained devices, hosted/provider/operator acceptance remain.
+  Typecheck/lint/Expo not applicable to the website-only test/config change.
+  Rollback:retain deployment blocks and failed evidence; do not weaken assertions
+  or restore disposed production data to accommodate an older caller.
+
+## 2026-10-19 — Block automatic deployments for the retention review branch
+
+- User approved a branch-only PR guard. `vercel.json` now explicitly disables
+  Git deployments for `codex/launch-list-retention` as well as the existing
+  `main` block. No wildcard/global setting, production redirect, security header,
+  marketing page, API, dependency, accepted migration or frozen pin changed.
+- New `tests/pr-deployment-guard.test.mjs` failed first because the review-branch
+  entry was missing. It checks both explicit blocks and rejects conflicting
+  opt-ins/global stops by requiring the narrow two-branch policy. Local test
+  validation is not a claim that an external deployment trigger was exercised.
+- PR preparation only, not rollout/merge authorization. The controller's final
+  scoped review of the earlier retention wave is already accepted; the old
+  pending-review wording below is historical. Cleanup, new delivery, schedules
+  and protected production bindings remain OFF/unavailable.
+- Areas: configuration, guard test, CHANGELOG/TODO. iOS/Android native contracts
+  and Sydney backend contracts unchanged. EAS Update possible/required:no/no;
+  new EAS Build:no; Supabase migration/Edge Function/secret:no for this guard;
+  Vercel/admin/site deployment:no; store/privacy/public legal activation:no.
+  Future adoption of the dormant SQL still needs selective Sydney rollout, not
+  a blanket app db push. Suggested deployment command:none. Physical current/
+  retained iOS/Android and hosted/provider/operator acceptance remain required.
+- Validation:guard RED for missing entry, then10/10guard/source/package subset
+  GREEN; narrow independent review has no findings. Full guarded-tree check
+  actually failed:496pass/2fail(child+parent),0skip/cancel. The unchanged500ms
+  write-cancellation fixture did not reach its after-insert pause (`is_called`
+  false), so reached-write rollback was not certified. Do not substitute the
+  earlier497pass diagnostic/pre-guard run or rerun unchanged until green.
+  No PR/push yet; the proposed separate test-only correction awaits approval.
+  One subsequent unchanged isolated race-file diagnostic passes14/14, including
+  the missed write-stage scenario; it supports timing sensitivity, not a fixed
+  test or full-suite GREEN. Original exact backend error/location was not captured
+  before the failed assertion; sanitized refusals also cover other errors.
+  Rollback: do not remove this branch block while publishing review commits;
+  changing it intentionally requires a separately approved deployment decision.
+
 ## 2026-10-19 — Consolidated launch-retention review fixes (local candidate)
 
 - I1: new CLI-generated forward Q selection migration prioritizes unique current

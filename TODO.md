@@ -12,8 +12,17 @@
   Whole review found I1 selection starvation/I2 unreliable full validation and
   N1 cleanup/N2 factual precision; consolidated wave implements forward Q,
   deterministic race/settlement and all-owned teardown fixes, with the separate
-  three-file app factual qualification. Obtain ONE fresh scoped combined rereview
-  of the exact frozen wave and actual default full/DB/HTTP/source/package evidence.
+  three-file app factual qualification. The controller accepted the ONE fresh
+  scoped combined re-review at app70e9a6e: all five findings addressed, no new
+  blocking finding. Do not repeat that completed review. The additional approved
+  branch-only deployment guard has passed its narrow review and10focused checks.
+  John subsequently approved the test-only correction. Controlled750ms fixture
+  prerequisite reproduces the old missed-write assertion12/14; corrected real5s
+  pre-command/server-measured API passes14/14 with reached-write, exact refusal,
+  rollback and open-transaction lock proof. Obtain fresh full exact-source check
+  and combined narrow review before the requested draft PR; no merge/rollout.
+  Preserve the earlier496/498full failure and unchanged14/14diagnostic; neither
+  is corrected-source acceptance or proof of its original exact error location.
   Frozen executable73a9b56/tree4b77d170 has actual497/497 full,262/262 DB,29/29
   HTTP and9/9 source/package passes, no fail/skip/cancel; final records-only
   commits must be reviewed as code-equivalent, not falsely relabelled tested SHAs.
@@ -24,7 +33,9 @@
   Source: `docs/launch-retention-source-map.json`;
   external acceptance receipt: app `tasks/2026-10-18-launch-list-retention-progress.md`.
   Preserve original66 inventory and 21/20-real release gates; no local test count
-  or this candidate confers deployment/cleanup authority.
+  or this candidate confers deployment/cleanup authority. Keep both `main` and
+  `codex/launch-list-retention` Git deployments disabled; do not add a wildcard
+  opt-in or change the independent marketing branch's deployment workflow.
 - `[release-blocker][supabase][qa][needs-verification]` Launch intake/unsubscribe
   flags remain OFF. Before any separately authorized Sydney-only rollout, assign
   owner/operator/reviewer, verify exact combined source/migrations/schema/roles,

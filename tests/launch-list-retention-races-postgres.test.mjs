@@ -145,12 +145,35 @@ test('two-session raw cleanup races preserve owning fences and independent beta 
         create function synthetic_test.pause_after_compact() returns trigger language plpgsql as $pause$
           begin perform nextval('synthetic_test.cancel_hits');perform pg_sleep(5.5);return new;end $pause$;
         create trigger synthetic_cancel after insert on private.launch_retention_delivery for each row execute function synthetic_test.pause_after_compact()`);
-      const r=seed(),before=snapshot(),began=Date.now();
+      const r=seed();
+      // Controlled prerequisite work exceeds the old 500ms fixture budget.
+      // Reaching the injected write, not an early refusal, is mandatory.
+      db.sql(`update synthetic_test.facts set pause_seconds=0.75 where item_id='${r.item}'`);
+      const before=snapshot();
       await withOwnedCleanup(()=>withRace(r,async race=>{
-        const out=JSON.parse(await race.output(race.start(`set role service_role;${disposal(r,'500ms')}`)));
-        assert.ok(Date.now()-began<2000);assert.equal(db.sql('select is_called from synthetic_test.cancel_hits'),'t');
-        assert.deepEqual(out,{outcome:'refused',workId:r.item,generation:'2',reason:'unavailable',writes:0});assert.equal(snapshot(),before);
+        // Arm the existing maximum BEFORE the API command. Materialized timing
+        // rows measure only server execution, not Docker/psql scheduling or the
+        // following owner gate. No timer is set inside the timed SELECT.
+        const running=race.start(`set application_name='compact-write-cancel';begin;
+          set local role service_role;set local statement_timeout='5s';
+          with started as materialized (select clock_timestamp() as started_at),
+          completed as materialized (
+            select started_at,public.dispose_launch_raw_v1('${r.item}',2,${r.epoch},'${r.scope}','${r.approval}') as result from started
+          ) select jsonb_build_object('result',result,'elapsedMs',extract(epoch from (clock_timestamp()-started_at))*1000) from completed;
+          ${race.wait}commit`);
+        await observe('compact-write-cancel',"wait_event='PgSleep' and query like '%$gate$%'",400);
+        assert.equal(db.sql('select is_called from synthetic_test.cancel_hits'),'t','the API must reach the after-insert pause');
+        assert.equal(snapshot(),before);
         assert.equal(db.sql("select pg_try_advisory_xact_lock(hashtextextended('launch-list-fence',0))"),'t');
+        assert.doesNotThrow(()=>db.sql(`begin;
+          select item_id from private.launch_retention_items where item_id='${r.item}' for update nowait;
+          select id from public.signup_requests where id='${r.id}' for update nowait;
+          select approval_ref from private.launch_import_authorizations where approval_ref='${r.approval}' for update nowait;rollback`));
+        race.release();const {result,elapsedMs}=JSON.parse(await race.output(running));
+        assert.ok(elapsedMs>=4500&&elapsedMs<5500,'the existing five-second deadline must cancel the reached-write API');
+        assert.deepEqual(result,{outcome:'refused',workId:r.item,generation:'2',reason:'unavailable',writes:0});
+        assert.equal(snapshot(),before,'outer commit must not publish any cancelled API writes');
+        t.diagnostic(`reached-write API server interval ${elapsedMs}ms; rollback locks checked before outer commit`);
       }),[()=>db.sql('drop trigger synthetic_cancel on private.launch_retention_delivery;drop function synthetic_test.pause_after_compact();drop sequence synthetic_test.cancel_hits')]);
     });
     await t.test('same-address beta claim AND finish complete while cleanup waits for a launch tuple',async()=>{
