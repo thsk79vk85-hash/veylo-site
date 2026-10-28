@@ -1,332 +1,96 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Veylo Privacy Policy</title>
-    <meta name="description" content="Privacy Policy for Veylo." />
-    <link rel="stylesheet" href="./styles.css" />
-    <script>
-      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
-    </script>
-    <script defer src="/_vercel/insights/script.js"></script>
-  </head>
-  <body>
-    <main>
-      <nav aria-label="Legal and support">
-        <a href="./index.html">Home</a>
-        <a href="./terms.html">Terms</a>
-        <a href="./support.html">Support</a>
-        <a href="./delete-account.html">Delete account</a>
-      </nav>
-
-      <header>
-        <span class="eyebrow">Last updated 10 October 2026</span>
-        <h1>Privacy Policy</h1>
-        <p>
-          This Privacy Policy explains how Veylo collects, uses, stores, shares, and protects
-          information when students use the Veylo campus social app and related support pages.
-        </p>
-      </header>
-
-      <section class="panel">
-        <h2>Who Operates Veylo</h2>
-        <p>
-          Veylo is operated by John Tawadros, an individual based in Queensland, Australia. In this
-          Privacy Policy, “Veylo”, “we”, “us”, and “our” refer to John Tawadros as the operator of
-          the Veylo service.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Information We Collect</h2>
-        <p>Veylo may collect the following information when you use the app:</p>
-        <ul>
-          <li>Account information, including email address, password authentication handled by Supabase, authentication and session identifiers, and records of acceptance of our terms and privacy policy.</li>
-          <li>Profile information, including first name, last name, display name, username, university, selected campuses, degree or course, year level, optional student email and verification status, and optional major or specialisation selections or self-reported text.</li>
-          <li>Campus status information, including general campus, zone label, visibility choice, status text, last-confirmed and expiry times, freshness preferences, reminder processing records, and automatic-tracking verification times.</li>
-          <li>Social information, including friend requests, accepted friend connections, group names and membership, messages and read state, feed posts, feed comments, reactions, report submissions, moderation records, block lists, and related timestamps.</li>
-          <li>Profile photo information, including pending profile photo submissions and approved public avatar URLs.</li>
-          <li>Notification information, including Expo push tokens, device type, token status, last-seen times, notification preferences, and in-app notification records.</li>
-          <li>Friend-search text sent to the server to find matching profiles, plus search-rate-limit activity used to prevent abuse.</li>
-          <li>App-update request information, including an Expo installation identifier, platform and runtime version, and fatal-error details when the update system reports a previous app failure.</li>
-          <li>Optional support and feedback information, including your message, the screen you identify, severity, app version, platform, operating system version, app ownership, and execution-environment details when you use the in-app Beta feedback form; course suggestions and account-deletion requests when you submit them.</li>
-        </ul>
-      </section>
-
-      <section class="panel">
-        <h2>Location And Campus Presence</h2>
-        <p>
-          Veylo uses device location only when you choose a location-based campus status feature.
-          Manual campus checks and the optional check while the app is open use foreground location
-          permission. With the app-open option enabled, Veylo can use a current location result to
-          confirm or clear campus presence when you return to the app. Opening the app alone is not
-          proof that you are still on campus. If you enable always-on automatic campus
-          tracking, Veylo also requests background location permission and registers campus
-          geofences so the operating system may notify the app when your device enters or leaves a
-          supported campus area while the app is in the background. Background behaviour depends on
-          your device, operating system, permission settings, and platform limitations.
-        </p>
-        <p>
-          To determine campus presence, the app obtains coordinates from the device and compares
-          them on the device with configured campus zones. A manual check may use a recent
-          last-known location that is no more than approximately five minutes old when a fresh
-          position is unavailable. A freshness check on returning to the app requires a current
-          location result; an unavailable result does not silently reconfirm presence. In the
-          normal campus-status flow, Veylo sends its backend only the derived result,
-          such as on-campus or off-campus, a campus or zone label, and related status times. Veylo
-          does not intentionally send or store exact GPS coordinates in its backend as part of that
-          normal flow. Your device operating system and Apple or Google location services may process
-          exact location information to provide the location result under their own terms and
-          privacy practices.
-        </p>
-        <p>
-          A campus or zone label still reveals location information, sometimes within a relatively
-          small area. It is linked to your account. Campus status is an indication of presence, not
-          a live map or a guarantee that someone is still at that location.
-        </p>
-        <p>
-          You can turn off automatic campus tracking in Veylo and can revoke location permission in
-          your device settings. Turning it off stops future automatic checks, but it does not by
-          itself erase a campus status already stored in Veylo. You can update or hide that status
-          using Veylo’s privacy controls or delete your account.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Campus Status Freshness And Reminders</h2>
-        <p>
-          Campus freshness is enabled by default. For a status that is not maintained by verified
-          always-on tracking, Veylo normally schedules a reminder three hours after the latest
-          confirmation and stops showing that status as current after four hours, or at midnight
-          in Brisbane, whichever comes first. A reminder is not scheduled beyond that expiry.
-          App-open location checks do not turn reminders off while the app is closed. Verified
-          always-on tracking can suppress these reminders; platform or permission failures can
-          prevent automatic checks from occurring.
-        </p>
-        <p>
-          You can confirm that you are still there, say that you have left, or dismiss a reminder.
-          Dismissing it does not extend your status. Turning off freshness reminders removes the
-          normal three-hour reminder and four-hour expiry, but the Brisbane midnight reset still
-          applies. These controls are separate from location permission and automatic tracking.
-        </p>
-        <p>
-          Expiry or leaving removes current campus presence; it does not necessarily erase the
-          last confirmed campus and time. That information may remain visible as past activity to
-          people allowed by your privacy settings. Veylo stores the confirmation, expiry and
-          reminder state needed to keep this distinction and avoid duplicate reminders.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>How We Use Information</h2>
-        <p>We use information to provide app functionality, including:</p>
-        <ul>
-          <li>Creating and managing accounts.</li>
-          <li>Helping users choose university, campus, degree, and optional study details.</li>
-          <li>Showing campus status to the audience allowed by your privacy controls.</li>
-          <li>Supporting friend discovery, friend requests, messages, group chats, and campus feed posts.</li>
-          <li>Reviewing profile photo submissions before they become public profile pictures.</li>
-          <li>Sending optional push notifications for friend requests, messages, reactions, and campus status alerts when you allow them.</li>
-          <li>Maintaining security, preventing abuse, responding to reports, debugging issues, and improving reliability.</li>
-        </ul>
-      </section>
-
-      <section class="panel">
-        <h2>Storage And Service Providers</h2>
-        <p>
-          Veylo uses Supabase for authentication, database storage, file storage, and related backend
-          services. Supabase stores the account, profile, privacy, safety, campus status, feed,
-          notification, and messaging records needed for the app to function. Expo processes push
-          notification tokens and payloads for delivery. Apple Push Notification service and
-          Google’s Firebase Cloud Messaging may then deliver those notifications to devices. Apple,
-          Google, and the operating system may also provide native platform and location services.
-          Veylo’s public legal and support pages are hosted using GitHub Pages. Expo also provides
-          app-update delivery, including the update request information described above. These services receive the network and technical information needed
-          to serve requests. Email providers process messages you send to support.
-        </p>
-        <p>
-          We do not sell personal information or use it for cross-app advertising tracking. The
-          current app does not include third-party advertising SDKs. Connections to Veylo’s backend
-          use encrypted transport. Messages are stored on the backend; they are not end-to-end encrypted.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Push Notifications And Notification Content</h2>
-        <p>
-          If you enable notifications, Veylo stores the information needed to address and manage
-          them, including an Expo push token, device type, whether the token is enabled, its
-          last-seen time, an app-generated installation identifier, cryptographic binding proof,
-          account association, and your notification preferences. Veylo may also store an in-app
-          notification record containing the recipient, actor, title, body, routing information,
-          read time, and related timestamps.
-        </p>
-        <p>
-          Depending on the alert, a push notification may include a sender or actor name, a group
-          name, a campus-status event or status text, or a preview of a message of up to approximately
-          80 characters. A status alert can describe an activity such as being free or studying, or
-          say that a friend is at your campus when permitted by their privacy settings. It may also
-          include account, message, conversation, or event identifiers and links needed to open the
-          relevant screen.
-          A campus freshness reminder can name the campus you last confirmed and offer actions
-          to confirm your presence or say you have left. This content can also appear on your lock
-          screen, depending on your device settings.
-          Veylo sends this payload through the Expo Push Service, which forwards it to Apple Push
-          Notification service or Google’s Firebase Cloud Messaging. Those providers process the
-          token and notification content for delivery and delivery troubleshooting.
-        </p>
-        <p>
-          Depending on the recipient’s device settings, notification content may appear on a lock
-          screen and may be visible to anyone who can view that device. You can disable notification
-          categories in Veylo or disable all Veylo notifications in your device settings. Disabling
-          notifications controls future delivery but does not retract a notification already
-          delivered or remove information already stored on another user’s device or in their Veylo
-          notification history.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Website Visits And Analytics</h2>
-        <p>
-          Our public website includes Vercel Web Analytics. On pages where the analytics script
-          loads, it measures visits using information such as the page URL, referring page, visit
-          time, approximate region, and browser, operating system, and device type. We use these
-          statistics to understand use of the website. Website hosts also process network request
-          information, including IP addresses, to serve pages.
-        </p>
-        <p>
-          This website measurement is separate from the native Veylo app. Vercel describes its
-          default analytics as using a request-derived visitor hash without third-party cookies.
-          See <a href="https://vercel.com/docs/analytics/privacy-policy">Vercel’s analytics privacy information</a>
-          for its processing practices. Do not include passwords, sign-in codes, or private account
-          information in website URLs.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Overseas Storage And Processing</h2>
-        <p>
-          Veylo is operated from Australia, but some service providers process or store information
-          overseas. Push notification
-          information may be disclosed to or processed by Expo, Apple, Google, and their service
-          providers in the United States and other countries in which they operate. GitHub and Vercel may also
-          process standard website request information, such as an IP address and browser or device
-          information, when you visit Veylo’s public legal or support pages.
-        </p>
-        <p>
-          Privacy and data-access laws in those countries may differ from Australian law. We limit
-          information sent to each provider to what is reasonably required for the relevant service
-          and use the access controls and security features available to us. Provider infrastructure,
-          subprocessors, and processing locations can change. You can contact us for current
-          information about the providers and overseas locations known to Veylo.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Sharing</h2>
-        <p>
-          Profile and campus-feed content can be visible to other users through discovery and feed
-          features. Messages are available to the conversation’s participants. Campus status is
-          shown according to your selected audience and visibility controls, including blocking.
-          Depending on those settings, students beyond your accepted friends may see your status,
-          such as students at the same campus or university. Campus-name and zone visibility are
-          controlled separately from audience access. Your optional
-          major or specialisation is currently available to you in your own account settings, not
-          displayed to other students. Private student-email information is used for verification.
-          We also send information to the service providers described above to operate these
-          features. We may disclose information if required by law, to
-          protect users, or to investigate abuse and safety issues.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Profile Photos, Reports, And Moderation</h2>
-        <p>
-          Newly submitted profile photos are stored as private pending review items until they are
-          manually approved. A pending submission does not replace your public profile picture.
-          Once approved, a photo is published as an avatar with a public image URL; someone who has
-          that URL may access or copy it outside the app. Reports and moderation records are
-          available to authorised reviewers. Blocks restrict contact and visibility in the app,
-          but cannot recall content another person has already received or copied.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Retention And Account Deletion</h2>
-        <p>
-          Account and social records are stored to provide the service while your account exists.
-          Status or feed expiry changes what is shown as current; it does not mean every underlying
-          record or notification has been erased. Signing out or uninstalling Veylo does not delete
-          your account.
-        </p>
-        <p>
-          Open Profile &gt; Settings &gt; Delete account to start deletion. The password flow asks
-          you to type DELETE, enter your current password, and confirm. If your sign-in method has
-          no password, use Request deletion support on that screen. If you cannot access the app,
-          use the <a href="./delete-account.html">public account-deletion page</a>.
-        </p>
-        <p>
-          Successful account deletion removes the sign-in account, profile and saved study details,
-          statuses, friend connections, your feed posts and comments, messages you sent, your chat
-          memberships, notification tokens and preferences, reports you submitted, and photo
-          submissions. It also removes the profile-photo files held in your account’s pending-photo
-          and avatar storage folders. Deletion can fail or stop partway through; an error is not a
-          confirmation that all these steps finished. Contact support if you cannot complete it.
-        </p>
-        <p>
-          Some records are not automatically erased with the account:
-        </p>
-        <ul>
-          <li>Feedback and course suggestions may remain after their account link is removed. Text you entered may still identify you.</li>
-          <li>Reports made by other people and moderation records may retain descriptions or references after account links are removed.</li>
-          <li>Shared conversation records and other participants’ messages remain. Notification records held for recipients may retain names, previews, or references even when no longer shown in their inbox.</li>
-          <li>A push-security record retains an app installation identifier, former account identifier, and a one-way binding proof to prevent delayed notification registration from attaching an installation to the wrong account. It is not erased when the notification token is deleted.</li>
-        </ul>
-        <p>
-          These remaining records have no fixed automatic deletion period. Service-provider logs,
-          backups, support correspondence, and copies already delivered to other people are not
-          all removed by the in-app deletion operation. Contact support to request review of
-          remaining personal information or to ask what can be removed. Information that must be
-          retained to meet a legal obligation may be excluded from deletion.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Your Choices And Requests</h2>
-        <p>
-          You can edit profile and study details, adjust privacy and notification settings, and
-          change location permissions. For access to or correction of your personal information,
-          a deletion request, or a privacy complaint, email
-          <a href="mailto:support@joinveylo.com">support@joinveylo.com</a>. Include enough information to
-          identify your account and explain your request. Ownership verification may be needed;
-          do not send your password or sign-in codes.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Age Restrictions</h2>
-        <p>
-          Veylo is intended for university students in Australia who are at least 18 years old.
-          People under 18 are not eligible to create or
-          keep an account. Contact <a href="mailto:support@joinveylo.com">support@joinveylo.com</a> with an
-          age-related account or privacy concern. Do not email identity documents, passwords, or
-          sign-in codes.
-        </p>
-      </section>
-
-      <section class="panel">
-        <h2>Contact</h2>
-        <p>
-          Veylo is operated by John Tawadros in Queensland, Australia. For privacy questions, data
-          requests, or questions about overseas processing, contact
-          <a href="mailto:support@joinveylo.com">support@joinveylo.com</a>.
-        </p>
-      </section>
-
-      <footer>
-        <p class="muted">Veylo Privacy Policy. Last updated 10 October 2026.</p>
-      </footer>
-    </main>
-  </body>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Veylo Privacy Policy</title>
+<link rel="canonical" href="https://joinveylo.com/privacy.html">
+<style>html{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#fffaf5;color:#29262b;font:1rem/1.7 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}a{color:#8c3043;text-underline-offset:.18em;overflow-wrap:anywhere}a:hover{color:#582033}a:focus-visible{outline:3px solid #8c3043;outline-offset:4px}header,main,footer{width:min(100% - 2rem,49rem);margin-inline:auto}header{padding:1.3rem 0;border-bottom:1px solid #d8cbc5}.brand{font-weight:750;font-size:1.35rem}nav{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin-top:.6rem}main{padding:1.7rem 0 2.5rem}h1{font-size:clamp(1.8rem,5vw,2.5rem);line-height:1.2}h2{font-size:1.35rem;line-height:1.4;margin-top:2rem}h3{font-size:1.1rem}p,li,td,th{overflow-wrap:anywhere}li+li{margin-top:.55rem}ul{padding-left:1.35rem}.updated{color:#625a61}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.95rem}td,th{padding:.65rem;border:1px solid #d8cbc5;text-align:left;vertical-align:top}th{background:#f4e8e2}footer{padding:1.2rem 0 2rem;border-top:1px solid #d8cbc5;font-size:.95rem}.skip{position:absolute;left:-9999px}.skip:focus{position:static;display:block;padding:.5rem}@media(max-width:420px){body{font-size:1rem}header,main,footer{width:calc(100% - 1.5rem)}td,th{padding:.4rem}}@media print{body{background:white;color:black}header,footer{display:none}main{width:100%}a{color:inherit}h2{break-after:avoid}p,li{orphans:3;widows:3}}</style>
+</head>
+<body>
+<a class="skip" href="#main-content">Skip to content</a>
+<header><a class="brand" href="https://joinveylo.com/">Veylo</a><nav aria-label="Public information"><a href="https://joinveylo.com/">Home</a><a href="./terms.html">Terms</a><a href="./privacy.html">Privacy</a><a href="./delete-account.html">Delete account</a><a href="./support.html">Support</a><a href="./child-safety.html">Child safety</a></nav></header>
+<main id="main-content">
+<h1 id="veylo-privacy-policy">Veylo Privacy Policy</h1>
+<p class="updated">Last updated: 29 October 2026.</p>
+<h2 id="1-who-we-are-and-this-policy">1 Who we are and this policy</h2>
+<p>Veylo is operated by <strong>John Tawadros personally</strong>, based in Queensland, Australia (we, us or our). Contact <strong><a href="mailto:support@joinveylo.com">support@joinveylo.com</a></strong> about privacy, access, correction, safety or deletion. Veylo is currently free, personally funded and not monetised.</p>
+<p>This policy covers the Veylo iOS and Android apps, related websites and account-confirmation pages, support and moderation, and separate launch and early-access signup records. Some older records may use the name UniPulse. Veylo is for people aged 18 years or older based in Australia. Features and controls can differ between supported app versions and platforms.</p>
+<p>This policy explains information handling. Accepting Terms or acknowledging a policy does not give blanket consent to every use of information. We will obtain separate consent where required by law.</p>
+<h2 id="2-how-information-is-collected">2 How information is collected</h2>
+<p>We receive information when you register, sign in, edit your profile, use social features, enable permissions, submit feedback, make a report or contact us. Other people can provide information about you in messages, shared content or reports. The app and providers also generate identifiers, timestamps, delivery information and technical logs. We can derive a campus label from location or an affiliation indicator from an email domain.</p>
+<p>Required registration fields are needed to complete the registration flow. Photos, device location, notifications, social text and support correspondence are optional, although a feature cannot work without the information it needs. Do not include unnecessary sensitive information about yourself or another person.</p>
+<h2 id="3-accounts-profiles-and-study-information">3 Accounts profiles and study information</h2>
+<p>We collect account email, first and last name, a password for authentication, and the requested university, campus, degree or course and year-level information. A custom course description may be provided where the catalogue is unsuitable. A student email is optional and may default to your account email. Optional study-focus information can include a major or specialisation.</p>
+<p>Supabase handles authentication and generates account, confirmation, sign-in, session and recovery information. Passwords are not displayed as profile fields. Supported native versions store sessions using device storage, including operating-system protected storage. Confirmation and recovery links can pass through email and a hosted page before returning to the app. We retain relevant settings, onboarding information and records of the policy version actually accepted and the acceptance time.</p>
+<p>Names, study details, approved photos and affiliation indicators can be available to eligible signed-in users under the feature&#x27;s access and blocking rules. Your surname is not necessarily private, and profile information is not all limited to friends. Account and student emails are not ordinary public profile fields. Optional study focus currently uses a private account-specific feature.</p>
+<p>A university indicator is limited information, not proof of identity, age or current enrolment or university endorsement. Selecting a university does not itself cause us to send your private account information to that university.</p>
+<h2 id="4-profile-photos">4 Profile photos</h2>
+<p>Optional photo submissions include an image file, storage reference, file type, status and review information. <strong>Images can contain embedded metadata, including precise location or GPS coordinates if present. Do not assume that the picker, editing or upload process strips it.</strong></p>
+<p>New submissions are stored privately for manual suitability review. You and authorised operators and storage or review providers can access the submission as needed. A pending submission does not replace an approved profile photo before approval. Review is not an age or identity check.</p>
+<p>Approved photos use public image links. Someone who obtains a link can view, copy or save the image without signing into Veylo. Removing a profile reference does not necessarily remove the underlying file. Pending, rejected, replaced and older approved files can remain and require separate removal work. There is no assured automatic deletion deadline for these files. Account deletion requests include photos, but we do not promise immediate removal of every stored or cached copy. Contact us about a remaining photo or link.</p>
+<h2 id="5-location-status-and-activity">5 Location status and activity</h2>
+<p>Location is optional. Depending on your selected mode and OS permissions, the app can use location for a requested check, when opening the app or for background campus detection. Background detection can run while the app is not open when permission permits.</p>
+<p>The ordinary campus-status feature uses device coordinates locally to derive campus or zone presence. It sends derived campus or zone labels, presence, status information and timestamps to the backend rather than an ordinary trail of raw GPS coordinates. Images, messages or other content you share can separately reveal location.</p>
+<p>We keep current status, campus or zone, activity or availability choices, optional text or emoji, and timestamps for freshness, reminders and expiry. Friends, campus, university or private audiences and other privacy controls apply to particular features. Campus or university audiences can include friends; older versions can offer different audiences. Turning off discovery does not hide every profile field. Turning off visibility is different from revoking OS permission or removing previously shared information.</p>
+<p>Status can be stale or inaccurate. Display expiry can clear current status while timestamps and notification copies remain. Do not rely on a status as proof of someone&#x27;s whereabouts, attendance or safety.</p>
+<h2 id="6-social-features-messages-notifications-and-local-storage">6 Social features messages notifications and local storage</h2>
+<p>We process friend requests, friendships, blocks, group memberships and related timestamps to provide connections and access controls. These records describe your Veylo social graph; they are not a phone address-book import feature. Search terms are sent to the backend to return permitted people-search results, and request counts and timestamps can be kept for abuse control. We do not maintain a search-history list for ordinary friend searches; request counts and technical records are distinct from a history of search phrases.</p>
+<p>Posts, comments and reactions include content, author, campus or category and timestamps. Feed audiences can extend beyond friends. Direct and group text conversations include message text, participants, group names, roles, mute or leave settings and read state. Current messaging does not provide a general attachment-upload feature.</p>
+<p>Messages are stored and processed on our servers and are <strong>not end-to-end encrypted</strong>. Conversation participants can see the relevant messages. Authorised operators and providers can process server-held information for service operation, support, safety investigations or legal requirements.</p>
+<p>If notifications are enabled, we process push tokens, platform, installation-related identifiers and preferences. Notification providers receive the token and payload, which can include a sender&#x27;s name, message preview, status or campus information and routing identifiers. Expo passes native notifications to Apple&#x27;s iOS delivery service or Google&#x27;s Android delivery service. Lock-screen visibility depends on the receiving device. Muting, changing preferences or deleting content does not retract already delivered previews or other recipients&#x27; stored notification copies.</p>
+<p>The app keeps local preferences and caches that can contain profiles, feed and chat content, previews, relationships and status. Cache expiry is not proof of physical device deletion. You can use available edit, audience, block, post-deletion, leave and mute controls. Not every comment or message has an individual deletion control; contact us about content you cannot remove. Other people may independently save, quote or screenshot information shared with them.</p>
+<h2 id="7-safety-moderation-feedback-and-support">7 Safety moderation feedback and support</h2>
+<p>Reports can contain reporter and target information, reasons, optional details, content location and submission time. Review records can contain decisions, reasons, reviewer information and action history. We use them to assess concerns, apply our Terms, consider appeals and meet applicable requirements. Restricted operator systems and relevant hosting providers process photo reviews, reports, feedback and deletion requests.</p>
+<p>We will not reveal a reporter&#x27;s identity to the reported user without agreement unless required by law. Incident details may nevertheless allow an identity to be inferred. We may need to explain enough of an allegation for a person to respond while protecting others&#x27; privacy and safety.</p>
+<p>Feedback and course suggestions can include text, screen or issue details and technical app, platform, OS or execution context. Email correspondence, sender details and lawful attachments are held separately from the app database. John handles requests; authorised backup assistance may access support or moderation information when needed.</p>
+<p>Use available in-app reporting or email <strong><a href="mailto:support@joinveylo.com">support@joinveylo.com</a></strong>, including if a target or form is unavailable. Never send passwords, sign-in codes or recovery tokens. Do not download, forward or attach child sexual abuse material; give a lawful description and content location instead.</p>
+<p><strong>We will provide an initial human response to safety complaints and deletion requests in less than 48 hours, including weekends.</strong> This begins or explains handling, rather than promising investigation, resolution or deletion completion within that interval. It does not delay urgent legal duties. See <a href="./support.html">support</a> and <a href="./child-safety.html">child safety</a>.</p>
+<h2 id="8-technical-information-websites-and-email-lists">8 Technical information websites and email lists</h2>
+<p>The app, authentication, hosting and delivery providers process IP addresses, request and error metadata, device or browser information, app and runtime versions, installation identifiers and delivery or security logs. Backend gateway and function logs can retain account-associated request information together with service-response and execution durations. We use this for reliability, troubleshooting and security.</p>
+<p>Expo provides app-update delivery. Requests can carry a persistent installation identifier and technical version information, and can include text about a previous fatal application error. Update-request usage is also aggregated to understand app use. These activities are distinct from advertising tracking. A disabled optional app diagnostic feature does not mean that native update or backend logging stops.</p>
+<p>Our public pages use GitHub Pages and Vercel. Loading them sends ordinary request information to the host, including IP address, requested URL and, where supplied by the browser, referrer and browser information. GitHub Pages logs visitor IP addresses for security. The main marketing homepage uses Vercel Web Analytics for visit measurement, including page URL, referrer, time, approximate location, browser/device information and a request-derived visitor identifier. The homepage filter limits its pageview events and removes URL queries and fragments; this is not a guarantee that every field, such as referrer, is removed. The legal and support pages in this publication contain no optional analytics scripts, but hosting/security logs still apply. Account-confirmation pages and restricted administration have their own authentication and operational processing.</p>
+<p>Launch and early-access signup lists are separate from app accounts. They can contain email, signup identifier and time, requested intent, platform, source, recorded consent where actually obtained, and delivery or rate-control information. We use them for requested launch/access communications, acknowledgements, delivery and abuse prevention. Older entries do not establish fresh consent. App-account deletion does not automatically delete those separate records.</p>
+<p>Resend handles authentication and requested signup emails, including addresses, content and delivery information. Depending on the sending configuration, email systems can also produce open or click measurements; we do not promise all email paths are free of such measurement. This is different from using information for cross-company advertising. You can ask us about a sending path, withdraw requested launch messages through an available unsubscribe link or contact support. We will honour applicable withdrawals within the time required by law. An appropriately limited suppression record can be needed to respect an opt-out; necessary security or account-service messages may still be sent.</p>
+<h2 id="9-purposes-and-automated-processing">9 Purposes and automated processing</h2>
+<p>We use information to create and secure accounts, provide chosen features and audiences, deliver messages and notifications, support recovery and deletion, review photos and reports, handle complaints and appeals, improve reference information and diagnose reliability. University/account information can also tailor an existing feature, such as the My university feed view.</p>
+<p>Rule-based processes can screen submitted text, derive affiliation indicators, estimate campus presence, apply audience and interaction rules, limit repeated requests, choose permitted notification recipients and stop displaying expired content. They use the text, account/study information, device-derived location, relationships, settings, request history and timestamps described above. Rules can reject a submission or prevent an action you intended; they can make mistakes. Email support to request review or correction.</p>
+<p>Photo suitability and report assessment involve human judgment. Rule-based text screening is not a Veylo-operated generative-AI moderation service. Providers can perform their own security and abuse-detection processing. A record of an action, a queued request or an expired display is not proof that a human response, a sanction or complete disposal occurred. This policy does not promise automatic complaint reminders or automatic retention cleanup.</p>
+<p>We do not sell personal information, serve advertising in the Veylo app or use Veylo app information for cross-company advertising tracking. This does not mean that providers receive no information or that technical/website analytics do not occur. We will obtain required permission before marketing and provide an appropriate way to stop it.</p>
+<h2 id="10-sensitive-information-and-information-about-others">10 Sensitive information and information about others</h2>
+<p>Ordinary registration does not require health, racial or ethnic origin, religion, political views, sexual orientation or similar sensitive information. Messages, images, statuses, reports and support correspondence can nevertheless reveal it. Only provide relevant information you can lawfully share. Another user&#x27;s acceptance of Terms is not consent on behalf of a person described in their content.</p>
+<p>We will explain a particular request for sensitive information and obtain consent where required or rely on a specific lawful exception. Unexpected information will be assessed for whether it can lawfully be kept, used or should be removed or de-identified.</p>
+<h2 id="11-providers-recipients-and-overseas-processing">11 Providers recipients and overseas processing</h2>
+<p>Information is shared with the relevant users or audience and providers needed to host, operate, secure and support Veylo. Authorised operators and advisers can access information for a relevant service, safety, technical or legal purpose.</p>
+<div class="table-wrap"><table><thead><tr><th scope="col">Service</th><th scope="col">Information handled and known locations</th></tr></thead><tbody><tr><td>Supabase app service</td><td>Authentication, app database, photos, realtime and functions. The app&#x27;s primary database is in <strong>Singapore</strong>. Logs, functions, support and subprocessors can involve other locations.</td></tr><tr><td>Separate signup service</td><td>Launch and early-access records use a separate Supabase primary database in <strong>Sydney, Australia</strong>, with Vercel request handling and Resend delivery.</td></tr><tr><td>Vercel</td><td>Website delivery, account confirmation and restricted operator systems. Inspected deployments have United States region information; delivery and provider operations use international infrastructure.</td></tr><tr><td>GitHub Pages</td><td>Public-page delivery and request/security information, using United States and other international infrastructure.</td></tr><tr><td>Expo and native delivery providers</td><td>App-update, installation, error and usage information and native push delivery via Apple on iOS or Google on Android. These providers use United States and international infrastructure.</td></tr><tr><td>Microsoft 365 through GoDaddy</td><td>Support, safety, privacy and deletion correspondence and mailbox recovery or synced copies. We have not confirmed every processing or recovery location.</td></tr><tr><td>Resend</td><td>Authentication and requested signup email addresses, content and delivery information, with potential measurement depending on configuration. Tokyo sending-region information and a provider statement about United States storage have been observed; they are not a complete location map.</td></tr></tbody></table></div>
+<p>Some processing therefore occurs outside Australia. Primary database regions do not identify every log, backup, support or subprocessor location. Wider provider lists do not mean Veylo uses every listed service. We do not claim every provider&#x27;s ancillary location is known. Contact us for information about a particular service.</p>
+<p>We will take steps required by applicable law when choosing providers or disclosing information overseas. Acknowledging this policy is not permission to avoid those obligations. We can disclose limited relevant information where law requires it or where law permits and it is reasonably necessary to address a serious safety concern, investigate unlawful activity or protect legal rights. We will assess scope and basis. We may also disclose at your request or with valid consent. An operational transfer requires appropriate safeguards and notice and does not authorise unrelated new uses.</p>
+<h2 id="12-security-and-breaches">12 Security and breaches</h2>
+<p>We use authentication, access controls, HTTPS communications and separation of private review material from approved public photos. These measures do not make public photo links private or messages end-to-end encrypted. We take reasonable steps to protect information against misuse, interference, loss and unauthorised access, modification or disclosure. No online system is completely secure.</p>
+<p>We will assess suspected breaches and notify people and authorities when applicable law requires it. Contact support promptly about suspected account or information compromise. Do not send a password or reusable authentication credential.</p>
+<h2 id="13-account-deletion-and-other-removal-requests">13 Account deletion and other removal requests</h2>
+<p>Open <strong>Profile &gt; Settings &gt; Delete account</strong> and follow the account-ownership and confirmation steps shown. If that route is unavailable, you cannot sign in or need help with separate records, email <strong><a href="mailto:support@joinveylo.com">support@joinveylo.com</a></strong>. Use the account email where possible; a sender address alone is not proof of authority. We may need proportionate ownership checks before acting. Do not send unsolicited identity documents or authentication secrets. A request can be made without explaining why you are leaving.</p>
+<p>We will give an initial human response to deletion requests in <strong>less than 48 hours</strong>, including weekends. Completion may need checks, work across systems or review of a specific lawful retention requirement. We will explain relevant next steps and remaining work unless law prevents that explanation. Uninstalling or signing out is not account deletion. See <a href="./delete-account.html">account deletion</a>.</p>
+<h2 id="14-retention-remaining-copies-and-backups">14 Retention remaining copies and backups</h2>
+<p>Information is kept for relevant service purposes, your choices and particular lawful safety, legal or operational needs. Where it is no longer needed and no applicable requirement justifies retention, we will take reasonable steps to delete it or make it no longer reasonably identifiable. There is no universal legal retention period or all-copy erasure deadline for every category.</p>
+<p>A deletion request covers the sign-in account, profile, status, friendships and memberships, authored posts, comments and sent messages, settings, notifications, push tokens and photos. Processing can fail, be incomplete or require separate work. A confirmation message, missing profile, unavailable image link or administrative status is not proof that every step or physical/provider copy has been erased.</p>
+<p>These distinctions remain important:</p>
+<ul><li><strong>Photos:</strong> a removed profile reference or completed review does not necessarily remove public images, private originals, rejected or replaced files, caches or other copies. Pending files do not have an assured automatic deletion deadline.</li><li><strong>Shared and delivered material:</strong> other participants&#x27; content, shared group information, recipients&#x27; notification text and independently saved screenshots or copies can remain. We cannot automatically recall independent copies.</li><li><strong>Safety and operational information:</strong> reports by others, moderation reasons, feedback, course suggestions, device context, installation records and necessary request/verification/action history can require separate review. Free text and linkable identifiers are not anonymous simply because an account link is removed.</li><li><strong>Separate services:</strong> support correspondence, signup lists, mail delivery/security records, provider logs, device caches, exports and backups have separate lifecycles. Some remaining records have no automatic expiry and need individual review.</li></ul>
+<p>A particular law, order or lawful preservation requirement can require specified information to be kept. Limited information can also be necessary for a lawful complaint investigation, appeal, serious recurrence prevention or legal claim. We will assess necessity, restrict access and review continued need. This does not justify keeping an entire account indefinitely or assigning a blanket multi-year safety period.</p>
+<p>Mailbox deletion, recoverable folders, synced/exported copies and provider backups can differ. We cannot give a verified universal date for erasure of all provider/recovery copies. A backup is not a general exemption from privacy obligations. Copies within our control remain subject to the steps required by applicable law when no longer needed, including addressing deletion and withdrawal choices if information is restored. Contact us to request review of a remaining photo, record or correspondence.</p>
+<h2 id="15-access-correction-and-privacy-complaints">15 Access correction and privacy complaints</h2>
+<p>You can edit available profile/settings fields or email support for access, correction or review of information you cannot remove yourself. We may need reasonable identity checks and enough detail to locate it. We respond within a reasonable period and any applicable legal timeframe. There is no charge to make an access/correction request or correct information. We will explain any lawful reasonable access charge before proceeding.</p>
+<p>If law permits or requires a limit, including to protect another person&#x27;s privacy or an investigation, we will explain a refusal and complaint options to the extent permitted. Where appropriate you can ask us to record that you dispute accuracy.</p>
+<p>For a privacy complaint, explain what happened and the outcome sought. We will consider it fairly and communicate the outcome and next steps. The less-than-48-hour initial response applies to safety complaints and deletion requests, not resolution of every privacy matter. You may contact the <a href="https://www.oaic.gov.au/privacy/privacy-complaints">Office of the Australian Information Commissioner</a>, which can advise whether it has jurisdiction. Other consumer, safety and legal options remain available. We do not claim an exemption from applicable privacy duties merely because the service is personally funded.</p>
+<h2 id="16-age-eligibility-and-younger-people">16 Age eligibility and younger people</h2>
+<p>Veylo is for people aged <strong>18 or older based in Australia</strong>. Ordinary registration does not collect date of birth or provide government-ID or selfie age verification. A store rating, Terms acceptance, university indicator or reviewed profile photo is not independent proof of age.</p>
+<p>Report a suspected under-18 account through the app or support email. We will review the concern, take appropriate steps to restrict or close an ineligible account and address information that should no longer be held. A safety concern can require separate lawful handling after account closure. Our <a href="./child-safety.html">child safety standards</a> apply to content and conduct even though children are not eligible users.</p>
+<p>If a different age-assurance process is introduced, we will explain its information, providers, purposes and safeguards before collecting through it and comply with applicable requirements.</p>
+<h2 id="17-updates-and-contact">17 Updates and contact</h2>
+<p>We will update the date on this policy when practices change and give appropriate notice of material changes. New processing requiring consent will be addressed separately from accepting Terms. This page does not certify that a new policy version has been accepted by an existing account.</p>
+<p>Contact John Tawadros at <strong><a href="mailto:support@joinveylo.com">support@joinveylo.com</a></strong>. See <a href="./terms.html">Terms</a>, <a href="./support.html">support and appeals</a>, <a href="./delete-account.html">account deletion</a> and <a href="./child-safety.html">child safety</a>.</p>
+</main>
+<footer>John Tawadros personally · Queensland, Australia · <a href="mailto:support@joinveylo.com">support@joinveylo.com</a><nav aria-label="Related pages"><a href="https://joinveylo.com/">Home</a><a href="./terms.html">Terms</a><a href="./privacy.html">Privacy</a><a href="./delete-account.html">Delete account</a><a href="./support.html">Support</a><a href="./child-safety.html">Child safety</a></nav></footer>
+</body>
 </html>
