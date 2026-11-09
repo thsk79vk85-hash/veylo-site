@@ -1,7 +1,7 @@
 /* Scoped, review-only signup flow. Existing showcase styles are unchanged. */
 .beta-section,.invitation-section,.launch-choice{display:grid;grid-template-columns:1fr 1fr;gap:70px;padding-block:70px;border-top:1px solid var(--line);align-items:start}
 .beta-section h2,.invitation-section h2,.launch-choice h2{font-size:clamp(36px,4.3vw,60px);font-weight:500;line-height:1.08;letter-spacing:-2px;margin:18px 0 24px}
-.beta-section h2 em,.invitation-section h2 em,.launch-choice h2 em{font-family:var(--serif);color:var(--focus);font-weight:400}
+.beta-section h2 em,.invitation-section h2 em,.launch-choice h2 em{font-family:var(--sans);font-style:normal;color:var(--focus);font-weight:600}
 .beta-intro>p:not(.eyebrow),.launch-choice>div>p{font-size:16px;line-height:1.75;max-width:470px;color:var(--muted)}
 .beta-card,.launch-card{background:#e3ebdf;padding:30px;border-radius:24px}.beta-card h3,.launch-card h3{font-size:26px;line-height:1.2;letter-spacing:-.7px;margin:6px 0 22px;font-weight:500}
 .preview-notice{border-left:3px solid var(--focus);padding:10px 16px;margin-top:28px;font-size:13px;line-height:1.6;color:var(--muted)}
